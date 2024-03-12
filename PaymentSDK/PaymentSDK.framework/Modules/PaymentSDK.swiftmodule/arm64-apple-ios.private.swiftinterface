@@ -1,0 +1,2346 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.10 effective-4.1.50 (swiftlang-5.10.0.13 clang-1500.3.9.4)
+// swift-module-flags: -target arm64-apple-ios12.0 -enable-objc-interop -enable-library-evolution -swift-version 4 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name PaymentSDK
+import CoreGraphics
+import Foundation
+import Lottie
+@_exported import PaymentSDK
+import QMUIKit
+import QuartzCore
+import SVGKit
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@_hasMissingDesignatedInitializers final public class Constraint {
+  final public var layoutConstraints: [PaymentSDK.LayoutConstraint]
+  final public var isActive: Swift.Bool {
+    get
+    set
+  }
+  @available(*, deprecated, renamed: "activate()")
+  final public func install()
+  @available(*, deprecated, renamed: "deactivate()")
+  final public func uninstall()
+  final public func activate()
+  final public func deactivate()
+  @discardableResult
+  final public func update(offset: any PaymentSDK.ConstraintOffsetTarget) -> PaymentSDK.Constraint
+  @discardableResult
+  final public func update(inset: any PaymentSDK.ConstraintInsetTarget) -> PaymentSDK.Constraint
+  @available(iOS 11.0, tvOS 11.0, *)
+  @discardableResult
+  final public func update(inset: any PaymentSDK.ConstraintDirectionalInsetTarget) -> PaymentSDK.Constraint
+  @discardableResult
+  final public func update(priority: any PaymentSDK.ConstraintPriorityTarget) -> PaymentSDK.Constraint
+  @discardableResult
+  final public func update(priority: PaymentSDK.ConstraintPriority) -> PaymentSDK.Constraint
+  @available(*, deprecated, renamed: "update(offset:)")
+  final public func updateOffset(amount: any PaymentSDK.ConstraintOffsetTarget)
+  @available(*, deprecated, renamed: "update(inset:)")
+  final public func updateInsets(amount: any PaymentSDK.ConstraintInsetTarget)
+  @available(*, deprecated, renamed: "update(priority:)")
+  final public func updatePriority(amount: any PaymentSDK.ConstraintPriorityTarget)
+  @available(*, deprecated, message: "Use update(priority: ConstraintPriorityTarget) instead.")
+  final public func updatePriorityRequired()
+  @available(*, deprecated, message: "Use update(priority: ConstraintPriorityTarget) instead.")
+  final public func updatePriorityHigh()
+  @available(*, deprecated, message: "Use update(priority: ConstraintPriorityTarget) instead.")
+  final public func updatePriorityMedium()
+  @available(*, deprecated, message: "Use update(priority: ConstraintPriorityTarget) instead.")
+  final public func updatePriorityLow()
+  @objc deinit
+}
+public typealias ConstraintInterfaceLayoutDirection = UIKit.UIUserInterfaceLayoutDirection
+public struct ConstraintConfig {
+  public static var interfaceLayoutDirection: PaymentSDK.ConstraintInterfaceLayoutDirection
+}
+public protocol ConstraintConstantTarget {
+}
+extension CoreFoundation.CGPoint : PaymentSDK.ConstraintConstantTarget {
+}
+extension CoreFoundation.CGSize : PaymentSDK.ConstraintConstantTarget {
+}
+extension UIKit.UIEdgeInsets : PaymentSDK.ConstraintConstantTarget {
+}
+@available(iOS 11.0, tvOS 11.0, *)
+extension UIKit.NSDirectionalEdgeInsets : PaymentSDK.ConstraintConstantTarget {
+}
+@_hasMissingDesignatedInitializers public class ConstraintDescription {
+  @objc deinit
+}
+@available(iOS 11.0, tvOS 11.0, *)
+public typealias ConstraintDirectionalInsets = UIKit.NSDirectionalEdgeInsets
+public protocol ConstraintDirectionalInsetTarget : PaymentSDK.ConstraintConstantTarget {
+}
+@available(iOS 11.0, tvOS 11.0, *)
+extension UIKit.NSDirectionalEdgeInsets : PaymentSDK.ConstraintDirectionalInsetTarget {
+}
+public protocol ConstraintDSL {
+  var target: Swift.AnyObject? { get }
+  func setLabel(_ value: Swift.String?)
+  func label() -> Swift.String?
+}
+extension PaymentSDK.ConstraintDSL {
+  public func setLabel(_ value: Swift.String?)
+  public func label() -> Swift.String?
+}
+public protocol ConstraintBasicAttributesDSL : PaymentSDK.ConstraintDSL {
+}
+extension PaymentSDK.ConstraintBasicAttributesDSL {
+  public var left: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var top: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var right: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var bottom: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var leading: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var trailing: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var width: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var height: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var centerX: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var centerY: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var edges: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var directionalEdges: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var horizontalEdges: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var verticalEdges: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var directionalHorizontalEdges: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var directionalVerticalEdges: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var size: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var center: PaymentSDK.ConstraintItem {
+    get
+  }
+}
+public protocol ConstraintAttributesDSL : PaymentSDK.ConstraintBasicAttributesDSL {
+}
+extension PaymentSDK.ConstraintAttributesDSL {
+  @available(*, deprecated, renamed: "lastBaseline")
+  public var baseline: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, macOS 10.11, *)
+  public var lastBaseline: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, macOS 10.11, *)
+  public var firstBaseline: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var leftMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var topMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var rightMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var bottomMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var leadingMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var trailingMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerXWithinMargins: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerYWithinMargins: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var margins: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var directionalMargins: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerWithinMargins: PaymentSDK.ConstraintItem {
+    get
+  }
+}
+public typealias ConstraintInsets = UIKit.UIEdgeInsets
+public protocol ConstraintInsetTarget : PaymentSDK.ConstraintConstantTarget {
+}
+extension Swift.Int : PaymentSDK.ConstraintInsetTarget {
+}
+extension Swift.UInt : PaymentSDK.ConstraintInsetTarget {
+}
+extension Swift.Float : PaymentSDK.ConstraintInsetTarget {
+}
+extension Swift.Double : PaymentSDK.ConstraintInsetTarget {
+}
+extension CoreFoundation.CGFloat : PaymentSDK.ConstraintInsetTarget {
+}
+extension UIKit.UIEdgeInsets : PaymentSDK.ConstraintInsetTarget {
+}
+@_hasMissingDesignatedInitializers final public class ConstraintItem {
+  @objc deinit
+}
+public func == (lhs: PaymentSDK.ConstraintItem, rhs: PaymentSDK.ConstraintItem) -> Swift.Bool
+@available(iOS 9.0, *)
+public typealias ConstraintLayoutGuide = UIKit.UILayoutGuide
+@available(iOS 9.0, macOS 10.11, *)
+extension UIKit.UILayoutGuide {
+  @_Concurrency.MainActor(unsafe) public var snp: PaymentSDK.ConstraintLayoutGuideDSL {
+    get
+  }
+}
+@available(iOS 9.0, macOS 10.11, *)
+public struct ConstraintLayoutGuideDSL : PaymentSDK.ConstraintAttributesDSL {
+  @discardableResult
+  public func prepareConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void) -> [PaymentSDK.Constraint]
+  public func makeConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  public func remakeConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  public func updateConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  public func removeConstraints()
+  public var target: Swift.AnyObject? {
+    get
+  }
+}
+@available(iOS 8.0, *)
+public typealias ConstraintLayoutSupport = UIKit.UILayoutSupport
+@available(iOS 8.0, *)
+public struct ConstraintLayoutSupportDSL : PaymentSDK.ConstraintDSL {
+  public var target: Swift.AnyObject? {
+    get
+  }
+  public var top: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var bottom: PaymentSDK.ConstraintItem {
+    get
+  }
+  public var height: PaymentSDK.ConstraintItem {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class ConstraintMaker {
+  public var left: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var top: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var bottom: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var right: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var leading: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var trailing: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var width: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var height: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var centerX: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var centerY: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(*, deprecated, renamed: "lastBaseline")
+  public var baseline: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var lastBaseline: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, macOS 10.11, *)
+  public var firstBaseline: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var leftMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var rightMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var topMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var bottomMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var leadingMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var trailingMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerXWithinMargins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerYWithinMargins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var edges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var horizontalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var verticalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var directionalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var directionalHorizontalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var directionalVerticalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var size: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var center: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var margins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var directionalMargins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerWithinMargins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  final public let item: any PaymentSDK.LayoutConstraintItem
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class ConstraintMakerEditable : PaymentSDK.ConstraintMakerPrioritizable {
+  @discardableResult
+  public func multipliedBy(_ amount: any PaymentSDK.ConstraintMultiplierTarget) -> PaymentSDK.ConstraintMakerEditable
+  @discardableResult
+  public func dividedBy(_ amount: any PaymentSDK.ConstraintMultiplierTarget) -> PaymentSDK.ConstraintMakerEditable
+  @discardableResult
+  public func offset(_ amount: any PaymentSDK.ConstraintOffsetTarget) -> PaymentSDK.ConstraintMakerEditable
+  @discardableResult
+  public func inset(_ amount: any PaymentSDK.ConstraintInsetTarget) -> PaymentSDK.ConstraintMakerEditable
+  @available(iOS 11.0, tvOS 11.0, *)
+  @discardableResult
+  public func inset(_ amount: any PaymentSDK.ConstraintDirectionalInsetTarget) -> PaymentSDK.ConstraintMakerEditable
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class ConstraintMakerExtendable : PaymentSDK.ConstraintMakerRelatable {
+  public var left: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var top: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var bottom: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var right: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var leading: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var trailing: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var width: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var height: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var centerX: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var centerY: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(*, deprecated, renamed: "lastBaseline")
+  public var baseline: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var lastBaseline: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, macOS 10.11, *)
+  public var firstBaseline: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var leftMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var rightMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var topMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var bottomMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var leadingMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var trailingMargin: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerXWithinMargins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerYWithinMargins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var edges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var horizontalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var verticalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var directionalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var directionalHorizontalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var directionalVerticalEdges: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  public var size: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var margins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var directionalMargins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @available(iOS 8.0, *)
+  public var centerWithinMargins: PaymentSDK.ConstraintMakerExtendable {
+    get
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class ConstraintMakerFinalizable {
+  @discardableResult
+  public func labeled(_ label: Swift.String) -> PaymentSDK.ConstraintMakerFinalizable
+  public var constraint: PaymentSDK.Constraint {
+    get
+  }
+  @objc deinit
+}
+@available(*, deprecated, message: "Use ConstraintMakerPrioritizable instead.")
+public typealias ConstraintMakerPriortizable = PaymentSDK.ConstraintMakerPrioritizable
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class ConstraintMakerPrioritizable : PaymentSDK.ConstraintMakerFinalizable {
+  @discardableResult
+  public func priority(_ amount: PaymentSDK.ConstraintPriority) -> PaymentSDK.ConstraintMakerFinalizable
+  @discardableResult
+  public func priority(_ amount: any PaymentSDK.ConstraintPriorityTarget) -> PaymentSDK.ConstraintMakerFinalizable
+  @available(*, deprecated, message: "Use priority(.required) instead.")
+  @discardableResult
+  public func priorityRequired() -> PaymentSDK.ConstraintMakerFinalizable
+  @available(*, deprecated, message: "Use priority(.high) instead.")
+  @discardableResult
+  public func priorityHigh() -> PaymentSDK.ConstraintMakerFinalizable
+  @available(*, deprecated, message: "Use priority(.medium) instead.")
+  @discardableResult
+  public func priorityMedium() -> PaymentSDK.ConstraintMakerFinalizable
+  @available(*, deprecated, message: "Use priority(.low) instead.")
+  @discardableResult
+  public func priorityLow() -> PaymentSDK.ConstraintMakerFinalizable
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class ConstraintMakerRelatable {
+  @discardableResult
+  public func equalTo(_ other: any PaymentSDK.ConstraintRelatableTarget, _ file: Swift.String = #file, _ line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable
+  @discardableResult
+  public func equalToSuperview(_ file: Swift.String = #file, _ line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable
+  @discardableResult
+  public func lessThanOrEqualTo(_ other: any PaymentSDK.ConstraintRelatableTarget, _ file: Swift.String = #file, _ line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable
+  @discardableResult
+  public func lessThanOrEqualToSuperview(_ file: Swift.String = #file, _ line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable
+  @discardableResult
+  public func greaterThanOrEqualTo(_ other: any PaymentSDK.ConstraintRelatableTarget, _ file: Swift.String = #file, line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable
+  @discardableResult
+  public func greaterThanOrEqualToSuperview(_ file: Swift.String = #file, line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable
+  @objc deinit
+}
+extension PaymentSDK.ConstraintMakerRelatable {
+  @discardableResult
+  public func equalToSuperview<T>(_ closure: (PaymentSDK.ConstraintView) -> T, _ file: Swift.String = #file, line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable where T : PaymentSDK.ConstraintRelatableTarget
+  @discardableResult
+  public func lessThanOrEqualToSuperview<T>(_ closure: (PaymentSDK.ConstraintView) -> T, _ file: Swift.String = #file, line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable where T : PaymentSDK.ConstraintRelatableTarget
+  @discardableResult
+  public func greaterThanOrEqualToSuperview<T>(_ closure: (PaymentSDK.ConstraintView) -> T, _ file: Swift.String = #file, line: Swift.UInt = #line) -> PaymentSDK.ConstraintMakerEditable where T : PaymentSDK.ConstraintRelatableTarget
+}
+public protocol ConstraintMultiplierTarget {
+  var constraintMultiplierTargetValue: CoreFoundation.CGFloat { get }
+}
+extension Swift.Int : PaymentSDK.ConstraintMultiplierTarget {
+  public var constraintMultiplierTargetValue: CoreFoundation.CGFloat {
+    get
+  }
+}
+extension Swift.UInt : PaymentSDK.ConstraintMultiplierTarget {
+  public var constraintMultiplierTargetValue: CoreFoundation.CGFloat {
+    get
+  }
+}
+extension Swift.Float : PaymentSDK.ConstraintMultiplierTarget {
+  public var constraintMultiplierTargetValue: CoreFoundation.CGFloat {
+    get
+  }
+}
+extension Swift.Double : PaymentSDK.ConstraintMultiplierTarget {
+  public var constraintMultiplierTargetValue: CoreFoundation.CGFloat {
+    get
+  }
+}
+extension CoreFoundation.CGFloat : PaymentSDK.ConstraintMultiplierTarget {
+  public var constraintMultiplierTargetValue: CoreFoundation.CGFloat {
+    get
+  }
+}
+public protocol ConstraintOffsetTarget : PaymentSDK.ConstraintConstantTarget {
+}
+extension Swift.Int : PaymentSDK.ConstraintOffsetTarget {
+}
+extension Swift.UInt : PaymentSDK.ConstraintOffsetTarget {
+}
+extension Swift.Float : PaymentSDK.ConstraintOffsetTarget {
+}
+extension Swift.Double : PaymentSDK.ConstraintOffsetTarget {
+}
+extension CoreFoundation.CGFloat : PaymentSDK.ConstraintOffsetTarget {
+}
+public struct ConstraintPriority : Swift.ExpressibleByFloatLiteral, Swift.Equatable, Swift.Strideable {
+  public typealias FloatLiteralType = Swift.Float
+  public let value: Swift.Float
+  public init(floatLiteral value: Swift.Float)
+  public init(_ value: Swift.Float)
+  public static var required: PaymentSDK.ConstraintPriority {
+    get
+  }
+  public static var high: PaymentSDK.ConstraintPriority {
+    get
+  }
+  public static var medium: PaymentSDK.ConstraintPriority {
+    get
+  }
+  public static var low: PaymentSDK.ConstraintPriority {
+    get
+  }
+  public static func == (lhs: PaymentSDK.ConstraintPriority, rhs: PaymentSDK.ConstraintPriority) -> Swift.Bool
+  public func advanced(by n: PaymentSDK.ConstraintPriority.FloatLiteralType) -> PaymentSDK.ConstraintPriority
+  public func distance(to other: PaymentSDK.ConstraintPriority) -> PaymentSDK.ConstraintPriority.FloatLiteralType
+  public typealias Stride = PaymentSDK.ConstraintPriority.FloatLiteralType
+}
+public protocol ConstraintPriorityTarget {
+  var constraintPriorityTargetValue: Swift.Float { get }
+}
+extension Swift.Int : PaymentSDK.ConstraintPriorityTarget {
+  public var constraintPriorityTargetValue: Swift.Float {
+    get
+  }
+}
+extension Swift.UInt : PaymentSDK.ConstraintPriorityTarget {
+  public var constraintPriorityTargetValue: Swift.Float {
+    get
+  }
+}
+extension Swift.Float : PaymentSDK.ConstraintPriorityTarget {
+  public var constraintPriorityTargetValue: Swift.Float {
+    get
+  }
+}
+extension Swift.Double : PaymentSDK.ConstraintPriorityTarget {
+  public var constraintPriorityTargetValue: Swift.Float {
+    get
+  }
+}
+extension CoreFoundation.CGFloat : PaymentSDK.ConstraintPriorityTarget {
+  public var constraintPriorityTargetValue: Swift.Float {
+    get
+  }
+}
+extension UIKit.UILayoutPriority : PaymentSDK.ConstraintPriorityTarget {
+  public var constraintPriorityTargetValue: Swift.Float {
+    get
+  }
+}
+public protocol ConstraintRelatableTarget {
+}
+extension Swift.Int : PaymentSDK.ConstraintRelatableTarget {
+}
+extension Swift.UInt : PaymentSDK.ConstraintRelatableTarget {
+}
+extension Swift.Float : PaymentSDK.ConstraintRelatableTarget {
+}
+extension Swift.Double : PaymentSDK.ConstraintRelatableTarget {
+}
+extension CoreFoundation.CGFloat : PaymentSDK.ConstraintRelatableTarget {
+}
+extension CoreFoundation.CGSize : PaymentSDK.ConstraintRelatableTarget {
+}
+extension CoreFoundation.CGPoint : PaymentSDK.ConstraintRelatableTarget {
+}
+extension UIKit.UIEdgeInsets : PaymentSDK.ConstraintRelatableTarget {
+}
+@available(iOS 11.0, tvOS 11.0, *)
+extension UIKit.NSDirectionalEdgeInsets : PaymentSDK.ConstraintRelatableTarget {
+}
+extension PaymentSDK.ConstraintItem : PaymentSDK.ConstraintRelatableTarget {
+}
+extension UIKit.UIView : PaymentSDK.ConstraintRelatableTarget {
+}
+@available(iOS 9.0, macOS 10.11, *)
+extension UIKit.UILayoutGuide : PaymentSDK.ConstraintRelatableTarget {
+}
+public typealias ConstraintView = UIKit.UIView
+extension UIKit.UIView {
+  @available(*, deprecated, renamed: "snp.left")
+  @_Concurrency.MainActor(unsafe) public var snp_left: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.top")
+  @_Concurrency.MainActor(unsafe) public var snp_top: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.right")
+  @_Concurrency.MainActor(unsafe) public var snp_right: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.bottom")
+  @_Concurrency.MainActor(unsafe) public var snp_bottom: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.leading")
+  @_Concurrency.MainActor(unsafe) public var snp_leading: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.trailing")
+  @_Concurrency.MainActor(unsafe) public var snp_trailing: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.width")
+  @_Concurrency.MainActor(unsafe) public var snp_width: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.height")
+  @_Concurrency.MainActor(unsafe) public var snp_height: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.centerX")
+  @_Concurrency.MainActor(unsafe) public var snp_centerX: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.centerY")
+  @_Concurrency.MainActor(unsafe) public var snp_centerY: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.baseline")
+  @_Concurrency.MainActor(unsafe) public var snp_baseline: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, macOS 10.11, *)
+  @available(*, deprecated, renamed: "snp.lastBaseline")
+  @_Concurrency.MainActor(unsafe) public var snp_lastBaseline: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, macOS 10.11, *)
+  @available(iOS, deprecated, renamed: "snp.firstBaseline")
+  @_Concurrency.MainActor(unsafe) public var snp_firstBaseline: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.leftMargin")
+  @_Concurrency.MainActor(unsafe) public var snp_leftMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.topMargin")
+  @_Concurrency.MainActor(unsafe) public var snp_topMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.rightMargin")
+  @_Concurrency.MainActor(unsafe) public var snp_rightMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.bottomMargin")
+  @_Concurrency.MainActor(unsafe) public var snp_bottomMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.leadingMargin")
+  @_Concurrency.MainActor(unsafe) public var snp_leadingMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.trailingMargin")
+  @_Concurrency.MainActor(unsafe) public var snp_trailingMargin: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.centerXWithinMargins")
+  @_Concurrency.MainActor(unsafe) public var snp_centerXWithinMargins: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.centerYWithinMargins")
+  @_Concurrency.MainActor(unsafe) public var snp_centerYWithinMargins: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.edges")
+  @_Concurrency.MainActor(unsafe) public var snp_edges: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.size")
+  @_Concurrency.MainActor(unsafe) public var snp_size: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.center")
+  @_Concurrency.MainActor(unsafe) public var snp_center: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.margins")
+  @_Concurrency.MainActor(unsafe) public var snp_margins: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(iOS 8.0, *)
+  @available(iOS, deprecated, renamed: "snp.centerWithinMargins")
+  @_Concurrency.MainActor(unsafe) public var snp_centerWithinMargins: PaymentSDK.ConstraintItem {
+    get
+  }
+  @available(*, deprecated, renamed: "snp.prepareConstraints(_:)")
+  @_Concurrency.MainActor(unsafe) public func snp_prepareConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void) -> [PaymentSDK.Constraint]
+  @available(*, deprecated, renamed: "snp.makeConstraints(_:)")
+  @_Concurrency.MainActor(unsafe) public func snp_makeConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  @available(*, deprecated, renamed: "snp.remakeConstraints(_:)")
+  @_Concurrency.MainActor(unsafe) public func snp_remakeConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  @available(*, deprecated, renamed: "snp.updateConstraints(_:)")
+  @_Concurrency.MainActor(unsafe) public func snp_updateConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  @available(*, deprecated, renamed: "snp.removeConstraints()")
+  @_Concurrency.MainActor(unsafe) public func snp_removeConstraints()
+  @_Concurrency.MainActor(unsafe) public var snp: PaymentSDK.ConstraintViewDSL {
+    get
+  }
+}
+public struct ConstraintViewDSL : PaymentSDK.ConstraintAttributesDSL {
+  @discardableResult
+  public func prepareConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void) -> [PaymentSDK.Constraint]
+  public func makeConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  public func remakeConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  public func updateConstraints(_ closure: (_ make: PaymentSDK.ConstraintMaker) -> Swift.Void)
+  public func removeConstraints()
+  public var contentHuggingHorizontalPriority: Swift.Float {
+    get
+    nonmutating set
+  }
+  public var contentHuggingVerticalPriority: Swift.Float {
+    get
+    nonmutating set
+  }
+  public var contentCompressionResistanceHorizontalPriority: Swift.Float {
+    get
+    nonmutating set
+  }
+  public var contentCompressionResistanceVerticalPriority: Swift.Float {
+    get
+    nonmutating set
+  }
+  public var target: Swift.AnyObject? {
+    get
+  }
+}
+public struct CreditCardInfo {
+  public let id: Swift.Int?
+  public let number: Swift.String?
+  public let expMonth: Swift.String?
+  public let expYear: Swift.String?
+  public let holderName: Swift.String?
+  public let issuer: Swift.String?
+  public let `default`: Swift.Bool?
+  public let token: Swift.String?
+  public let holderFirstName: Swift.String?
+  public let holderLastName: Swift.String?
+  public let phone: Swift.String?
+}
+extension PaymentSDK.LayoutConstraint {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public var description: Swift.String {
+    @objc get
+  }
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class IQBarButtonItem : UIKit.UIBarButtonItem {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var tintColor: UIKit.UIColor? {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) open func setTarget(_ target: Swift.AnyObject?, action: ObjectiveC.Selector?)
+  @objc @_Concurrency.MainActor(unsafe) open var invocation: PaymentSDK.IQInvocation?
+  @objc deinit
+}
+@objc public class IQInvocation : ObjectiveC.NSObject {
+  @objc weak public var target: Swift.AnyObject?
+  @objc public var action: ObjectiveC.Selector
+  @objc public init(_ target: Swift.AnyObject, _ action: ObjectiveC.Selector)
+  @objc public func invoke(from: Any)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc @_Concurrency.MainActor(unsafe) public class IQKeyboardManager : ObjectiveC.NSObject, UIKit.UIGestureRecognizerDelegate {
+  @objc @_Concurrency.MainActor(unsafe) public var enable: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var keyboardDistanceFromTextField: CoreFoundation.CGFloat {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var keyboardShowing: Swift.Bool {
+    @objc get
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var movedDistance: CoreFoundation.CGFloat {
+    @objc get
+  }
+  @objc @_Concurrency.MainActor(unsafe) public class var shared: PaymentSDK.IQKeyboardManager {
+    @objc get
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var enableAutoToolbar: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarManageBehaviour: PaymentSDK.IQAutoToolbarManageBehaviour
+  @objc @_Concurrency.MainActor(unsafe) public var shouldToolbarUsesTextFieldTintColor: Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarTintColor: UIKit.UIColor?
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarBarTintColor: UIKit.UIColor?
+  @objc @_Concurrency.MainActor(unsafe) public var previousNextDisplayMode: PaymentSDK.IQPreviousNextDisplayMode
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarPreviousBarButtonItemImage: UIKit.UIImage?
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarNextBarButtonItemImage: UIKit.UIImage?
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarDoneBarButtonItemImage: UIKit.UIImage?
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarPreviousBarButtonItemText: Swift.String?
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarNextBarButtonItemText: Swift.String?
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarDoneBarButtonItemText: Swift.String?
+  @objc @_Concurrency.MainActor(unsafe) public var shouldShowToolbarPlaceholder: Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public var placeholderFont: UIKit.UIFont?
+  @objc @_Concurrency.MainActor(unsafe) public var placeholderColor: UIKit.UIColor?
+  @objc @_Concurrency.MainActor(unsafe) public var placeholderButtonColor: UIKit.UIColor?
+  @objc @_Concurrency.MainActor(unsafe) public var overrideKeyboardAppearance: Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public var keyboardAppearance: UIKit.UIKeyboardAppearance
+  @objc @_Concurrency.MainActor(unsafe) public var shouldResignOnTouchOutside: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var resignFirstResponderGesture: UIKit.UITapGestureRecognizer {
+    @objc get
+    @objc set
+  }
+  @discardableResult
+  @objc @_Concurrency.MainActor(unsafe) public func resignFirstResponder() -> Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public var canGoPrevious: Swift.Bool {
+    @objc get
+  }
+  @objc @_Concurrency.MainActor(unsafe) public var canGoNext: Swift.Bool {
+    @objc get
+  }
+  @discardableResult
+  @objc @_Concurrency.MainActor(unsafe) public func goPrevious() -> Swift.Bool
+  @discardableResult
+  @objc @_Concurrency.MainActor(unsafe) public func goNext() -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func gestureRecognizer(_ gestureRecognizer: UIKit.UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIKit.UIGestureRecognizer) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func gestureRecognizer(_ gestureRecognizer: UIKit.UIGestureRecognizer, shouldReceive touch: UIKit.UITouch) -> Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public var shouldPlayInputClicks: Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public var layoutIfNeededOnUpdate: Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public var disabledDistanceHandlingClasses: [UIKit.UIViewController.Type]
+  @objc @_Concurrency.MainActor(unsafe) public var enabledDistanceHandlingClasses: [UIKit.UIViewController.Type]
+  @objc @_Concurrency.MainActor(unsafe) public var disabledToolbarClasses: [UIKit.UIViewController.Type]
+  @objc @_Concurrency.MainActor(unsafe) public var enabledToolbarClasses: [UIKit.UIViewController.Type]
+  @objc @_Concurrency.MainActor(unsafe) public var toolbarPreviousNextAllowedClasses: [UIKit.UIView.Type]
+  @objc @_Concurrency.MainActor(unsafe) public var disabledTouchResignedClasses: [UIKit.UIViewController.Type]
+  @objc @_Concurrency.MainActor(unsafe) public var enabledTouchResignedClasses: [UIKit.UIViewController.Type]
+  @objc @_Concurrency.MainActor(unsafe) public var touchResignedGestureIgnoreClasses: [UIKit.UIView.Type]
+  @objc @_Concurrency.MainActor(unsafe) public func registerTextFieldViewClass(_ aClass: UIKit.UIView.Type, didBeginEditingNotificationName: Swift.String, didEndEditingNotificationName: Swift.String)
+  @objc @_Concurrency.MainActor(unsafe) public func unregisterTextFieldViewClass(_ aClass: UIKit.UIView.Type, didBeginEditingNotificationName: Swift.String, didEndEditingNotificationName: Swift.String)
+  @objc deinit
+  @objc @_Concurrency.MainActor(unsafe) public func reloadLayoutIfNeeded()
+  @objc @_Concurrency.MainActor(unsafe) public func reloadInputViews()
+  @objc @_Concurrency.MainActor(unsafe) public var enableDebugging: Swift.Bool
+  @objc @_Concurrency.MainActor(unsafe) public func registerAllNotifications()
+  @objc @_Concurrency.MainActor(unsafe) public func unregisterAllNotifications()
+}
+@objc public enum IQAutoToolbarManageBehaviour : Swift.Int {
+  case bySubviews
+  case byTag
+  case byPosition
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum IQPreviousNextDisplayMode : Swift.Int {
+  case Default
+  case alwaysHide
+  case alwaysShow
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public enum IQEnableMode : Swift.Int {
+  case Default
+  case enabled
+  case disabled
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class IQKeyboardReturnKeyHandler : ObjectiveC.NSObject, UIKit.UITextFieldDelegate, UIKit.UITextViewDelegate {
+  @objc @_Concurrency.MainActor(unsafe) weak public var delegate: (any UIKit.UITextFieldDelegate & UIKit.UITextViewDelegate)?
+  @objc @_Concurrency.MainActor(unsafe) public var lastTextFieldReturnKeyType: UIKit.UIReturnKeyType {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @objc @_Concurrency.MainActor(unsafe) public init(controller: UIKit.UIViewController)
+  @objc deinit
+  @objc @_Concurrency.MainActor(unsafe) public func addTextFieldView(_ view: UIKit.UIView)
+  @objc @_Concurrency.MainActor(unsafe) public func removeTextFieldView(_ view: UIKit.UIView)
+  @objc @_Concurrency.MainActor(unsafe) public func addResponderFromView(_ view: UIKit.UIView)
+  @objc @_Concurrency.MainActor(unsafe) public func removeResponderFromView(_ view: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldShouldBeginEditing(_ textField: UIKit.UITextField) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldShouldEndEditing(_ textField: UIKit.UITextField) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldDidBeginEditing(_ textField: UIKit.UITextField)
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldDidEndEditing(_ textField: UIKit.UITextField)
+  @available(iOS 10.0, *)
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldDidEndEditing(_ textField: UIKit.UITextField, reason: UIKit.UITextFieldDidEndEditingReason)
+  @_Concurrency.MainActor(unsafe) @objc public func textField(_ textField: UIKit.UITextField, shouldChangeCharactersIn range: Foundation.NSRange, replacementString string: Swift.String) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldShouldClear(_ textField: UIKit.UITextField) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textFieldShouldReturn(_ textField: UIKit.UITextField) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textViewShouldBeginEditing(_ textView: UIKit.UITextView) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textViewShouldEndEditing(_ textView: UIKit.UITextView) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textViewDidBeginEditing(_ textView: UIKit.UITextView)
+  @_Concurrency.MainActor(unsafe) @objc public func textViewDidEndEditing(_ textView: UIKit.UITextView)
+  @_Concurrency.MainActor(unsafe) @objc public func textView(_ textView: UIKit.UITextView, shouldChangeTextIn range: Foundation.NSRange, replacementText text: Swift.String) -> Swift.Bool
+  @_Concurrency.MainActor(unsafe) @objc public func textViewDidChange(_ textView: UIKit.UITextView)
+  @_Concurrency.MainActor(unsafe) @objc public func textViewDidChangeSelection(_ textView: UIKit.UITextView)
+  @available(iOS 10.0, *)
+  @_Concurrency.MainActor(unsafe) @objc public func textView(_ aTextView: UIKit.UITextView, shouldInteractWith URL: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
+  @available(iOS 10.0, *)
+  @_Concurrency.MainActor(unsafe) @objc public func textView(_ aTextView: UIKit.UITextView, shouldInteractWith textAttachment: UIKit.NSTextAttachment, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
+  @available(iOS, deprecated: 10.0)
+  @_Concurrency.MainActor(unsafe) @objc public func textView(_ aTextView: UIKit.UITextView, shouldInteractWith URL: Foundation.URL, in characterRange: Foundation.NSRange) -> Swift.Bool
+  @available(iOS, deprecated: 10.0)
+  @_Concurrency.MainActor(unsafe) @objc public func textView(_ aTextView: UIKit.UITextView, shouldInteractWith textAttachment: UIKit.NSTextAttachment, in characterRange: Foundation.NSRange) -> Swift.Bool
+}
+@_inheritsConvenienceInitializers @objc @_Concurrency.MainActor(unsafe) public class IQPreviousNextView : UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class IQTextView : UIKit.UITextView {
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect, textContainer: UIKit.NSTextContainer?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func awakeFromNib()
+  @objc deinit
+  @objc @IBInspectable @_Concurrency.MainActor(unsafe) open var placeholderTextColor: UIKit.UIColor? {
+    @objc get
+    @objc set
+  }
+  @objc @IBInspectable @_Concurrency.MainActor(unsafe) open var placeholder: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) open var attributedPlaceholder: Foundation.NSAttributedString? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var text: Swift.String! {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var attributedText: Foundation.NSAttributedString! {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var font: UIKit.UIFont? {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var textAlignment: UIKit.NSTextAlignment {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var delegate: (any UIKit.UITextViewDelegate)? {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var intrinsicContentSize: CoreFoundation.CGSize {
+    @objc get
+  }
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class IQTitleBarButtonItem : PaymentSDK.IQBarButtonItem {
+  @objc @_Concurrency.MainActor(unsafe) open var titleFont: UIKit.UIFont? {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var title: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) open var titleColor: UIKit.UIColor? {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) open var selectableTitleColor: UIKit.UIColor? {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override open var invocation: PaymentSDK.IQInvocation? {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor(unsafe) convenience public init(title: Swift.String?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) open class IQToolbar : UIKit.UIToolbar, UIKit.UIInputViewAudioFeedback {
+  @objc @_Concurrency.MainActor(unsafe) open var previousBarButton: PaymentSDK.IQBarButtonItem {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) open var nextBarButton: PaymentSDK.IQBarButtonItem {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) open var titleBarButton: PaymentSDK.IQTitleBarButtonItem {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) open var doneBarButton: PaymentSDK.IQBarButtonItem {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) open var fixedSpaceBarButton: PaymentSDK.IQBarButtonItem {
+    @objc get
+    @objc set(newValue)
+  }
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func sizeThatFits(_ size: CoreFoundation.CGSize) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var tintColor: UIKit.UIColor! {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var barStyle: UIKit.UIBarStyle {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
+  @_Concurrency.MainActor(unsafe) @objc open var enableInputClicksWhenVisible: Swift.Bool {
+    @objc get
+  }
+  @objc deinit
+}
+@objc extension UIKit.UIScrollView {
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var shouldIgnoreScrollingAdjustment: Swift.Bool {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var shouldRestoreScrollViewContentOffset: Swift.Bool {
+    @objc get
+    @objc set(newValue)
+  }
+}
+public let kIQUseDefaultKeyboardDistance: CoreFoundation.CGFloat
+@objc extension UIKit.UIView {
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var keyboardDistanceFromTextField: CoreFoundation.CGFloat {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var ignoreSwitchingByNextPrevious: Swift.Bool {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var shouldResignOnTouchOutsideMode: PaymentSDK.IQEnableMode {
+    @objc get
+    @objc set(newValue)
+  }
+}
+@objc extension UIKit.UIView {
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func viewContainingController() -> UIKit.UIViewController?
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func topMostController() -> UIKit.UIViewController?
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func parentContainerViewController() -> UIKit.UIViewController?
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func superviewOfClassType(_ classType: UIKit.UIView.Type, belowView: UIKit.UIView? = nil) -> UIKit.UIView?
+}
+@objc extension UIKit.UIViewController {
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func parentIQContainerViewController() -> UIKit.UIViewController?
+}
+@objc public class IQBarButtonItemConfiguration : ObjectiveC.NSObject {
+  @objc public init(barButtonSystemItem: UIKit.UIBarButtonSystemItem, action: ObjectiveC.Selector)
+  @objc public init(image: UIKit.UIImage, action: ObjectiveC.Selector)
+  @objc public init(title: Swift.String, action: ObjectiveC.Selector)
+  final public let barButtonSystemItem: UIKit.UIBarButtonSystemItem?
+  @objc final public let image: UIKit.UIImage?
+  @objc final public let title: Swift.String?
+  @objc final public let action: ObjectiveC.Selector?
+  @objc deinit
+}
+@objc extension UIKit.UIImage {
+  @objc public static func keyboardPreviousiOS9Image() -> UIKit.UIImage?
+  @objc public static func keyboardNextiOS9Image() -> UIKit.UIImage?
+  @objc public static func keyboardPreviousiOS10Image() -> UIKit.UIImage?
+  @objc public static func keyboardNextiOS10Image() -> UIKit.UIImage?
+  @objc public static func keyboardPreviousImage() -> UIKit.UIImage?
+  @objc public static func keyboardNextImage() -> UIKit.UIImage?
+}
+@objc extension UIKit.UIView {
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var keyboardToolbar: PaymentSDK.IQToolbar {
+    @objc get
+  }
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var shouldHideToolbarPlaceholder: Swift.Bool {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var toolbarPlaceholder: Swift.String? {
+    @objc get
+    @objc set(newValue)
+  }
+  @objc @_Concurrency.MainActor(unsafe) dynamic public var drawingToolbarPlaceholder: Swift.String? {
+    @objc get
+  }
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addKeyboardToolbarWithTarget(target: Swift.AnyObject?, titleText: Swift.String?, rightBarButtonConfiguration: PaymentSDK.IQBarButtonItemConfiguration?, previousBarButtonConfiguration: PaymentSDK.IQBarButtonItemConfiguration? = nil, nextBarButtonConfiguration: PaymentSDK.IQBarButtonItemConfiguration? = nil)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addDoneOnKeyboardWithTarget(_ target: Swift.AnyObject?, action: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addDoneOnKeyboardWithTarget(_ target: Swift.AnyObject?, action: ObjectiveC.Selector, titleText: Swift.String?)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addRightButtonOnKeyboardWithImage(_ image: UIKit.UIImage, target: Swift.AnyObject?, action: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addRightButtonOnKeyboardWithImage(_ image: UIKit.UIImage, target: Swift.AnyObject?, action: ObjectiveC.Selector, titleText: Swift.String?)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addRightButtonOnKeyboardWithText(_ text: Swift.String, target: Swift.AnyObject?, action: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addRightButtonOnKeyboardWithText(_ text: Swift.String, target: Swift.AnyObject?, action: ObjectiveC.Selector, titleText: Swift.String?)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addCancelDoneOnKeyboardWithTarget(_ target: Swift.AnyObject?, cancelAction: ObjectiveC.Selector, doneAction: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addRightLeftOnKeyboardWithTarget(_ target: Swift.AnyObject?, leftButtonTitle: Swift.String, rightButtonTitle: Swift.String, leftButtonAction: ObjectiveC.Selector, rightButtonAction: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addRightLeftOnKeyboardWithTarget(_ target: Swift.AnyObject?, leftButtonImage: UIKit.UIImage, rightButtonImage: UIKit.UIImage, leftButtonAction: ObjectiveC.Selector, rightButtonAction: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addCancelDoneOnKeyboardWithTarget(_ target: Swift.AnyObject?, cancelAction: ObjectiveC.Selector, doneAction: ObjectiveC.Selector, titleText: Swift.String?)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addRightLeftOnKeyboardWithTarget(_ target: Swift.AnyObject?, leftButtonTitle: Swift.String, rightButtonTitle: Swift.String, leftButtonAction: ObjectiveC.Selector, rightButtonAction: ObjectiveC.Selector, titleText: Swift.String?)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addRightLeftOnKeyboardWithTarget(_ target: Swift.AnyObject?, leftButtonImage: UIKit.UIImage, rightButtonImage: UIKit.UIImage, leftButtonAction: ObjectiveC.Selector, rightButtonAction: ObjectiveC.Selector, titleText: Swift.String?)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addPreviousNextDoneOnKeyboardWithTarget(_ target: Swift.AnyObject?, previousAction: ObjectiveC.Selector, nextAction: ObjectiveC.Selector, doneAction: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addPreviousNextRightOnKeyboardWithTarget(_ target: Swift.AnyObject?, rightButtonImage: UIKit.UIImage, previousAction: ObjectiveC.Selector, nextAction: ObjectiveC.Selector, rightButtonAction: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addPreviousNextRightOnKeyboardWithTarget(_ target: Swift.AnyObject?, rightButtonTitle: Swift.String, previousAction: ObjectiveC.Selector, nextAction: ObjectiveC.Selector, rightButtonAction: ObjectiveC.Selector, shouldShowPlaceholder: Swift.Bool = false)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addPreviousNextDoneOnKeyboardWithTarget(_ target: Swift.AnyObject?, previousAction: ObjectiveC.Selector, nextAction: ObjectiveC.Selector, doneAction: ObjectiveC.Selector, titleText: Swift.String?)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addPreviousNextRightOnKeyboardWithTarget(_ target: Swift.AnyObject?, rightButtonImage: UIKit.UIImage, previousAction: ObjectiveC.Selector, nextAction: ObjectiveC.Selector, rightButtonAction: ObjectiveC.Selector, titleText: Swift.String?)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func addPreviousNextRightOnKeyboardWithTarget(_ target: Swift.AnyObject?, rightButtonTitle: Swift.String, previousAction: ObjectiveC.Selector, nextAction: ObjectiveC.Selector, rightButtonAction: ObjectiveC.Selector, titleText: Swift.String?)
+}
+@objc extension UIKit.UIViewController {
+  @available(*, deprecated, message: "Due to change in core-logic of handling distance between textField and keyboard distance, this layout contraint tweak is no longer needed and things will just work out of the box regardless of constraint pinned with safeArea/layoutGuide/superview.")
+  @IBOutlet @objc @_Concurrency.MainActor(unsafe) dynamic public var IQLayoutGuideConstraint: UIKit.NSLayoutConstraint? {
+    @objc get
+    @objc set(newValue)
+  }
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class LayoutConstraint : UIKit.NSLayoutConstraint {
+  @_Concurrency.MainActor(unsafe) public var label: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init()
+  @objc deinit
+}
+public protocol LayoutConstraintItem : AnyObject {
+}
+@available(iOS 9.0, macOS 10.11, *)
+extension UIKit.UILayoutGuide : PaymentSDK.LayoutConstraintItem {
+}
+extension UIKit.UIView : PaymentSDK.LayoutConstraintItem {
+}
+public enum Locale : Swift.String {
+  case zh_CN, zh_HK, en_US
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class PaymentConfig {
+  public var businessId: Swift.String
+  public var source: Swift.String
+  public var token: Swift.String
+  public var scheme: Swift.String
+  public var environment: PaymentSDK.PaymentEnvironment
+  public var locale: PaymentSDK.Locale
+  @objc deinit
+}
+public enum PaymentEnvironment {
+  case staging, alpha, production
+  public static func == (a: PaymentSDK.PaymentEnvironment, b: PaymentSDK.PaymentEnvironment) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public class PaymentIntent {
+  public var amount: Swift.Double
+  public var currency: Swift.String
+  public var orderNumber: Swift.String
+  public var paymentMethod: PaymentSDK.PaymentMethod?
+  public var transactionType: PaymentSDK.TransactionType
+  public init(amount: Swift.Double, currency: Swift.String, orderNumber: Swift.String, paymentMethod: PaymentSDK.PaymentMethod? = nil, transactionType: PaymentSDK.TransactionType = .sale)
+  @objc deinit
+}
+public enum PaymentMethodType : Swift.String {
+  case creditCard, applePay, unionPay, wechat, alipayHK, alipay, fps, octopus
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public class PaymentMethod {
+  public var type: PaymentSDK.PaymentMethodType
+  public var arguments: Any?
+  public init(type: PaymentSDK.PaymentMethodType, arguments: Any? = nil)
+  @objc deinit
+}
+public enum PaymentResultStatus {
+  case completed, canceled, failed
+  public static func == (a: PaymentSDK.PaymentResultStatus, b: PaymentSDK.PaymentResultStatus) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public class PaymentResult {
+  public var status: PaymentSDK.PaymentResultStatus {
+    get
+  }
+  public var code: Swift.String? {
+    get
+  }
+  public var message: Swift.String? {
+    get
+  }
+  public init(status: PaymentSDK.PaymentResultStatus, code: Swift.String? = nil, message: Swift.String? = nil)
+  @objc deinit
+}
+public enum TGOrientation {
+  case vert
+  case horz
+  public static func == (a: PaymentSDK.TGOrientation, b: PaymentSDK.TGOrientation) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum TGVisibility {
+  case visible
+  case invisible
+  case gone
+  public static func == (a: PaymentSDK.TGVisibility, b: PaymentSDK.TGVisibility) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct TGGravity : Swift.OptionSet {
+  public let rawValue: Swift.Int
+  public init(rawValue: Swift.Int)
+  public static let none: PaymentSDK.TGGravity
+  public struct horz {
+    public static let left: PaymentSDK.TGGravity
+    public static let center: PaymentSDK.TGGravity
+    public static let right: PaymentSDK.TGGravity
+    public static let windowCenter: PaymentSDK.TGGravity
+    public static let between: PaymentSDK.TGGravity
+    public static let leading: PaymentSDK.TGGravity
+    public static let trailing: PaymentSDK.TGGravity
+    public static let around: PaymentSDK.TGGravity
+    public static let among: PaymentSDK.TGGravity
+    public static let fill: PaymentSDK.TGGravity
+    public static let mask: PaymentSDK.TGGravity
+  }
+  public struct vert {
+    public static let top: PaymentSDK.TGGravity
+    public static let center: PaymentSDK.TGGravity
+    public static let bottom: PaymentSDK.TGGravity
+    public static let windowCenter: PaymentSDK.TGGravity
+    public static let between: PaymentSDK.TGGravity
+    public static let fill: PaymentSDK.TGGravity
+    public static let baseline: PaymentSDK.TGGravity
+    public static let around: PaymentSDK.TGGravity
+    public static let among: PaymentSDK.TGGravity
+    public static let mask: PaymentSDK.TGGravity
+  }
+  public static let center: PaymentSDK.TGGravity
+  public static let fill: PaymentSDK.TGGravity
+  public static let between: PaymentSDK.TGGravity
+  public static let around: PaymentSDK.TGGravity
+  public static let among: PaymentSDK.TGGravity
+  public typealias ArrayLiteralElement = PaymentSDK.TGGravity
+  public typealias Element = PaymentSDK.TGGravity
+  public typealias RawValue = Swift.Int
+}
+public func & (left: PaymentSDK.TGGravity, right: PaymentSDK.TGGravity) -> PaymentSDK.TGGravity
+public func > (left: PaymentSDK.TGGravity, right: PaymentSDK.TGGravity) -> Swift.Bool
+public enum TGGravityPolicy {
+  case no
+  case always
+  case auto
+  public static func == (a: PaymentSDK.TGGravityPolicy, b: PaymentSDK.TGGravityPolicy) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct TGSubviewsShrinkType : Swift.OptionSet {
+  public let rawValue: Swift.Int
+  public init(rawValue: Swift.Int)
+  public static let none: PaymentSDK.TGSubviewsShrinkType
+  public static let average: PaymentSDK.TGSubviewsShrinkType
+  public static let weight: PaymentSDK.TGSubviewsShrinkType
+  public static let auto: PaymentSDK.TGSubviewsShrinkType
+  public static let size: PaymentSDK.TGSubviewsShrinkType
+  public static let space: PaymentSDK.TGSubviewsShrinkType
+  public typealias ArrayLiteralElement = PaymentSDK.TGSubviewsShrinkType
+  public typealias Element = PaymentSDK.TGSubviewsShrinkType
+  public typealias RawValue = Swift.Int
+}
+public struct TGWeight : Any {
+  public static let zeroWeight: PaymentSDK.TGWeight
+  public init(_ value: Swift.Int8)
+  public init(_ value: Swift.Int16)
+  public init(_ value: Swift.Int32)
+  public init(_ value: Swift.Int64)
+  public init(_ value: Swift.Int)
+  public init(_ value: Swift.UInt)
+  public init(_ value: Swift.Double)
+  public init(_ value: Swift.Float)
+  public init(_ value: CoreFoundation.CGFloat)
+  public init(_ value: PaymentSDK.TGWeight)
+}
+extension PaymentSDK.TGWeight : Swift.Equatable {
+}
+public func != (lhs: PaymentSDK.TGWeight, rhs: PaymentSDK.TGWeight) -> Swift.Bool
+public func == (lhs: PaymentSDK.TGWeight, rhs: PaymentSDK.TGWeight) -> Swift.Bool
+public func += (lhs: inout PaymentSDK.TGWeight, rhs: PaymentSDK.TGWeight)
+public func -= (lhs: inout PaymentSDK.TGWeight, rhs: PaymentSDK.TGWeight)
+public func + (lhs: PaymentSDK.TGWeight, rhs: PaymentSDK.TGWeight) -> PaymentSDK.TGWeight
+postfix operator %
+postfix public func % (val: CoreFoundation.CGFloat) -> PaymentSDK.TGWeight
+postfix public func % (val: Swift.Int) -> PaymentSDK.TGWeight
+public enum TGAdjustScrollViewContentSizeMode {
+  case auto
+  case no
+  case yes
+  public static func == (a: PaymentSDK.TGAdjustScrollViewContentSizeMode, b: PaymentSDK.TGAdjustScrollViewContentSizeMode) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension UIKit.UIView : PaymentSDK.TGViewSizeClass {
+  @_Concurrency.MainActor(unsafe) public var tg_top: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_leading: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_bottom: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_trailing: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_centerX: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_centerY: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_left: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_right: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_baseline: PaymentSDK.TGLayoutPos {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_width: PaymentSDK.TGLayoutSize {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_height: PaymentSDK.TGLayoutSize {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_useFrame: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_noLayout: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_visibility: PaymentSDK.TGVisibility {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_alignment: PaymentSDK.TGGravity {
+    get
+    set
+  }
+}
+extension UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public func tg_origin(_ point: CoreFoundation.CGPoint)
+  @_Concurrency.MainActor(unsafe) public func tg_origin(x: any PaymentSDK.TGLayoutPosType, y: any PaymentSDK.TGLayoutPosType)
+  @_Concurrency.MainActor(unsafe) public func tg_end(_ point: CoreFoundation.CGPoint)
+  @_Concurrency.MainActor(unsafe) public func tg_end(x: any PaymentSDK.TGLayoutPosType, y: any PaymentSDK.TGLayoutPosType)
+  @_Concurrency.MainActor(unsafe) public func tg_size(_ size: CoreFoundation.CGSize)
+  @_Concurrency.MainActor(unsafe) public func tg_size(width: PaymentSDK.TGLayoutSize, height: PaymentSDK.TGLayoutSize)
+  @_Concurrency.MainActor(unsafe) public func tg_size(width: any PaymentSDK.TGLayoutSizeType, height: PaymentSDK.TGLayoutSize)
+  @_Concurrency.MainActor(unsafe) public func tg_size(width: PaymentSDK.TGLayoutSize, height: any PaymentSDK.TGLayoutSizeType)
+  @_Concurrency.MainActor(unsafe) public func tg_size(width: any PaymentSDK.TGLayoutSizeType, height: any PaymentSDK.TGLayoutSizeType)
+  @_Concurrency.MainActor(unsafe) public func tg_size(_ sideLength: PaymentSDK.TGLayoutSize)
+  @_Concurrency.MainActor(unsafe) public func tg_size(_ sideLength: any PaymentSDK.TGLayoutSizeType)
+  @_Concurrency.MainActor(unsafe) public func tg_margin(_ val: CoreFoundation.CGFloat)
+  @_Concurrency.MainActor(unsafe) public func tg_horzMargin(_ val: CoreFoundation.CGFloat)
+  @_Concurrency.MainActor(unsafe) public func tg_vertMargin(_ val: CoreFoundation.CGFloat)
+  @_Concurrency.MainActor(unsafe) public var tg_estimatedFrame: CoreFoundation.CGRect {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public func tg_layoutCompletedDo(_ action: ((_ layout: PaymentSDK.TGBaseLayout, _ view: UIKit.UIView) -> Swift.Void)?)
+  @_Concurrency.MainActor(unsafe) public func tg_clearLayout(inSizeClass type: PaymentSDK.TGSizeClassType = .default)
+  @_Concurrency.MainActor(unsafe) public func tg_fetchSizeClass(with type: PaymentSDK.TGSizeClassType, from srcType: PaymentSDK.TGSizeClassType! = nil) -> any PaymentSDK.TGViewSizeClass
+}
+public class TGBorderline {
+  public init(color: UIKit.UIColor, thick: CoreFoundation.CGFloat = 1, dash: CoreFoundation.CGFloat = 0, headIndent: CoreFoundation.CGFloat = 0, tailIndent: CoreFoundation.CGFloat = 0, offset: CoreFoundation.CGFloat = 0)
+  public var color: UIKit.UIColor
+  public var thick: CoreFoundation.CGFloat
+  public var headIndent: CoreFoundation.CGFloat
+  public var tailIndent: CoreFoundation.CGFloat
+  public var dash: CoreFoundation.CGFloat
+  public var offset: CoreFoundation.CGFloat
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class TGBaseLayout : UIKit.UIView, PaymentSDK.TGLayoutViewSizeClass {
+  @_Concurrency.MainActor(unsafe) public static var tg_isRTL: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public static func tg_updateRTL(_ isRTL: Swift.Bool, inWindow window: UIKit.UIWindow)
+  @_Concurrency.MainActor(unsafe) public var tg_padding: UIKit.UIEdgeInsets {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_topPadding: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_leadingPadding: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_bottomPadding: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_trailingPadding: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_leftPadding: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_rightPadding: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_zeroPadding: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_insetsPaddingFromSafeArea: UIKit.UIRectEdge {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_insetLandscapeFringePadding: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_space: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_vspace: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_hspace: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_reverseLayout: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_gravity: PaymentSDK.TGGravity {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_layoutTransform: CoreFoundation.CGAffineTransform {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_adjustScrollViewContentSizeMode: PaymentSDK.TGAdjustScrollViewContentSizeMode
+  @_Concurrency.MainActor(unsafe) public var tg_priorAutoresizingMask: Swift.Bool
+  @_Concurrency.MainActor(unsafe) public var tg_isLayouting: Swift.Bool {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) open var isSelected: Swift.Bool
+  @_Concurrency.MainActor(unsafe) public func tg_removeAllSubviews()
+  @_Concurrency.MainActor(unsafe) public func tg_layoutAnimationWithDuration(_ duration: Foundation.TimeInterval)
+  @_Concurrency.MainActor(unsafe) public func tg_sizeThatFits(_ size: CoreFoundation.CGSize = CGSize.zero, inSizeClass type: PaymentSDK.TGSizeClassType = TGSizeClassType.default) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor(unsafe) public var tg_cacheEstimatedRect: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public func tg_estimatedFrame(of subview: UIKit.UIView, inLayoutSize size: CoreFoundation.CGSize = CGSize.zero) -> CoreFoundation.CGRect
+  @_Concurrency.MainActor(unsafe) public func tg_beginLayoutDo(_ action: (() -> Swift.Void)?)
+  @_Concurrency.MainActor(unsafe) public func tg_endLayoutDo(_ action: (() -> Swift.Void)?)
+  @_Concurrency.MainActor(unsafe) public func tg_rotationToDeviceOrientationDo(_ action: ((_ layout: PaymentSDK.TGBaseLayout, _ isFirst: Swift.Bool, _ isPortrait: Swift.Bool) -> Swift.Void)?)
+  @_Concurrency.MainActor(unsafe) public var tg_topBorderline: PaymentSDK.TGBorderline! {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_leadingBorderline: PaymentSDK.TGBorderline! {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_bottomBorderline: PaymentSDK.TGBorderline! {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_trailingBorderline: PaymentSDK.TGBorderline! {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_leftBorderline: PaymentSDK.TGBorderline! {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_rightBorderline: PaymentSDK.TGBorderline! {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_boundBorderline: PaymentSDK.TGBorderline! {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_intelligentBorderline: PaymentSDK.TGBorderline!
+  @_Concurrency.MainActor(unsafe) public var tg_notUseIntelligentBorderline: Swift.Bool
+  @_Concurrency.MainActor(unsafe) public func tg_setTarget(_ target: (any ObjectiveC.NSObjectProtocol)?, action: ObjectiveC.Selector?, for controlEvents: UIKit.UIControlEvents)
+  @_Concurrency.MainActor(unsafe) public var tg_highlightedBackgroundColor: UIKit.UIColor!
+  @_Concurrency.MainActor(unsafe) public var tg_highlightedOpacity: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public var tg_backgroundImage: UIKit.UIImage! {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_highlightedBackgroundImage: UIKit.UIImage!
+  @objc deinit
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func safeAreaInsetsDidChange()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func setNeedsLayout()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var intrinsicContentSize: CoreFoundation.CGSize {
+    @objc get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func layoutSubviews()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func traitCollectionDidChange(_ previousTraitCollection: UIKit.UITraitCollection?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func sizeThatFits(_ size: CoreFoundation.CGSize) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open var isHidden: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func awakeFromNib()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func didAddSubview(_ subview: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func willRemoveSubview(_ subview: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func willMove(toSuperview newSuperview: UIKit.UIView?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func observeValue(forKeyPath keyPath: Swift.String?, of object: Any?, change: [Foundation.NSKeyValueChangeKey : Any]?, context: Swift.UnsafeMutableRawPointer?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesBegan(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesMoved(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesEnded(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func touchesCancelled(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+}
+@_hasMissingDesignatedInitializers public class TGDimeAdapter {
+  public class func template(_ size: CoreFoundation.CGSize)
+  public class func size(_ val: CoreFoundation.CGFloat) -> CoreFoundation.CGFloat
+  public class func width(_ val: CoreFoundation.CGFloat) -> CoreFoundation.CGFloat
+  public class func height(_ val: CoreFoundation.CGFloat) -> CoreFoundation.CGFloat
+  public class func round(_ val: CoreFoundation.CGFloat) -> CoreFoundation.CGFloat
+  public class func round(_ val: CoreFoundation.CGPoint) -> CoreFoundation.CGPoint
+  public class func round(_ val: CoreFoundation.CGSize) -> CoreFoundation.CGSize
+  public class func round(_ val: CoreFoundation.CGRect) -> CoreFoundation.CGRect
+  @objc deinit
+}
+extension UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) public var tg_reverseFloat: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_clearFloat: Swift.Bool {
+    get
+    set
+  }
+}
+@objc @_Concurrency.MainActor(unsafe) open class TGFloatLayout : PaymentSDK.TGBaseLayout, PaymentSDK.TGFloatLayoutViewSizeClass {
+  @_Concurrency.MainActor(unsafe) convenience public init(_ orientation: PaymentSDK.TGOrientation = TGOrientation.vert)
+  @_Concurrency.MainActor(unsafe) public init(frame: CoreFoundation.CGRect, orientation: PaymentSDK.TGOrientation = TGOrientation.vert)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) public var tg_orientation: PaymentSDK.TGOrientation {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_noBoundaryLimit: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public func tg_setSubviews(size: CoreFoundation.CGFloat, minSpace: CoreFoundation.CGFloat, maxSpace: CoreFoundation.CGFloat = CGFloat.greatestFiniteMagnitude, centered: Swift.Bool = false, inSizeClass type: PaymentSDK.TGSizeClassType = TGSizeClassType.default)
+  @objc deinit
+}
+@objc @_Concurrency.MainActor(unsafe) open class TGFlowLayout : PaymentSDK.TGBaseLayout, PaymentSDK.TGFlowLayoutViewSizeClass {
+  @_Concurrency.MainActor(unsafe) convenience public init(_ orientation: PaymentSDK.TGOrientation = TGOrientation.vert, arrangedCount: Swift.Int = 0)
+  @_Concurrency.MainActor(unsafe) public init(frame: CoreFoundation.CGRect, orientation: PaymentSDK.TGOrientation = TGOrientation.vert, arrangedCount: Swift.Int = 0)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) public var tg_orientation: PaymentSDK.TGOrientation {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_arrangedCount: Swift.Int {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_pagedCount: Swift.Int {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_autoArrange: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_arrangedGravity: PaymentSDK.TGGravity {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_lastlineGravityPolicy: PaymentSDK.TGGravityPolicy {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public func tg_setSubviews(size: CoreFoundation.CGFloat, minSpace: CoreFoundation.CGFloat, maxSpace: CoreFoundation.CGFloat = CGFloat.greatestFiniteMagnitude, centered: Swift.Bool = false, inSizeClass type: PaymentSDK.TGSizeClassType = TGSizeClassType.default)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class TGFrameLayout : PaymentSDK.TGBaseLayout, PaymentSDK.TGFrameLayoutViewSizeClass {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public protocol TGLayoutPosType {
+}
+extension CoreFoundation.CGFloat : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.Double : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.Float : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.Int : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.Int8 : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.Int16 : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.Int32 : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.Int64 : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.UInt : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.UInt8 : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.UInt16 : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.UInt32 : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.UInt64 : PaymentSDK.TGLayoutPosType {
+}
+extension PaymentSDK.TGWeight : PaymentSDK.TGLayoutPosType {
+}
+extension Swift.Array : PaymentSDK.TGLayoutPosType {
+}
+extension PaymentSDK.TGLayoutPos : PaymentSDK.TGLayoutPosType {
+}
+extension UIKit.UIView : PaymentSDK.TGLayoutPosType {
+}
+final public class TGLayoutPos {
+  public static var tg_safeAreaMargin: CoreFoundation.CGFloat {
+    get
+  }
+  @discardableResult
+  final public func equal(_ origin: Swift.Int, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func equal(_ origin: CoreFoundation.CGFloat, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func equal(_ weight: PaymentSDK.TGWeight, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func equal(_ array: [PaymentSDK.TGLayoutPos], offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func equal(_ view: UIKit.UIView, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func equal(_ pos: PaymentSDK.TGLayoutPos!, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func equal(_ pos: any UIKit.UILayoutSupport, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func offset(_ val: CoreFoundation.CGFloat) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func min(_ val: CoreFoundation.CGFloat, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func min(_ val: PaymentSDK.TGLayoutPos!, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func max(_ val: CoreFoundation.CGFloat, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func max(_ val: PaymentSDK.TGLayoutPos!, offset: CoreFoundation.CGFloat = 0) -> PaymentSDK.TGLayoutPos
+  @discardableResult
+  final public func and() -> UIKit.UIView
+  final public func clear()
+  final public var isActive: Swift.Bool {
+    get
+    set
+  }
+  final public var hasValue: Swift.Bool {
+    get
+  }
+  final public var numberVal: CoreFoundation.CGFloat! {
+    get
+  }
+  final public var weightVal: PaymentSDK.TGWeight! {
+    get
+  }
+  final public var posVal: PaymentSDK.TGLayoutPos! {
+    get
+  }
+  final public var arrayVal: [PaymentSDK.TGLayoutPos]! {
+    get
+  }
+  final public var offset: CoreFoundation.CGFloat {
+    get
+  }
+  final public var min: PaymentSDK.TGLayoutPos {
+    get
+  }
+  final public var max: PaymentSDK.TGLayoutPos {
+    get
+  }
+  public init(_ type: PaymentSDK.TGGravity, view: UIKit.UIView!)
+  @objc deinit
+}
+extension PaymentSDK.TGLayoutPos : Foundation.NSCopying {
+  @objc final public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+}
+public func ~= (oprPos: PaymentSDK.TGLayoutPos, origin: CoreFoundation.CGFloat)
+public func ~= (oprPos: PaymentSDK.TGLayoutPos, weight: PaymentSDK.TGWeight)
+public func ~= (oprPos: PaymentSDK.TGLayoutPos, array: [PaymentSDK.TGLayoutPos])
+public func ~= (oprPos: PaymentSDK.TGLayoutPos, pos: PaymentSDK.TGLayoutPos!)
+public func += (oprPos: PaymentSDK.TGLayoutPos, val: CoreFoundation.CGFloat)
+public func -= (oprPos: PaymentSDK.TGLayoutPos, val: CoreFoundation.CGFloat)
+public func >= (oprPos: PaymentSDK.TGLayoutPos, size: CoreFoundation.CGFloat)
+public func <= (oprPos: PaymentSDK.TGLayoutPos, size: CoreFoundation.CGFloat)
+public protocol TGLayoutSizeType {
+}
+extension CoreFoundation.CGFloat : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.Double : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.Float : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.Int : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.Int8 : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.Int16 : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.Int32 : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.Int64 : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.UInt : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.UInt8 : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.UInt16 : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.UInt32 : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.UInt64 : PaymentSDK.TGLayoutSizeType {
+}
+extension PaymentSDK.TGWeight : PaymentSDK.TGLayoutSizeType {
+}
+extension Swift.Array : PaymentSDK.TGLayoutSizeType {
+}
+extension PaymentSDK.TGLayoutSize : PaymentSDK.TGLayoutSizeType {
+}
+extension UIKit.UIView : PaymentSDK.TGLayoutSizeType {
+}
+final public class TGLayoutSize {
+  public static let wrap: PaymentSDK.TGLayoutSize
+  public static let fill: PaymentSDK.TGLayoutSize
+  public static let average: PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func equal(_ size: Swift.Int, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func equal(_ size: CoreFoundation.CGFloat, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func equal(_ weight: PaymentSDK.TGWeight, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func equal(_ array: [PaymentSDK.TGLayoutSize], increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func equal(_ view: UIKit.UIView, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func equal(_ dime: PaymentSDK.TGLayoutSize!, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func add(_ val: CoreFoundation.CGFloat) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func multiply(_ val: CoreFoundation.CGFloat) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func min(_ size: CoreFoundation.CGFloat, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func min(_ dime: PaymentSDK.TGLayoutSize!, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func min(_ view: UIKit.UIView, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func max(_ size: CoreFoundation.CGFloat, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func max(_ view: UIKit.UIView, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func max(_ dime: PaymentSDK.TGLayoutSize!, increment: CoreFoundation.CGFloat = 0, multiple: CoreFoundation.CGFloat = 1) -> PaymentSDK.TGLayoutSize
+  @discardableResult
+  final public func and() -> UIKit.UIView
+  final public func clear()
+  final public var isActive: Swift.Bool {
+    get
+    set
+  }
+  final public var hasValue: Swift.Bool {
+    get
+  }
+  final public var isWrap: Swift.Bool {
+    get
+  }
+  final public var isFill: Swift.Bool {
+    get
+  }
+  final public var numberVal: CoreFoundation.CGFloat! {
+    get
+  }
+  final public var sizeVal: PaymentSDK.TGLayoutSize! {
+    get
+  }
+  final public var arrayVal: [PaymentSDK.TGLayoutSize]! {
+    get
+  }
+  final public var weightVal: PaymentSDK.TGWeight! {
+    get
+  }
+  final public var increment: CoreFoundation.CGFloat {
+    get
+  }
+  final public var multiple: CoreFoundation.CGFloat {
+    get
+  }
+  final public var min: PaymentSDK.TGLayoutSize {
+    get
+  }
+  final public var max: PaymentSDK.TGLayoutSize {
+    get
+  }
+  public init(_ type: PaymentSDK.TGGravity, view: UIKit.UIView!)
+  @objc deinit
+}
+extension PaymentSDK.TGLayoutSize : Foundation.NSCopying {
+  @objc final public func copy(with zone: ObjectiveC.NSZone? = nil) -> Any
+}
+public func ~= (oprSize: PaymentSDK.TGLayoutSize, size: CoreFoundation.CGFloat)
+public func ~= (oprSize: PaymentSDK.TGLayoutSize, weight: PaymentSDK.TGWeight)
+public func ~= (oprSize: PaymentSDK.TGLayoutSize, array: [PaymentSDK.TGLayoutSize])
+public func ~= (oprSize: PaymentSDK.TGLayoutSize, size: PaymentSDK.TGLayoutSize!)
+public func *= (oprSize: PaymentSDK.TGLayoutSize, val: CoreFoundation.CGFloat)
+public func /= (oprSize: PaymentSDK.TGLayoutSize, val: CoreFoundation.CGFloat)
+public func += (oprSize: PaymentSDK.TGLayoutSize, val: CoreFoundation.CGFloat)
+public func -= (oprSize: PaymentSDK.TGLayoutSize, val: CoreFoundation.CGFloat)
+public func >= (oprSize: PaymentSDK.TGLayoutSize, size: CoreFoundation.CGFloat)
+public func >= (oprSize: PaymentSDK.TGLayoutSize, size: PaymentSDK.TGLayoutSize)
+public func <= (oprSize: PaymentSDK.TGLayoutSize, size: CoreFoundation.CGFloat)
+public func <= (oprSize: PaymentSDK.TGLayoutSize, size: PaymentSDK.TGLayoutSize)
+public enum TGSizeClassType {
+  public enum Width {
+    case any
+    case compact
+    case regular
+    public static func == (a: PaymentSDK.TGSizeClassType.Width, b: PaymentSDK.TGSizeClassType.Width) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum Height {
+    case any
+    case compact
+    case regular
+    public static func == (a: PaymentSDK.TGSizeClassType.Height, b: PaymentSDK.TGSizeClassType.Height) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  public enum Screen {
+    case portrait
+    case landscape
+    public static func == (a: PaymentSDK.TGSizeClassType.Screen, b: PaymentSDK.TGSizeClassType.Screen) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  case `default`
+  case portrait
+  case landscape
+  case comb(PaymentSDK.TGSizeClassType.Width, PaymentSDK.TGSizeClassType.Height, PaymentSDK.TGSizeClassType.Screen?)
+}
+public protocol TGViewSizeClass : AnyObject {
+  var tg_top: PaymentSDK.TGLayoutPos { get }
+  var tg_leading: PaymentSDK.TGLayoutPos { get }
+  var tg_bottom: PaymentSDK.TGLayoutPos { get }
+  var tg_trailing: PaymentSDK.TGLayoutPos { get }
+  var tg_centerX: PaymentSDK.TGLayoutPos { get }
+  var tg_centerY: PaymentSDK.TGLayoutPos { get }
+  var tg_left: PaymentSDK.TGLayoutPos { get }
+  var tg_right: PaymentSDK.TGLayoutPos { get }
+  var tg_baseline: PaymentSDK.TGLayoutPos { get }
+  var tg_width: PaymentSDK.TGLayoutSize { get }
+  var tg_height: PaymentSDK.TGLayoutSize { get }
+  var tg_useFrame: Swift.Bool { get set }
+  var tg_noLayout: Swift.Bool { get set }
+  var tg_reverseFloat: Swift.Bool { get set }
+  var tg_clearFloat: Swift.Bool { get set }
+  var tg_visibility: PaymentSDK.TGVisibility { get set }
+  var tg_alignment: PaymentSDK.TGGravity { get set }
+}
+public protocol TGLayoutViewSizeClass : PaymentSDK.TGViewSizeClass {
+  var tg_padding: UIKit.UIEdgeInsets { get set }
+  var tg_topPadding: CoreFoundation.CGFloat { get set }
+  var tg_leadingPadding: CoreFoundation.CGFloat { get set }
+  var tg_bottomPadding: CoreFoundation.CGFloat { get set }
+  var tg_trailingPadding: CoreFoundation.CGFloat { get set }
+  var tg_zeroPadding: Swift.Bool { get set }
+  var tg_insetsPaddingFromSafeArea: UIKit.UIRectEdge { get set }
+  var tg_insetLandscapeFringePadding: Swift.Bool { get set }
+  var tg_leftPadding: CoreFoundation.CGFloat { get set }
+  var tg_rightPadding: CoreFoundation.CGFloat { get set }
+  var tg_vspace: CoreFoundation.CGFloat { get set }
+  var tg_hspace: CoreFoundation.CGFloat { get set }
+  var tg_space: CoreFoundation.CGFloat { get set }
+  var tg_reverseLayout: Swift.Bool { get set }
+  var tg_gravity: PaymentSDK.TGGravity { get set }
+  var tg_layoutTransform: CoreFoundation.CGAffineTransform { get set }
+}
+public protocol TGSequentLayoutViewSizeClass : PaymentSDK.TGLayoutViewSizeClass {
+  var tg_orientation: PaymentSDK.TGOrientation { get set }
+}
+public protocol TGLinearLayoutViewSizeClass : PaymentSDK.TGSequentLayoutViewSizeClass {
+  var tg_shrinkType: PaymentSDK.TGSubviewsShrinkType { get set }
+}
+public protocol TGTableLayoutViewSizeClass : PaymentSDK.TGLinearLayoutViewSizeClass {
+}
+public protocol TGFlowLayoutViewSizeClass : PaymentSDK.TGSequentLayoutViewSizeClass {
+  var tg_arrangedCount: Swift.Int { get set }
+  var tg_pagedCount: Swift.Int { get set }
+  var tg_arrangedGravity: PaymentSDK.TGGravity { get set }
+  var tg_lastlineGravityPolicy: PaymentSDK.TGGravityPolicy { get set }
+  var tg_autoArrange: Swift.Bool { get set }
+}
+public protocol TGFloatLayoutViewSizeClass : PaymentSDK.TGSequentLayoutViewSizeClass {
+  var tg_noBoundaryLimit: Swift.Bool { get set }
+}
+public protocol TGRelativeLayoutViewSizeClass : PaymentSDK.TGLayoutViewSizeClass {
+}
+public protocol TGFrameLayoutViewSizeClass : PaymentSDK.TGLayoutViewSizeClass {
+}
+public protocol TGPathLayoutViewSizeClass : PaymentSDK.TGLayoutViewSizeClass {
+}
+@objc @_Concurrency.MainActor(unsafe) open class TGLinearLayout : PaymentSDK.TGBaseLayout, PaymentSDK.TGLinearLayoutViewSizeClass {
+  @_Concurrency.MainActor(unsafe) convenience public init(_ orientation: PaymentSDK.TGOrientation)
+  @_Concurrency.MainActor(unsafe) public init(frame: CoreFoundation.CGRect, orientation: PaymentSDK.TGOrientation)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) public var tg_orientation: PaymentSDK.TGOrientation {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_shrinkType: PaymentSDK.TGSubviewsShrinkType {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_baselineBaseView: UIKit.UIView!
+  @_Concurrency.MainActor(unsafe) public func tg_equalizeSubviews(centered: Swift.Bool, withSpace space: CoreFoundation.CGFloat! = nil, inSizeClass type: PaymentSDK.TGSizeClassType = TGSizeClassType.default)
+  @_Concurrency.MainActor(unsafe) public func tg_equalizeSubviewsSpace(centered: Swift.Bool, inSizeClass type: PaymentSDK.TGSizeClassType = TGSizeClassType.default)
+  @_Concurrency.MainActor(unsafe) public func tg_setSubviews(size: CoreFoundation.CGFloat, minSpace: CoreFoundation.CGFloat, maxSpace: CoreFoundation.CGFloat = CGFloat.greatestFiniteMagnitude, centered: Swift.Bool = false, inSizeClass type: PaymentSDK.TGSizeClassType = TGSizeClassType.default)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func willRemoveSubview(_ subview: UIKit.UIView)
+  @objc deinit
+}
+public enum TGPathSpaceType {
+  case flexed
+  case fixed(CoreFoundation.CGFloat)
+  case count(Swift.Int)
+}
+extension PaymentSDK.TGPathSpaceType : Swift.Equatable {
+  public static func == (lhs: PaymentSDK.TGPathSpaceType, rhs: PaymentSDK.TGPathSpaceType) -> Swift.Bool
+}
+@_hasMissingDesignatedInitializers open class TGCoordinateSetting {
+  public var origin: CoreFoundation.CGPoint {
+    get
+    set
+  }
+  public var isMath: Swift.Bool {
+    get
+    set
+  }
+  public var isReverse: Swift.Bool {
+    get
+    set
+  }
+  public var start: CoreFoundation.CGFloat! {
+    get
+    set
+  }
+  public var end: CoreFoundation.CGFloat! {
+    get
+    set
+  }
+  weak public var pathLayout: PaymentSDK.TGPathLayout?
+  public func reset()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class TGPathLayout : PaymentSDK.TGBaseLayout, PaymentSDK.TGPathLayoutViewSizeClass {
+  @_Concurrency.MainActor(unsafe) public var tg_coordinateSetting: PaymentSDK.TGCoordinateSetting {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_rectangularEquation: ((CoreFoundation.CGFloat) -> CoreFoundation.CGFloat?)? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_parametricEquation: ((CoreFoundation.CGFloat) -> CoreFoundation.CGPoint?)? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_polarEquation: ((PaymentSDK.TGRadian) -> CoreFoundation.CGFloat?)? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_spaceType: PaymentSDK.TGPathSpaceType {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_originView: UIKit.UIView? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_pathSubviews: [UIKit.UIView] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var tg_distanceError: CoreFoundation.CGFloat
+  @_Concurrency.MainActor(unsafe) public func tg_argumentFrom(subview: UIKit.UIView) -> CoreFoundation.CGFloat?
+  @_Concurrency.MainActor(unsafe) public func tg_beginSubviewPathPoint(full: Swift.Bool)
+  @_Concurrency.MainActor(unsafe) public func tg_endSubviewPathPoint()
+  @_Concurrency.MainActor(unsafe) public func tg_getSubviewPathPoint(fromIndex: Swift.Int, toIndex: Swift.Int) -> [CoreFoundation.CGPoint]?
+  @_Concurrency.MainActor(unsafe) public func tg_createPath(subviewCount: Swift.Int) -> CoreGraphics.CGPath
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func insertSubview(_ view: UIKit.UIView, at index: Swift.Int)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func addSubview(_ view: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func sendSubview(toBack view: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func willRemoveSubview(_ subview: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public struct TGRadian : Any {
+  public var value: CoreFoundation.CGFloat {
+    get
+  }
+  public init(angle: CoreFoundation.CGFloat)
+  public init(angle: Swift.Int)
+  public init(angle: Swift.Int8)
+  public init(angle: Swift.Int16)
+  public init(angle: Swift.Int32)
+  public init(angle: Swift.Int64)
+  public init(angle: Swift.UInt)
+  public init(angle: Swift.UInt8)
+  public init(angle: Swift.UInt16)
+  public init(angle: Swift.UInt32)
+  public init(angle: Swift.UInt64)
+  public init(angle: Swift.Double)
+  public init(angle: Swift.Float)
+  public init(value: CoreFoundation.CGFloat)
+  public init(value: Swift.Int)
+  public init(value: Swift.Int8)
+  public init(value: Swift.Int16)
+  public init(value: Swift.Int32)
+  public init(value: Swift.Int64)
+  public init(value: Swift.UInt)
+  public init(value: Swift.UInt8)
+  public init(value: Swift.UInt16)
+  public init(value: Swift.UInt32)
+  public init(value: Swift.UInt64)
+  public init(value: Swift.Double)
+  public init(value: Swift.Float)
+  public init(_ val: PaymentSDK.TGRadian)
+  public var angle: CoreFoundation.CGFloat {
+    get
+  }
+}
+extension PaymentSDK.TGRadian : Swift.Equatable {
+  public static func == (lhs: PaymentSDK.TGRadian, rhs: PaymentSDK.TGRadian) -> Swift.Bool
+}
+public func + (lhs: PaymentSDK.TGRadian, rhs: CoreFoundation.CGFloat) -> CoreFoundation.CGFloat
+public func + (lhs: CoreFoundation.CGFloat, rhs: PaymentSDK.TGRadian) -> CoreFoundation.CGFloat
+public func * (lhs: PaymentSDK.TGRadian, rhs: CoreFoundation.CGFloat) -> CoreFoundation.CGFloat
+public func * (lhs: CoreFoundation.CGFloat, rhs: PaymentSDK.TGRadian) -> CoreFoundation.CGFloat
+public func / (lhs: PaymentSDK.TGRadian, rhs: CoreFoundation.CGFloat) -> CoreFoundation.CGFloat
+public func / (lhs: CoreFoundation.CGFloat, rhs: PaymentSDK.TGRadian) -> CoreFoundation.CGFloat
+public func - (lhs: PaymentSDK.TGRadian, rhs: CoreFoundation.CGFloat) -> CoreFoundation.CGFloat
+public func - (lhs: CoreFoundation.CGFloat, rhs: PaymentSDK.TGRadian) -> CoreFoundation.CGFloat
+extension CoreFoundation.CGFloat {
+  public init(_ value: PaymentSDK.TGRadian)
+}
+postfix operator °
+postfix public func ° (angle: CoreFoundation.CGFloat) -> PaymentSDK.TGRadian
+postfix public func ° (angle: Swift.Int) -> PaymentSDK.TGRadian
+postfix public func ° (angle: Swift.UInt) -> PaymentSDK.TGRadian
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class TGRelativeLayout : PaymentSDK.TGBaseLayout, PaymentSDK.TGRelativeLayoutViewSizeClass {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public protocol TGTableRowColSizeType : PaymentSDK.TGLayoutSizeType {
+}
+extension CoreFoundation.CGFloat : PaymentSDK.TGTableRowColSizeType {
+}
+extension Swift.Int : PaymentSDK.TGTableRowColSizeType {
+}
+extension Swift.Double : PaymentSDK.TGTableRowColSizeType {
+}
+extension Swift.Float : PaymentSDK.TGTableRowColSizeType {
+}
+extension PaymentSDK.TGLayoutSize : PaymentSDK.TGTableRowColSizeType {
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class TGTableLayout : PaymentSDK.TGLinearLayout {
+  @discardableResult
+  @_Concurrency.MainActor(unsafe) public func tg_addRow(size rowSize: any PaymentSDK.TGTableRowColSizeType, colSize: any PaymentSDK.TGTableRowColSizeType) -> PaymentSDK.TGLinearLayout
+  @_Concurrency.MainActor(unsafe) public func tg_addRow(size rowSize: any PaymentSDK.TGTableRowColSizeType, colCount: Swift.Int) -> PaymentSDK.TGLinearLayout
+  @discardableResult
+  @_Concurrency.MainActor(unsafe) public func tg_insertRow(size rowSize: any PaymentSDK.TGTableRowColSizeType, colSize: any PaymentSDK.TGTableRowColSizeType, rowIndex: Swift.Int) -> PaymentSDK.TGLinearLayout
+  @_Concurrency.MainActor(unsafe) public func tg_insertRow(size rowSize: any PaymentSDK.TGTableRowColSizeType, colCount: Swift.UInt, rowIndex: Swift.Int) -> PaymentSDK.TGLinearLayout
+  @_Concurrency.MainActor(unsafe) public func tg_removeRow(_ rowIndex: Swift.Int)
+  @_Concurrency.MainActor(unsafe) public func tg_exchangeRow(_ rowIndex1: Swift.Int, with rowIndex2: Swift.Int)
+  @_Concurrency.MainActor(unsafe) public func tg_rowView(at rowIndex: Swift.Int) -> PaymentSDK.TGLinearLayout
+  @_Concurrency.MainActor(unsafe) public var tg_rowCount: Swift.Int {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public func tg_addCol(_ colView: UIKit.UIView, inRow rowIndex: Swift.Int)
+  @_Concurrency.MainActor(unsafe) public func tg_insertCol(_ colView: UIKit.UIView, inIndexPath indexPath: Foundation.IndexPath)
+  @_Concurrency.MainActor(unsafe) public func tg_removeCol(_ indexPath: Foundation.IndexPath)
+  @_Concurrency.MainActor(unsafe) public func tg_exchangeCol(_ indexPath1: Foundation.IndexPath, with indexPath2: Foundation.IndexPath)
+  @_Concurrency.MainActor(unsafe) public func tg_colView(at indexPath: Foundation.IndexPath) -> UIKit.UIView
+  @_Concurrency.MainActor(unsafe) public func tg_colCount(inRow rowIndex: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor(unsafe) override public var tg_vspace: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) override public var tg_hspace: CoreFoundation.CGFloat {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func addSubview(_ view: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func insertSubview(_ view: UIKit.UIView, at index: Swift.Int)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func exchangeSubview(at index1: Swift.Int, withSubviewAt index2: Swift.Int)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func insertSubview(_ view: UIKit.UIView, belowSubview siblingSubview: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func insertSubview(_ view: UIKit.UIView, aboveSubview siblingSubview: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) override public init(frame: CoreFoundation.CGRect, orientation: PaymentSDK.TGOrientation)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @objc deinit
+}
+extension Foundation.IndexPath {
+  public init(row: Swift.Int, col: Swift.Int)
+}
+public enum TransactionType : Swift.String {
+  case sale
+  case preAuth
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers public class UIConfig {
+  public var background: UIKit.UIColor
+  public var primaryTextColor: UIKit.UIColor
+  public var secondaryTextColor: UIKit.UIColor
+  public var primaryButtonColor: UIKit.UIColor
+  public var primaryButtonBackground: UIKit.UIColor
+  public var secondaryButtonColor: UIKit.UIColor
+  public var secondaryButtonBackground: UIKit.UIColor
+  public var secondaryButtonDisableBackground: UIKit.UIColor
+  public var textFieldBackground: UIKit.UIColor
+  public var linkColor: UIKit.UIColor
+  public var errorColor: UIKit.UIColor
+  public var borderRadius: CoreFoundation.CGFloat
+  public var creditCardTop: Swift.Bool
+  public var mode: PaymentSDK.UIMode
+  @objc deinit
+}
+public enum UIMode {
+  case normal, dark, auto
+  public static func == (a: PaymentSDK.UIMode, b: PaymentSDK.UIMode) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@available(iOS 8.0, *)
+extension UIKit.UILayoutSupport {
+  @_Concurrency.MainActor(unsafe) public var snp: PaymentSDK.ConstraintLayoutSupportDSL {
+    get
+  }
+}
+public typealias PaymentResultCallback = (PaymentSDK.PaymentResult) -> Swift.Void
+public typealias DataCallback = ([Swift.String : Any?]) -> Swift.Void
+@objc @_inheritsConvenienceInitializers public class WonderPayment : ObjectiveC.NSObject {
+  public static var uiConfig: PaymentSDK.UIConfig
+  public static var paymentConfig: PaymentSDK.PaymentConfig
+  public static func present(intent: PaymentSDK.PaymentIntent, callback: @escaping PaymentSDK.PaymentResultCallback)
+  public static func pay(intent: PaymentSDK.PaymentIntent, callback: (PaymentSDK.PaymentResult) -> Swift.Void)
+  public static func handleOpenURL(url: Foundation.URL) -> Swift.Bool
+  public static func registerApp()
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension PaymentSDK.IQAutoToolbarManageBehaviour : Swift.Equatable {}
+extension PaymentSDK.IQAutoToolbarManageBehaviour : Swift.Hashable {}
+extension PaymentSDK.IQAutoToolbarManageBehaviour : Swift.RawRepresentable {}
+extension PaymentSDK.IQPreviousNextDisplayMode : Swift.Equatable {}
+extension PaymentSDK.IQPreviousNextDisplayMode : Swift.Hashable {}
+extension PaymentSDK.IQPreviousNextDisplayMode : Swift.RawRepresentable {}
+extension PaymentSDK.IQEnableMode : Swift.Equatable {}
+extension PaymentSDK.IQEnableMode : Swift.Hashable {}
+extension PaymentSDK.IQEnableMode : Swift.RawRepresentable {}
+extension PaymentSDK.Locale : Swift.Equatable {}
+extension PaymentSDK.Locale : Swift.Hashable {}
+extension PaymentSDK.Locale : Swift.RawRepresentable {}
+extension PaymentSDK.PaymentEnvironment : Swift.Equatable {}
+extension PaymentSDK.PaymentEnvironment : Swift.Hashable {}
+extension PaymentSDK.PaymentMethodType : Swift.Equatable {}
+extension PaymentSDK.PaymentMethodType : Swift.Hashable {}
+extension PaymentSDK.PaymentMethodType : Swift.RawRepresentable {}
+extension PaymentSDK.PaymentResultStatus : Swift.Equatable {}
+extension PaymentSDK.PaymentResultStatus : Swift.Hashable {}
+extension PaymentSDK.TGOrientation : Swift.Equatable {}
+extension PaymentSDK.TGOrientation : Swift.Hashable {}
+extension PaymentSDK.TGVisibility : Swift.Equatable {}
+extension PaymentSDK.TGVisibility : Swift.Hashable {}
+extension PaymentSDK.TGGravityPolicy : Swift.Equatable {}
+extension PaymentSDK.TGGravityPolicy : Swift.Hashable {}
+extension PaymentSDK.TGAdjustScrollViewContentSizeMode : Swift.Equatable {}
+extension PaymentSDK.TGAdjustScrollViewContentSizeMode : Swift.Hashable {}
+extension PaymentSDK.TGSizeClassType.Width : Swift.Equatable {}
+extension PaymentSDK.TGSizeClassType.Width : Swift.Hashable {}
+extension PaymentSDK.TGSizeClassType.Height : Swift.Equatable {}
+extension PaymentSDK.TGSizeClassType.Height : Swift.Hashable {}
+extension PaymentSDK.TGSizeClassType.Screen : Swift.Equatable {}
+extension PaymentSDK.TGSizeClassType.Screen : Swift.Hashable {}
+extension PaymentSDK.TransactionType : Swift.Equatable {}
+extension PaymentSDK.TransactionType : Swift.Hashable {}
+extension PaymentSDK.TransactionType : Swift.RawRepresentable {}
+extension PaymentSDK.UIMode : Swift.Equatable {}
+extension PaymentSDK.UIMode : Swift.Hashable {}
