@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.homepage                = "https://wonder.app/"
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author                  = "Wonder Developer"
-  s.source                  = { :http => "https://github.com/Levey/WonderPaymentSDK.git" }
+  s.source                  = { :http => "https://github.com/wonder-platform/WonderPayment-iOS" }
   s.ios.vendored_frameworks = "PaymentSDK/PaymentSDK.framework"
   s.resource_bundles = {
       'PaymentSDK_Resources' => ['PaymentSDK/Assets/icons/common/**.*', 'PaymentSDK/Assets/icons/flags/**.*']
