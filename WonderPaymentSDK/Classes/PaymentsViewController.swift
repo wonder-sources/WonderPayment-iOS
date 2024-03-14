@@ -27,7 +27,8 @@ class PaymentsViewController: UIViewController {
         }
     }
     ///支付回调
-    var callback: PaymentResultCallback!
+    var paymentCallback: PaymentResultCallback?
+    var selectCallback: SelectMethodCallback?
     ///选择模式
     var selectMode = false
     
@@ -40,6 +41,9 @@ class PaymentsViewController: UIViewController {
     
     /// 上次支付的PaymentIntent，重试时使用
     var lastPaymentIntent: PaymentIntent?
+    
+    /// 支付结果
+    var paymentResult: PaymentResult?
     
     
     override func viewDidLoad() {
@@ -92,7 +96,7 @@ class PaymentsViewController: UIViewController {
             self?.mView.methodView.unionPayButton.isHidden = !supportUnionPay
             self?.mView.methodView.alipayButton.isHidden = !supportAlipay
             self?.mView.methodView.alipayHKButton.isHidden = !supportAlipay
-            self?.mView.methodView.wechatPayButton.isHidden = true //!supportWechat
+            self?.mView.methodView.wechatPayButton.isHidden = !supportWechat
         }
     }
     
@@ -115,7 +119,7 @@ class PaymentsViewController: UIViewController {
     
     @objc func close(_ sender: UIButton) {
         self.dismiss(animated: true)
-        callback(PaymentResult(status: .canceled))
+        paymentCallback?(paymentResult ?? PaymentResult(status: .canceled))
     }
     
     @objc func showAddCard(_ sender: UIButton) {
@@ -136,37 +140,25 @@ class PaymentsViewController: UIViewController {
     
     @objc func wechatPay(_ sender: UIButton) {
         let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .wechat, arguments: [
-            "in_app": [ "app_id": "wxb75a8cfd1068e40c"]
-        ])
+        paymentIntent.paymentMethod = PaymentMethod(type: .wechat)
         pay(intent: paymentIntent, delegate: self)
     }
     
     @objc func alipay(_ sender: UIButton) {
         let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .alipay, arguments: [
-            "in_app": [
-                "app_env": "ios",
-                "payment_inst": "ALIPAYCN",
-            ]
-        ])
+        paymentIntent.paymentMethod = PaymentMethod(type: .alipay)
         pay(intent: paymentIntent, delegate: self)
     }
     
     @objc func alipayHK(_ sender: UIButton) {
         let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .alipayHK, arguments: [
-            "in_app": [
-                "app_env": "ios",
-                "payment_inst": "ALIPAYHK",
-            ]
-        ])
+        paymentIntent.paymentMethod = PaymentMethod(type: .alipayHK)
         pay(intent: paymentIntent, delegate: self)
     }
     
     @objc func unionPay(_ sender: UIButton) {
         let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .unionPay, arguments: ["in_app":[:] ])
+        paymentIntent.paymentMethod = PaymentMethod(type: .unionPay)
         pay(intent: paymentIntent, delegate: self)
     }
     
@@ -236,6 +228,7 @@ class PaymentsViewController: UIViewController {
 }
 
 extension PaymentsViewController: PaymentDelegate {
+    
     func onInterrupt(intent: PaymentIntent) {
         LoadingView.dismiss()
         paymentStatus = .pending
@@ -275,10 +268,16 @@ extension PaymentsViewController: PaymentDelegate {
         if let error = error {
             paymentStatus = .error
             mView.errorView.errorMessage = error
+            paymentResult = PaymentResult(status: .failed, code: error.code, message: error.message)
         }
         if let result = result,let success = result.success, success {
-            callback(PaymentResult(status: .completed))
+            paymentResult = PaymentResult(status: .completed)
+            paymentCallback?(paymentResult!)
             self.dismiss(animated: true)
         }
+    }
+    
+    func onCanceled() {
+        
     }
 }

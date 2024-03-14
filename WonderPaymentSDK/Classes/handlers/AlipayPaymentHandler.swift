@@ -46,7 +46,9 @@ class AlipayPaymentHandler : PaymentHander {
                             delegate.onFinished(intent: intent, result: result, error: error)
                         }
                     } else {
-                        if resultStatus != "6001" {
+                        if resultStatus == "6001" {
+                            delegate.onCanceled()
+                        } else {
                             let error = ErrorMessage(code: "\(resultStatus ?? "")", message: memo ?? "")
                             delegate.onFinished(intent: intent, result: nil, error: error)
                         }

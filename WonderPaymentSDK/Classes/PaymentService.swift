@@ -76,7 +76,7 @@ class PaymentService {
             ]
         ]
         
-        prettyPrint(arrayOrMap: params)
+//        prettyPrint(arrayOrMap: params)
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -100,7 +100,7 @@ class PaymentService {
                 return
             }
             
-            prettyPrint(jsonData: data)
+//            prettyPrint(jsonData: data)
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])

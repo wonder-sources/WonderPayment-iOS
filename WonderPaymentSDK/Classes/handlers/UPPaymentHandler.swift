@@ -40,6 +40,8 @@ class UPPaymentHandler : PaymentHander {
                         }
                     } else if code == "fail" {
                         delegate.onFinished(intent: intent, result: nil, error: .unknownError)
+                    } else if code == "cancel" {
+                        delegate.onCanceled()
                     }
                 }
                 

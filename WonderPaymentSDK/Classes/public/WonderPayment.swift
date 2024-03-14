@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 public typealias PaymentResultCallback = (PaymentResult) -> Void
+public typealias SelectMethodCallback = (PaymentMethod) -> Void
 public typealias DataCallback = ([String: Any?]) -> Void
 
 public class WonderPayment : NSObject {
@@ -16,7 +17,8 @@ public class WonderPayment : NSObject {
     public static var paymentConfig = PaymentConfig()
     static var unionPayCallback: DataCallback?
     static var alipayCallback: DataCallback?
-    static var wxDelegate = WxDelegate()
+    static var wechatPayCallback: DataCallback?
+    static var wechatPayDelegate = WechatPayDelegate()
     
     /// UI支付
     public static func present(
@@ -27,14 +29,32 @@ public class WonderPayment : NSObject {
         let paymentsViewController = PaymentsViewController()
         paymentsViewController.selectMode = false
         paymentsViewController.intent = intent
-        paymentsViewController.callback = callback
+        paymentsViewController.paymentCallback = callback
         paymentsViewController.modalPresentationStyle = .fullScreen
         rootViewController?.present(paymentsViewController, animated: true)
     }
     
     /// 无UI支付
-    public static func pay(intent: PaymentIntent, callback: PaymentResultCallback) {
-        
+    public static func pay(
+        intent: PaymentIntent,
+        callback: @escaping PaymentResultCallback
+    ) {
+        let delegate = DefaultPaymentDelegate(callback: callback)
+        WonderPaymentSDK.pay(intent: intent, delegate: delegate)
+    }
+    
+    /// 选择支付方式
+    public static func selectPaymentMethod(
+        intent: PaymentIntent, 
+        callback: @escaping SelectMethodCallback
+    ) {
+        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+        let paymentsViewController = PaymentsViewController()
+        paymentsViewController.selectMode = true
+        paymentsViewController.intent = intent
+        paymentsViewController.selectCallback = callback
+        paymentsViewController.modalPresentationStyle = .fullScreen
+        rootViewController?.present(paymentsViewController, animated: true)
     }
     
     /// 三方支付回调处理
@@ -52,12 +72,23 @@ public class WonderPayment : NSObject {
             let callbackData: [String: Any?] = ["code": code, "data": data]
             unionPayCallback?(callbackData)
         }
-        WXApi.handleOpen(url, delegate: wxDelegate)
+        WXApi.handleOpen(url, delegate: wechatPayDelegate)
         return true
     }
     
     /// 注册SDK
     public static func registerApp() {
-        WXApi.registerApp("", universalLink: "")
+        let appId = paymentConfig.wechat.appId
+        let universalLink = paymentConfig.wechat.universalLink
+        WXApi.registerApp(appId, universalLink: universalLink)
+    }
+}
+
+class WechatPayDelegate: NSObject, WXApiDelegate {
+    func onResp(_ resp: BaseResp) {
+        if let resp = resp as? PayResp {
+            let callbackData: [String: Any?] = ["code": resp.errCode, "message": resp.errStr]
+            WonderPayment.wechatPayCallback?(callbackData)
+        }
     }
 }
