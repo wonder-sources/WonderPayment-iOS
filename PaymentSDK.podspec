@@ -9,7 +9,6 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author                  = "Wonder Developer"
   s.source                  = { :http => "https://github.com/wonder-platform/WonderPayment-iOS.git" }
-  s.ios.vendored_frameworks = "PaymentSDK/PaymentSDK.framework"
   s.resource_bundles = {
       'PaymentSDK_Resources' => [
       'PaymentSDK/Assets/anim/**.*',
@@ -17,7 +16,7 @@ Pod::Spec.new do |s|
       'PaymentSDK/Assets/icons/flags/**.*'
       ]
     }
-
+  s.source_files = 'PaymentSDK/Classes/**/*'
   s.frameworks = 'UIKit'
   s.frameworks  = 'PassKit'
   s.dependency 'AlipaySDK-iOS'
