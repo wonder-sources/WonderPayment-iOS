@@ -15,7 +15,7 @@ FOUNDATION_EXPORT const unsigned char PaymentSDKVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <PaymentSDK/PublicHeader.h>
 
-#import <PaymentSDK/WonderPayment.h>
+#import <WonderPaymentSDK/WonderPayment.h>
 #import <AlipaySDK/AlipaySDK.h>
 #import <WXApi.h>
 
