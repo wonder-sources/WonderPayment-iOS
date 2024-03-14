@@ -74,7 +74,7 @@ class FormTextFieldView : TGLinearLayout {
 }
 
 extension FormTextFieldView: QMUITextFieldDelegate {
-    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         error = validator?(textField.text)
     }
 }
