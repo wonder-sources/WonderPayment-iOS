@@ -41,5 +41,15 @@ struct DynamicJson {
     var bool: Bool? {
         return value as? Bool
     }
+    
+    var array: [DynamicJson] {
+        var arr: [DynamicJson] = []
+        if let array = value as? NSArray {
+            for item in array {
+                arr.append(DynamicJson(value: item))
+            }
+        }
+        return arr
+    }
 }
 

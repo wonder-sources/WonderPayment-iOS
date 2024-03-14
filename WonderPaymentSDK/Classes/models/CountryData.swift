@@ -1,5 +1,4 @@
-struct CountryItem: Codable, Identifiable {  // <-- here
-    let id: String?
+struct CountryItem: JSONDecodable {  // <-- here
     let countryName: String
     let alpha2: String
     let callingCode: String
@@ -8,7 +7,19 @@ struct CountryItem: Codable, Identifiable {  // <-- here
         case countryName = "country_name"
         case alpha2 = "alpha_2"
         case callingCode = "calling_code"
-        case id
+    }
+    
+    static func from(json: NSDictionary?) -> CountryItem {
+        let dynamicJson = DynamicJson(value: json)
+        let locale = WonderPayment.paymentConfig.locale.rawValue
+        let nameItem = dynamicJson["translations"].array.first(where: {
+            $0["languages_code"].string == locale
+        })
+        let countryName = nameItem?["country_name"].string ?? ""
+        let alpha2 = dynamicJson["alpha_2"].string ?? ""
+        let callingCode = dynamicJson["calling_code"].string ?? ""
+        
+        return CountryItem(countryName: countryName, alpha2: alpha2, callingCode: callingCode)
     }
     
 }
@@ -18,7 +29,11 @@ class CountryData {
     
     static var get: [CountryItem]? {
         let data = CountryData().data.data(using: .utf8)!
-        return try? JSONDecoder().decode([CountryItem].self, from: data)
+        if let json = try? JSONSerialization.jsonObject(with: data, options: []) {
+            return CountryItem.from(jsonArray: json as? NSArray)
+        }
+        
+        return nil
     }
     
     lazy var data =
