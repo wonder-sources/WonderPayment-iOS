@@ -50,7 +50,7 @@ class DialingCodeView : TGLinearLayout {
         dialog.selectedCallback = {
             [weak self] code in
             self?.dialingCode = code
-            self?.codeLabel.text = code
+            self?.codeLabel.text = "+\(code)"
             self?.setImageBy(code: code)
         }
     }

@@ -7,10 +7,13 @@
 
 import Foundation
 import UIKit
+import PassKit
 
 public typealias PaymentResultCallback = (PaymentResult) -> Void
 public typealias SelectMethodCallback = (PaymentMethod) -> Void
 public typealias DataCallback = ([String: Any?]) -> Void
+public typealias ApplePayCompletion = (PKPaymentAuthorizationResult) -> Void
+public typealias AppyPayCallback = (String?, ApplePayCompletion?) -> Void
 
 public class WonderPayment : NSObject {
     public static var uiConfig = UIConfig()
@@ -18,7 +21,9 @@ public class WonderPayment : NSObject {
     static var unionPayCallback: DataCallback?
     static var alipayCallback: DataCallback?
     static var wechatPayCallback: DataCallback?
+    static var applePayCallback: AppyPayCallback?
     static var wechatPayDelegate = WechatPayDelegate()
+    static var applePayDelegate = ApplePayDelegate()
     
     /// UI支付
     public static func present(
@@ -65,12 +70,14 @@ public class WonderPayment : NSObject {
                 let memo = data?["memo"]
                 let callbackData: [String: Any?] = ["resultStatus": resultStatus, "memo": memo]
                 alipayCallback?(callbackData)
+                alipayCallback = nil
             }
         }
         UPPaymentControl.default().handlePaymentResult(url) { code, data in
             //code : success, fail, cancel
             let callbackData: [String: Any?] = ["code": code, "data": data]
             unionPayCallback?(callbackData)
+            unionPayCallback = nil
         }
         WXApi.handleOpen(url, delegate: wechatPayDelegate)
         return true
@@ -78,9 +85,10 @@ public class WonderPayment : NSObject {
     
     /// 注册SDK
     public static func registerApp() {
-        let appId = paymentConfig.wechat.appId
-        let universalLink = paymentConfig.wechat.universalLink
-        WXApi.registerApp(appId, universalLink: universalLink)
+        if let appId = paymentConfig.wechat?.appId,
+           let universalLink = paymentConfig.wechat?.universalLink {
+            WXApi.registerApp(appId, universalLink: universalLink)
+        }
     }
 }
 
@@ -89,6 +97,22 @@ class WechatPayDelegate: NSObject, WXApiDelegate {
         if let resp = resp as? PayResp {
             let callbackData: [String: Any?] = ["code": resp.errCode, "message": resp.errStr]
             WonderPayment.wechatPayCallback?(callbackData)
+            WonderPayment.wechatPayCallback = nil
         }
+    }
+}
+
+class ApplePayDelegate: NSObject, PKPaymentAuthorizationViewControllerDelegate {
+    func paymentAuthorizationViewControllerDidFinish(_ controller: PKPaymentAuthorizationViewController) {
+        controller.dismiss(animated: true)
+        WonderPayment.applePayCallback?(nil, nil)
+        WonderPayment.applePayCallback = nil
+    }
+    
+    func paymentAuthorizationViewController(_ controller: PKPaymentAuthorizationViewController, didAuthorizePayment payment: PKPayment, handler completion: @escaping (PKPaymentAuthorizationResult) -> Void) {
+        let tokenData = payment.token.paymentData
+        let base64 = tokenData.base64EncodedString()
+        WonderPayment.applePayCallback?(base64, completion)
+        WonderPayment.applePayCallback = nil
     }
 }

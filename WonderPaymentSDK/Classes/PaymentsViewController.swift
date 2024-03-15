@@ -59,6 +59,7 @@ class PaymentsViewController: UIViewController {
         mView.errorView.retryButton.addTarget(self, action:#selector(retry(_:)), for: .touchUpInside)
         mView.methodView.addCardButton.addTarget(self, action:#selector(showAddCard(_:)), for: .touchUpInside)
         mView.bankCardView.backButton.addTarget(self, action:#selector(hideAddCard(_:)), for: .touchUpInside)
+        mView.methodView.applePayButton.addTarget(self, action:#selector(applePay(_:)), for: .touchUpInside)
         mView.methodView.unionPayButton.addTarget(self, action:#selector(unionPay(_:)), for: .touchUpInside)
         mView.methodView.wechatPayButton.addTarget(self, action:#selector(wechatPay(_:)), for: .touchUpInside)
         mView.methodView.alipayButton.addTarget(self, action:#selector(alipay(_:)), for: .touchUpInside)
@@ -93,10 +94,13 @@ class PaymentsViewController: UIViewController {
                 self?.queryCardList()
                 self?.mView.methodView.cardView.isHidden = false
             }
+            let applePayConfigured = WonderPayment.paymentConfig.applePay != nil
+            let wechatPayConfigured = WonderPayment.paymentConfig.wechat != nil
+            self?.mView.methodView.applePayButton.isHidden = !applePayConfigured
             self?.mView.methodView.unionPayButton.isHidden = !supportUnionPay
             self?.mView.methodView.alipayButton.isHidden = !supportAlipay
             self?.mView.methodView.alipayHKButton.isHidden = !supportAlipay
-            self?.mView.methodView.wechatPayButton.isHidden = !supportWechat
+            self?.mView.methodView.wechatPayButton.isHidden = !(supportWechat && wechatPayConfigured)
         }
     }
     
@@ -136,6 +140,12 @@ class PaymentsViewController: UIViewController {
         if let intent = lastPaymentIntent {
             pay(intent: intent, delegate: self)
         }
+    }
+    
+    @objc func applePay(_ sender: UIButton) {
+        let paymentIntent = intent.copy()
+        paymentIntent.paymentMethod = PaymentMethod(type: .applePay)
+        pay(intent: paymentIntent, delegate: self)
     }
     
     @objc func wechatPay(_ sender: UIButton) {
@@ -273,7 +283,7 @@ extension PaymentsViewController: PaymentDelegate {
         if let result = result,let success = result.success, success {
             paymentResult = PaymentResult(status: .completed)
             paymentCallback?(paymentResult!)
-            self.dismiss(animated: true)
+            self.presentingViewController?.dismiss(animated: true)
         }
     }
     

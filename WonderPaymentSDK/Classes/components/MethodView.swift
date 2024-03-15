@@ -4,6 +4,7 @@ import TangramKit
 class MethodView : TGLinearLayout {
     
     var selectMode = false
+    lazy var applePayButton = ApplePayButton(selectMode: selectMode)
     lazy var unionPayButton = createButton(image: "UnionPay", title: "unionPay".i18n, selectMode: selectMode)
     lazy var wechatPayButton = createButton(image: "WechatPay", title: "wechatPay".i18n, selectMode: selectMode)
     lazy var alipayButton = createButton(image: "Alipay", title: "alipay".i18n, selectMode: selectMode)
@@ -33,6 +34,7 @@ class MethodView : TGLinearLayout {
         self.tg_width.equal(.fill)
         self.tg_height.equal(.wrap)
         
+        addSubview(applePayButton)
         addSubview(unionPayButton)
         addSubview(wechatPayButton)
         addSubview(alipayButton)

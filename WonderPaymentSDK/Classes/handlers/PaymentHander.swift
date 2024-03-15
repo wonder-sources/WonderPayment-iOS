@@ -16,6 +16,8 @@ protocol PaymentHander {
 func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
     var hander: PaymentHander?
     switch(intent.paymentMethod?.type) {
+    case .applePay:
+        hander = ApplePayPaymentHandler()
     case .creditCard:
         hander = CardPaymentHandler()
     case .unionPay:
@@ -24,7 +26,7 @@ func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         ]
         hander = UPPaymentHandler()
     case .wechat:
-        let appId = WonderPayment.paymentConfig.wechat.appId
+        let appId = WonderPayment.paymentConfig.wechat?.appId
         intent.paymentMethod?.arguments = [
             "in_app": [ "app_id": appId]
         ]

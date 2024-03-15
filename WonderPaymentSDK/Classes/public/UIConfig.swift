@@ -12,7 +12,7 @@ public class UIConfig {
     public var linkColor: UIColor = UIColor(hexString: "#FF0094FF")
     public var errorColor: UIColor = UIColor(hexString: "#FFFC2E01")
     public var borderRadius: CGFloat = 12
-    public var creditCardTop: Bool = true
+    public var creditCardTop: Bool = false
     
     
     public var mode: UIMode = .auto

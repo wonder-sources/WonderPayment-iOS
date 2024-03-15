@@ -17,6 +17,7 @@ class CardPaymentHandler : PaymentHander {
             amount: intent.amount,
             paymentMethod: PaymentMethodType.creditCard.rawValue,
             paymentData: args ?? [:], 
+            transactionType: intent.transactionType, 
             orderNum: orderNumber,
             businessId: businessId
         ) { result, error in

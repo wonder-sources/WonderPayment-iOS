@@ -14,7 +14,15 @@ class AlipayPaymentHandler : PaymentHander {
         let arguments = intent.paymentMethod?.arguments as? [String: Any?]
         let args = arguments ?? [:]
         delegate.onProcessing()
-        PaymentService.payOrder(amount: intent.amount, paymentMethod: PaymentMethodType.alipay.rawValue, paymentData: args, orderNum: intent.orderNumber, businessId: WonderPayment.paymentConfig.businessId) { result, error in
+        PaymentService.payOrder(
+            amount: intent.amount,
+            paymentMethod: PaymentMethodType.alipay.rawValue,
+            paymentData: args,
+            transactionType: intent.transactionType,
+            orderNum: intent.orderNumber,
+            businessId: WonderPayment.paymentConfig.businessId
+        ) {
+            result, error in
             if let result = result , let args = result.acquirerResponseBody {
                 let json = DynamicJson.from(args)
                 guard let paymentString = json["alipay"]["in_app"]["payinfo"].string else {

@@ -51,7 +51,7 @@ class PaymentService {
         amount: Double,
         paymentMethod: String,
         paymentData: [String: Any?],
-        transactionType: TransactionType = .sale,
+        transactionType: TransactionType,
         orderNum: String,
         businessId: String,
         completion: @escaping (PayResult?, ErrorMessage?) -> Void
@@ -76,7 +76,7 @@ class PaymentService {
             ]
         ]
         
-//        prettyPrint(arrayOrMap: params)
+        //prettyPrint(arrayOrMap: params)
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -100,7 +100,7 @@ class PaymentService {
                 return
             }
             
-//            prettyPrint(jsonData: data)
+            //prettyPrint(jsonData: data)
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
@@ -245,6 +245,8 @@ class PaymentService {
                 UI.call { completion(nil, .networkError) }
                 return
             }
+            
+            //prettyPrint(jsonData: data)
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
