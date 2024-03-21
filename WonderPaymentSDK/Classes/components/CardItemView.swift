@@ -8,11 +8,12 @@
 import Foundation
 import TangramKit
 
-class CardItemView : TGLinearLayout {
+class CardItemView : TGLinearLayout, MethodItemView {
     
     var icon: String = ""
     var cardNumber: String = ""
     var selectMode: Bool = false
+    var method: PaymentMethod?
     
     lazy var radioButton = RadioButton(style: selectMode ? .radio : .check, cancellable: false)
     
@@ -26,8 +27,8 @@ class CardItemView : TGLinearLayout {
         self.init(frame: .zero, orientation: .horz)
         self.icon = icon
         self.cardNumber = cardNumber
-        self.isSelected = isSelected
         self.selectMode = selectMode
+        self.isSelected = isSelected
         self.initView()
     }
     

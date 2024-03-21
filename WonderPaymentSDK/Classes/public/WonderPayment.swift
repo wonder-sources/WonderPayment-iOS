@@ -49,7 +49,7 @@ public class WonderPayment : NSObject {
     }
     
     /// 选择支付方式
-    public static func selectPaymentMethod(
+    public static func select(
         intent: PaymentIntent, 
         callback: @escaping SelectMethodCallback
     ) {

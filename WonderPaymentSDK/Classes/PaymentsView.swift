@@ -7,17 +7,21 @@ class PaymentsView : TGLinearLayout {
     lazy var titleBar = initTitleBar()
     lazy var scrollView = ScrollView()
     lazy var amountLabel = UILabel()
-    lazy var bankCardView = BankCardView()
+    lazy var bankCardView = BankCardView(addMode: selectMode)
     lazy var methodView = MethodView(selectMode: selectMode)
     lazy var banner = Banner()
     lazy var pendingView = PendingView()
     lazy var errorView = ErrorView()
     lazy var successfulView = SuccessfulView()
+    lazy var selectConfirmButton = Button(title: "confirm".i18n, style: .secondary)
+    
+    var onMethodConfirm: SelectMethodCallback?
     
     var showAddCard = false {
         didSet{
             bankCardView.isHidden = !showAddCard
             methodView.isHidden = showAddCard
+            selectConfirmButton.isHidden = showAddCard
             if (!showAddCard) {
                 bankCardView.reset()
             }
@@ -77,6 +81,7 @@ class PaymentsView : TGLinearLayout {
         contentLayout.addSubview(paymentMethodLayout)
         
         bankCardView.isHidden = true
+        methodView.delegate = self
         paymentMethodLayout.addSubview(bankCardView)
         paymentMethodLayout.addSubview(methodView)
         
@@ -87,8 +92,19 @@ class PaymentsView : TGLinearLayout {
         poweredLabel.tg_width.equal(.wrap)
         poweredLabel.tg_height.equal(.wrap)
         poweredLabel.tg_centerX.equal(0)
-        paymentMethodLayout.addSubview(poweredLabel)
+        poweredLabel.tg_top.equal(16)
+        contentLayout.addSubview(poweredLabel)
         
+        selectConfirmButton.isHidden = !selectMode
+        selectConfirmButton.isEnabled = false
+        selectConfirmButton.tg_top.equal(16)
+        selectConfirmButton.addTarget(self, action: #selector(onConfirm(_:)), for: .touchUpInside)
+        contentLayout.addSubview(selectConfirmButton)
+    }
+    
+    @objc private func onConfirm(_ sender: Any) {
+        let method = methodView.selectedMethod
+        onMethodConfirm?(method!)
     }
     
     private func initTitleBar() -> TitleBar{
@@ -193,4 +209,14 @@ class PaymentsView : TGLinearLayout {
     }
     
     
+}
+
+extension PaymentsView: MethodViewDelegate {
+    func onSelectedChange(selected: PaymentMethod?) {
+        selectConfirmButton.isEnabled = selected != nil
+    }
+    
+    func onSelectedConfirm(selected: PaymentMethod) {
+        onMethodConfirm?(selected)
+    }
 }

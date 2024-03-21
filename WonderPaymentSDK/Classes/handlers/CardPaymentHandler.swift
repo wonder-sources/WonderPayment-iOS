@@ -32,8 +32,4 @@ class CardPaymentHandler : PaymentHander {
             }
         }
     }
-    
-    deinit{
-        print("CardPaymentHandler deinit")
-    }
 }

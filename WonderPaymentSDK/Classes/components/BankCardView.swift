@@ -17,8 +17,11 @@ class BankCardView : TGLinearLayout {
     
     var form = CardForm()
     
-    convenience init() {
+    var addMode = false
+    
+    convenience init(addMode: Bool = false) {
         self.init(frame: .zero, orientation: .vert)
+        self.addMode = addMode
         self.initView()
     }
     
@@ -39,7 +42,7 @@ class BankCardView : TGLinearLayout {
         confirmButton.isEnabled = false
         confirmButton.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
         confirmButton.qmui_setImageTintColor(WonderPayment.uiConfig.secondaryButtonDisableBackground, for: .disabled)
-        confirmButton.setTitle("confirm".i18n, for: .normal)
+        confirmButton.setTitle("saveThisCard".i18n, for: .normal)
         confirmButton.setTitleColor(WonderPayment.uiConfig.secondaryButtonColor, for: .normal)
         confirmButton.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         confirmButton.titleLabel?.font = UIFont(name: "Futura-Medium", size: 16)
@@ -85,6 +88,7 @@ class BankCardView : TGLinearLayout {
         formView.addSubview(phoneNumberField)
         
         let hLayout2 = TGLinearLayout(.horz)
+        hLayout2.isHidden = addMode
         hLayout2.tg_width.equal(.fill)
         hLayout2.tg_height.equal(.wrap)
         hLayout2.tg_top.equal(16)
@@ -139,7 +143,7 @@ class BankCardView : TGLinearLayout {
     
     private func createBackButton() -> UIButton {
         let button = QMUIButton()
-        button.setTitle("back".i18n, for: .normal)
+        button.setTitle("← \("back".i18n)", for: .normal)
         button.setTitleColor(WonderPayment.uiConfig.primaryTextColor, for: .normal)
         button.titleLabel?.font = UIFont(name: "Futura-Medium", size: 16)
         button.tg_width.equal(.wrap)
@@ -214,7 +218,7 @@ extension BankCardView {
             return "enterValidExpiry".i18n
         }
         let arr = expiry.split(separator: "/")
-        let expYear = String(arr.first!)
+        //let expYear = String(arr.first!)
         let expMonth = String(arr.last!)
         let month = Int(expMonth) ?? 0
         if (month < 1 || month > 12) {

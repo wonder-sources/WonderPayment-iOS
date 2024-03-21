@@ -7,6 +7,7 @@
 
 import UIKit
 import IQKeyboardManagerSwift
+import QMUIKit
 
 enum PaymentStatus {
     case normal,pending,error,success
@@ -45,6 +46,9 @@ class PaymentsViewController: UIViewController {
     /// 支付结果
     var paymentResult: PaymentResult?
     
+    /// 卡列表
+    var cards: [CreditCardInfo]?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,14 +63,20 @@ class PaymentsViewController: UIViewController {
         mView.errorView.retryButton.addTarget(self, action:#selector(retry(_:)), for: .touchUpInside)
         mView.methodView.addCardButton.addTarget(self, action:#selector(showAddCard(_:)), for: .touchUpInside)
         mView.bankCardView.backButton.addTarget(self, action:#selector(hideAddCard(_:)), for: .touchUpInside)
-        mView.methodView.applePayButton.addTarget(self, action:#selector(applePay(_:)), for: .touchUpInside)
-        mView.methodView.unionPayButton.addTarget(self, action:#selector(unionPay(_:)), for: .touchUpInside)
-        mView.methodView.wechatPayButton.addTarget(self, action:#selector(wechatPay(_:)), for: .touchUpInside)
-        mView.methodView.alipayButton.addTarget(self, action:#selector(alipay(_:)), for: .touchUpInside)
-        mView.methodView.alipayHKButton.addTarget(self, action:#selector(alipayHK(_:)), for: .touchUpInside)
-        mView.methodView.cardConfirmButton.addTarget(self, action: #selector(cardConfirmed(_:)), for: .touchUpInside)
         mView.bankCardView.confirmButton.addTarget(self, action: #selector(addCardConfirmed(_:)), for: .touchUpInside)
         loadData()
+        
+        mView.onMethodConfirm = {
+            [unowned self] method in
+            if self.selectMode {
+                self.selectCallback?(method)
+                self.dismiss()
+            } else {
+                let paymentIntent = self.intent.copy()
+                paymentIntent.paymentMethod = method
+                pay(intent: paymentIntent, delegate: self)
+            }
+        }
     }
     
     private func loadData() {
@@ -107,6 +117,7 @@ class PaymentsViewController: UIViewController {
     private func queryCardList() {
         PaymentService.queryCardList {
             [weak self] cards, error in
+            self?.cards = cards
             self?.mView.methodView.setCardItems(cards ?? [])
         }
     }
@@ -117,13 +128,29 @@ class PaymentsViewController: UIViewController {
         self.view.endEditing(true)
     }
     
+    private func dismiss() {
+        self.presentingViewController?.dismiss(animated: true)
+    }
+    
     @objc func onTap(_ sender: UIView) {
         self.view.endEditing(true)
     }
     
     @objc func close(_ sender: UIButton) {
-        self.dismiss(animated: true)
-        paymentCallback?(paymentResult ?? PaymentResult(status: .canceled))
+        if selectMode {
+            self.dismiss()
+        } else {
+            if (paymentResult?.status != .completed) {
+                Dialog.confirm(title: "closeSession".i18n, message: "sureToLeave".i18n, button1: "continuePayment".i18n, button2: "back".i18n, action2: {
+                    [unowned self] controller in
+                    controller.hideWith(animated: true)
+                    self.dismiss()
+                    paymentCallback?(paymentResult ?? PaymentResult(status: .canceled))
+                })
+            } else {
+                paymentCallback?(paymentResult ?? PaymentResult(status: .canceled))
+            }
+        }
     }
     
     @objc func showAddCard(_ sender: UIButton) {
@@ -142,68 +169,29 @@ class PaymentsViewController: UIViewController {
         }
     }
     
-    @objc func applePay(_ sender: UIButton) {
-        let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .applePay)
-        pay(intent: paymentIntent, delegate: self)
-    }
-    
-    @objc func wechatPay(_ sender: UIButton) {
-        let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .wechat)
-        pay(intent: paymentIntent, delegate: self)
-    }
-    
-    @objc func alipay(_ sender: UIButton) {
-        let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .alipay)
-        pay(intent: paymentIntent, delegate: self)
-    }
-    
-    @objc func alipayHK(_ sender: UIButton) {
-        let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .alipayHK)
-        pay(intent: paymentIntent, delegate: self)
-    }
-    
-    @objc func unionPay(_ sender: UIButton) {
-        let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .unionPay)
-        pay(intent: paymentIntent, delegate: self)
-    }
-    
-    /// 卡片选中确认
-    @objc func cardConfirmed(_ sender: UIButton) {
-        if selectMode {
-            
-        } else {
-            let cardInfo = mView.methodView.selectedCard
-            let firstName = cardInfo?.holderFirstName ?? ""
-            let lastName = cardInfo?.holderLastName ?? ""
-            let expYear = cardInfo?.expYear ?? ""
-            let expMonth = cardInfo?.expMonth ?? ""
-            let args: [String : Any?] = [
-                "exp_date": "\(expYear)\(expMonth)",
-                "exp_year": expYear,
-                "exp_month": expMonth,
-                "number": cardInfo?.number,
-                "token": cardInfo?.token,
-                "holder_name": cardInfo?.holderName,
-                "card_reader_mode": "manual",
-                "billing_address": [
-                    "first_name": firstName,
-                    "last_name": lastName,
-                    "phone_number": cardInfo?.phone,
-                ],
-            ]
-            cardPay(args)
-        }
-    }
-    
     /// 添加卡片确认
     @objc func addCardConfirmed(_ sender: UIButton) {
         if selectMode {
-            
+            let form = mView.bankCardView.form
+            let expDate = form.expDate
+            let arr = expDate.split(separator: "/")
+            let expYear = arr.first
+            let expMonth = arr.last
+            let args: [String : Any?] = [
+                "exp_date": expDate.replace("/", with: ""),
+                "exp_year": expYear,
+                "exp_month": expMonth,
+                "number": form.number,
+                "cvv": form.cvv,
+                "holder_name": "\(form.firstName) \(form.lastName)",
+                "default": true,
+                "billing_address": [
+                    "first_name": form.firstName,
+                    "last_name": form.lastName,
+                    "phone_number": form.phone,
+                ],
+            ]
+            addCard(args)
         } else {
             let form = mView.bankCardView.form
             let expDate = form.expDate
@@ -235,12 +223,32 @@ class PaymentsViewController: UIViewController {
         pay(intent: paymentIntent, delegate: self)
     }
     
+    private func addCard(_ args: [String: Any?]) {
+        Loading.show()
+        PaymentService.bindCard(cardInfo: args) { cardInfo, error in
+            Loading.dismiss()
+            if let error = error {
+                Tips.show(style: .error, title: error.code, subTitle: error.message)
+                return
+            }
+            
+            if let cardInfo = cardInfo {
+                Tips.show(image: "verified".svg, title: "cardVerified".i18n, subTitle: "canStartPaying".i18n) {
+                    [weak self] _ in
+                    self?.resetUI()
+                    self?.cards?.insert(cardInfo, at: 0)
+                    self?.mView.methodView.setCardItems(self?.cards ?? [])
+                }
+            }
+        }
+    }
+    
 }
 
 extension PaymentsViewController: PaymentDelegate {
     
     func onInterrupt(intent: PaymentIntent) {
-        LoadingView.dismiss()
+        Loading.dismiss()
         paymentStatus = .pending
         resetUI()
         let name: String
@@ -268,12 +276,12 @@ extension PaymentsViewController: PaymentDelegate {
     }
     
     func onProcessing() {
-        LoadingView.show()
+        Loading.show(style: .fullScreen)
     }
     
     func onFinished(intent: PaymentIntent, result: PayResult?, error: ErrorMessage?) {
         resetUI()
-        LoadingView.dismiss()
+        Loading.dismiss()
         lastPaymentIntent = intent
         if let error = error {
             paymentStatus = .error
@@ -283,7 +291,7 @@ extension PaymentsViewController: PaymentDelegate {
         if let result = result,let success = result.success, success {
             paymentResult = PaymentResult(status: .completed)
             paymentCallback?(paymentResult!)
-            self.presentingViewController?.dismiss(animated: true)
+            self.dismiss()
         }
     }
     

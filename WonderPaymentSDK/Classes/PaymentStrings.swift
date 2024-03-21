@@ -61,7 +61,7 @@ The reason why you're seeing this status is because there might be a pending pay
         "saveCardInfo": "Save this Card Information",
         "confirm": "Confirm",
         "cardPayment": "Card Payment",
-        "back": "← Back",
+        "back": "Back",
         "dialingCode": "Dialing Code",
         "search":"Search",
         "cvv": "CVV",
@@ -85,6 +85,12 @@ The reason why you're seeing this status is because there might be a pending pay
         "enterValidCVV": "Enter valid CVV",
         "nameShouldNot": "Name should not include numbers and special characters",
         "invalidPhone": "Invalid Phone Number",
+        "saveThisCard": "Save this Card",
+        "cardVerified": "Card verified",
+        "canStartPaying": "You can start paying with this card",
+        "closeSession": "Close Payment Session?",
+        "sureToLeave": "You haven’t finished the payment.Are you sure you want to leave?",
+        "continuePayment": "Continue the Payment",
     ]
     
     static let zh_CN = [
@@ -127,7 +133,7 @@ The reason why you're seeing this status is because there might be a pending pay
         "saveCardInfo": "保存卡片信息",
         "confirm": "确定",
         "cardPayment": "信用卡支付",
-        "back": "← 返回",
+        "back": "返回",
         "dialingCode": "区号",
         "search":"搜索",
         "cvv": "CVV",
@@ -151,6 +157,12 @@ The reason why you're seeing this status is because there might be a pending pay
         "enterValidCVV": "请输入有效的CVV",
         "nameShouldNot": "姓名不能包含数字和特殊字符",
         "invalidPhone": "无效的手机号码",
+        "saveThisCard": "保存卡片",
+        "cardVerified": "卡片已验证",
+        "canStartPaying": "您可以开始用这张卡付款",
+        "closeSession": "关闭付款会话？",
+        "sureToLeave": "您尚未完成付款。您确定要离开吗？",
+        "continuePayment": "继续付款",
     ]
     
     static let zh_HK = [
@@ -193,7 +205,7 @@ The reason why you're seeing this status is because there might be a pending pay
         "saveCardInfo": "保存卡片信息",
         "confirm": "確定",
         "cardPayment": "信用卡支付",
-        "back": "← 返回",
+        "back": "返回",
         "dialingCode": "區號",
         "search":"搜索",
         "cvv": "CVV",
@@ -217,5 +229,11 @@ The reason why you're seeing this status is because there might be a pending pay
         "enterValidCVV": "請輸入有效的CVV",
         "nameShouldNot": "姓名不能包含數字和特殊字符",
         "invalidPhone": "無效的手機號碼",
+        "saveThisCard": "保存卡片",
+        "cardVerified": "卡片已驗證",
+        "canStartPaying": "您可以開始用這張卡付款",
+        "closeSession": "關閉付款會話？",
+        "sureToLeave": "您尚未完成付款。您確定要離開嗎？",
+        "continuePayment": "繼續付款",
     ]
 }

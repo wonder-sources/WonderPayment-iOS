@@ -18,4 +18,5 @@ FOUNDATION_EXPORT const unsigned char PaymentSDKVersionString[];
 #import <WonderPaymentSDK/WonderPayment.h>
 #import <AlipaySDK/AlipaySDK.h>
 #import <WXApi.h>
+#import "UPPay.h"
 

@@ -13,7 +13,7 @@ public class PaymentIntent {
         self.transactionType = transactionType
     }
     
-    func copy() -> PaymentIntent {
+    public func copy() -> PaymentIntent {
         return PaymentIntent(
             amount: self.amount,
             currency: self.currency,

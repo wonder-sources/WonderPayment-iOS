@@ -9,9 +9,18 @@ import Foundation
 import QMUIKit
 import TangramKit
 
-class ApplePayButton : QMUIButton {
+class ApplePayButton : QMUIButton, MethodItemView {
     
     var selectMode = false
+    var radioButton: RadioButton?
+    
+    override var isSelected: Bool {
+        didSet {
+            radioButton?.isSelected = isSelected
+        }
+    }
+    
+    var method: PaymentMethod?
     
     convenience init(selectMode: Bool = false) {
         self.init(frame: .zero)
@@ -50,12 +59,12 @@ class ApplePayButton : QMUIButton {
             label.tg_centerY.equal(0)
             child.addSubview(label)
             
-            let radioButton = RadioButton(style: .radio)
-            radioButton.tg_left.equal(100%)
-            radioButton.tg_width.equal(.wrap)
-            radioButton.tg_height.equal(.wrap)
-            radioButton.tg_centerY.equal(0)
-            child.addSubview(radioButton)
+            radioButton = RadioButton(style: .radio)
+            radioButton!.tg_left.equal(100%)
+            radioButton!.tg_width.equal(.wrap)
+            radioButton!.tg_height.equal(.wrap)
+            radioButton!.tg_centerY.equal(0)
+            child.addSubview(radioButton!)
             
             layer.borderWidth = 1
             layer.borderColor = WonderPayment.uiConfig.primaryButtonColor.cgColor

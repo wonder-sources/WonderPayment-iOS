@@ -1,28 +1,43 @@
 import QMUIKit
 import TangramKit
 
+protocol MethodItemView {
+    var isSelected: Bool { get set }
+    var method: PaymentMethod? { get set }
+}
+
+protocol MethodViewDelegate {
+    /// 选择改变
+    func onSelectedChange(selected: PaymentMethod?)
+    /// 选择确认
+    func onSelectedConfirm(selected: PaymentMethod)
+}
+
 class MethodView : TGLinearLayout {
     
     var selectMode = false
+    
     lazy var applePayButton = ApplePayButton(selectMode: selectMode)
-    lazy var unionPayButton = createButton(image: "UnionPay", title: "unionPay".i18n, selectMode: selectMode)
-    lazy var wechatPayButton = createButton(image: "WechatPay", title: "wechatPay".i18n, selectMode: selectMode)
-    lazy var alipayButton = createButton(image: "Alipay", title: "alipay".i18n, selectMode: selectMode)
-    lazy var alipayHKButton = createButton(image: "Alipay", title: "alipayHK".i18n, selectMode: selectMode)
+    lazy var unionPayButton = MethodButton(image: "UnionPay", title: "unionPay".i18n, selectMode: selectMode)
+    lazy var wechatPayButton = MethodButton(image: "WechatPay", title: "wechatPay".i18n, selectMode: selectMode)
+    lazy var alipayButton = MethodButton(image: "Alipay", title: "alipay".i18n, selectMode: selectMode)
+    lazy var alipayHKButton = MethodButton(image: "Alipay", title: "alipayHK".i18n, selectMode: selectMode)
     lazy var addCardButton = createAddCardButton()
     lazy var cardView = createCardView()
     lazy var itemsLayout = TGLinearLayout(.vert)
     lazy var cardConfirmButton = Button(title: "confirm".i18n, style: .secondary)
     
-    var items: [CreditCardInfo]?
-    var lastSelectedItemView: CardItemView?
+    var lastSelected: MethodItemView?
     
-    var selectedCard: CreditCardInfo? {
-        didSet {
-            cardConfirmButton.isHidden = selectedCard == nil
+    var selectedMethod: PaymentMethod? {
+        didSet{
+            cardConfirmButton.isHidden = selectMode || selectedMethod?.type != .creditCard
+            delegate?.onSelectedChange(selected: selectedMethod)
         }
     }
     
+    var delegate: MethodViewDelegate?
+
     convenience init(selectMode: Bool = false) {
         self.init(frame: .zero, orientation: .vert)
         self.selectMode = selectMode
@@ -33,6 +48,17 @@ class MethodView : TGLinearLayout {
         self.tg_vspace = 16
         self.tg_width.equal(.fill)
         self.tg_height.equal(.wrap)
+        
+        applePayButton.method = PaymentMethod(type: .applePay)
+        unionPayButton.method = PaymentMethod(type: .unionPay)
+        wechatPayButton.method = PaymentMethod(type: .wechat)
+        alipayButton.method = PaymentMethod(type: .alipay)
+        alipayHKButton.method = PaymentMethod(type: .alipayHK)
+        applePayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
+        unionPayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
+        wechatPayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
+        alipayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
+        alipayHKButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         
         addSubview(applePayButton)
         addSubview(unionPayButton)
@@ -55,12 +81,15 @@ class MethodView : TGLinearLayout {
     }
     
     func setCardItems(_ items: [CreditCardInfo]) {
-        self.items = items
-        selectedCard = nil
         for subview in itemsLayout.subviews {
             subview.removeFromSuperview()
         }
-        
+        if lastSelected?.method?.type == .creditCard {
+            lastSelected = nil
+        }
+        if selectedMethod?.type == .creditCard {
+            selectedMethod = nil
+        }
         if (!items.isEmpty) {
             let divider = UIView()
             divider.backgroundColor = .black.withAlphaComponent(0.2)
@@ -74,78 +103,70 @@ class MethodView : TGLinearLayout {
                 let cardNumber = formatCardNumber(issuer: item.issuer ?? "", number: item.number ?? "")
                 let isSelected = item.default ?? false
                 let itemView = CardItemView(icon: icon, cardNumber: cardNumber,isSelected: isSelected, selectMode: selectMode)
-                itemsLayout.addSubview(itemView)
-                if isSelected {
-                    selectedCard = item
-                    lastSelectedItemView?.isSelected = false
-                    lastSelectedItemView = itemView
-                }
-                itemView.tag = index
+                itemView.method = trans2PaymentMethod(item)
                 itemView.addGestureRecognizer(
                     UITapGestureRecognizer(
                         target: self,
-                        action: #selector(onItemClick(_:))
+                        action: #selector(onMethodItemClick(_:))
                     )
                 )
+                if isSelected {
+                    selectedMethod = itemView.method
+                    lastSelected?.isSelected = false
+                    lastSelected = itemView
+                }
+                
+                itemsLayout.addSubview(itemView)
             }
         }
     }
     
-    @objc private func onItemClick(_ sender: UITapGestureRecognizer) {
-        let itemView = sender.view as! CardItemView
+    private func trans2PaymentMethod(_ cardInfo: CreditCardInfo) -> PaymentMethod {
+        let firstName = cardInfo.holderFirstName ?? ""
+        let lastName = cardInfo.holderLastName ?? ""
+        let expYear = cardInfo.expYear ?? ""
+        let expMonth = cardInfo.expMonth ?? ""
+        let args: [String : Any?] = [
+            "exp_date": "\(expYear)\(expMonth)",
+            "exp_year": expYear,
+            "exp_month": expMonth,
+            "number": cardInfo.number,
+            "token": cardInfo.token,
+            "holder_name": cardInfo.holderName,
+            "card_reader_mode": "manual",
+            "billing_address": [
+                "first_name": firstName,
+                "last_name": lastName,
+                "phone_number": cardInfo.phone,
+            ],
+        ]
+        return PaymentMethod(type: .creditCard, arguments: args)
+    }
+    
+    @objc private func onMethodItemClick(_ sender: Any) {
+        var itemView : MethodItemView
+        if sender is UITapGestureRecognizer {
+            itemView = (sender as! UITapGestureRecognizer).view as! MethodItemView
+        } else {
+            itemView = sender as! MethodItemView
+        }
+        let method = itemView.method
+        if !selectMode && method?.type != .creditCard {
+            delegate?.onSelectedConfirm(selected: method!)
+            return
+        }
         if (!itemView.isSelected) {
             itemView.isSelected = true
-            selectedCard = items?[itemView.tag]
-            lastSelectedItemView?.isSelected = false
-            lastSelectedItemView = itemView
+            selectedMethod = itemView.method
+            lastSelected?.isSelected = false
+            lastSelected = itemView
         }
     }
     
-    private func createButton(image: String, title: String, selectMode: Bool = false) -> UIButton {
-        let button = QMUIButton()
-        button.backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
-        button.layer.borderWidth = 1
-        button.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
-        button.tg_width.equal(.fill)
-        button.tg_height.equal(56)
-        
-        let child = TGLinearLayout(.horz)
-        child.tg_padding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        child.tg_width.equal(.fill)
-        child.tg_height.equal(.fill)
-        child.isUserInteractionEnabled = false
-        button.addSubview(child)
-        
-        let icon = UIImageView(image: image.svg)
-        icon.contentMode = .scaleAspectFit
-        icon.tg_width.equal(48)
-        icon.tg_height.equal(25)
-        icon.tg_centerY.equal(0)
-        child.addSubview(icon)
-        
-        let label = UILabel()
-        label.text = title
-        label.font = UIFont(name: "Futura-Medium", size: 16)
-        label.textColor = WonderPayment.uiConfig.primaryButtonColor
-        label.tg_left.equal(8)
-        label.tg_width.equal(.wrap)
-        label.tg_height.equal(.wrap)
-        label.tg_centerY.equal(0)
-        child.addSubview(label)
-        
-        let radioButton = RadioButton(style: .radio)
-        radioButton.tg_left.equal(100%)
-        radioButton.tg_width.equal(.wrap)
-        radioButton.tg_height.equal(.wrap)
-        radioButton.tg_centerY.equal(0)
-        child.addSubview(radioButton)
-        
-        if !selectMode {
-            icon.tg_left.equal(100%)
-            radioButton.alpha = 0
+    @objc private func onCardConfirm(_ sender: Any) {
+        if (selectedMethod?.type == .creditCard) {
+            delegate?.onSelectedConfirm(selected: selectedMethod!)
         }
-        
-        return button
     }
     
     private func createCardView() -> UIView {
@@ -185,6 +206,7 @@ class MethodView : TGLinearLayout {
             cardConfirmButton.isHidden = true
             cardConfirmButton.tg_bottom.equal(16)
             creditCardView.addSubview(cardConfirmButton)
+            cardConfirmButton.addTarget(self, action: #selector(onCardConfirm(_:)), for: .touchUpInside)
         }
         
         return creditCardView

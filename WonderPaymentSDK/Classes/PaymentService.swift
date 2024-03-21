@@ -155,33 +155,13 @@ class PaymentService {
         task.resume()
     }
     
-    static func bindCard(creditCardArgs: Dictionary<String, String>, completion: @escaping (CreditCardInfo?, ErrorMessage?) -> Void) {
+    static func bindCard(cardInfo: [String: Any?], completion: @escaping (CreditCardInfo?, ErrorMessage?) -> Void) {
         let urlString = "https://\(domain)/svc/oms/public/api/v1/payment_sdk/credit_cards/bind"
-        print("bindCard-url", urlString)
         
         guard let url = URL(string: urlString) else {
             UI.call { completion(nil, .unknownError) }
             return
         }
-        
-        let expiryDate = creditCardArgs["expiryDate"]!
-        let firstName = creditCardArgs["firstName"]!
-        let lastName = creditCardArgs["lastName"]!
-        let expiry = expiryDate.replacingOccurrences(of: "/", with: "")
-        let params: [String: Any?] = [
-            "exp_date": expiry,
-            "exp_year": expiry.prefix(2),
-            "exp_month": expiry.suffix(2),
-            "number": creditCardArgs["cardNumber"],
-            "cvv": creditCardArgs["cvv"],
-            "holder_name": "\(firstName) \(lastName)",
-            "default": true,
-            "billing_address": [
-                "first_name": firstName,
-                "last_name" : lastName,
-                "phone_number" : creditCardArgs["phoneNumber"]
-            ]
-        ]
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -191,7 +171,7 @@ class PaymentService {
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
         
         do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
+            request.httpBody = try JSONSerialization.data(withJSONObject: cardInfo, options: [])
         } catch {
             UI.call { completion(nil, .dataFormatError) }
             return
@@ -206,6 +186,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
+//                prettyPrint(arrayOrMap: json)
                 let resp = PaymentResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let card = CreditCardInfo.from(json: resp.data as? NSDictionary)
