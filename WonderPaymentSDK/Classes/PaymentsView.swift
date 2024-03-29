@@ -3,13 +3,15 @@ import QMUIKit
 import TangramKit
 
 class PaymentsView : TGLinearLayout {
-    var selectMode = false
+    var displayStyle: DisplayStyle = .oneClick
+    var sessionMode: SessionMode = .once
     lazy var titleBar = initTitleBar()
     lazy var scrollView = ScrollView()
     lazy var amountLabel = UILabel()
-    lazy var bankCardView = BankCardView(addMode: selectMode)
-    lazy var methodView = MethodView(selectMode: selectMode)
+    lazy var bankCardView = BankCardView(addMode: sessionMode == .twice)
+    lazy var methodView = MethodView(displayStyle: displayStyle)
     lazy var banner = Banner()
+    lazy var paymentMethodLayout = TGLinearLayout(.vert)
     lazy var pendingView = PendingView()
     lazy var errorView = ErrorView()
     lazy var successfulView = SuccessfulView()
@@ -21,16 +23,17 @@ class PaymentsView : TGLinearLayout {
         didSet{
             bankCardView.isHidden = !showAddCard
             methodView.isHidden = showAddCard
-            selectConfirmButton.isHidden = showAddCard
+            selectConfirmButton.isHidden = showAddCard || displayStyle == .oneClick
             if (!showAddCard) {
                 bankCardView.reset()
             }
         }
     }
     
-    init(selectMode: Bool = false) {
+    init(displayStyle: DisplayStyle = .oneClick, sessionMode: SessionMode = .once) {
         super.init(frame: .zero, orientation: .vert)
-        self.selectMode = selectMode
+        self.displayStyle = displayStyle
+        self.sessionMode = sessionMode
         self.initView()
     }
     
@@ -43,6 +46,8 @@ class PaymentsView : TGLinearLayout {
         pendingView.isHidden = status != .pending
         errorView.isHidden = status != .error
         successfulView.isHidden = status != .success
+        paymentMethodLayout.isHidden = status == .success
+        selectConfirmButton.isHidden = status == .success || displayStyle != .confirm
     }
     
     private func initView() {
@@ -51,6 +56,7 @@ class PaymentsView : TGLinearLayout {
         self.tg_width.equal(.fill)
         addSubview(titleBar)
         
+        scrollView.alwaysBounceVertical = true
         scrollView.tg_width.equal(.fill)
         scrollView.tg_height.equal(.fill)
         addSubview(scrollView)
@@ -64,6 +70,12 @@ class PaymentsView : TGLinearLayout {
         let headerView = initHeaderView()
         contentLayout.addSubview(headerView)
         
+        paymentMethodLayout.tg_top.equal(10)
+        paymentMethodLayout.tg_vspace = 16
+        paymentMethodLayout.tg_width.equal(.fill)
+        paymentMethodLayout.tg_height.equal(.wrap)
+        contentLayout.addSubview(paymentMethodLayout)
+        
         let paymentMethodHeader = UILabel()
         paymentMethodHeader.text = "selectPaymentMethod".i18n
         paymentMethodHeader.font = UIFont(name: "Futura-Medium", size: 16)
@@ -71,14 +83,7 @@ class PaymentsView : TGLinearLayout {
         paymentMethodHeader.tg_width.equal(.fill)
         paymentMethodHeader.tg_height.equal(.wrap)
         paymentMethodHeader.tg_top.equal(16)
-        contentLayout.addSubview(paymentMethodHeader)
-        
-        let paymentMethodLayout = TGLinearLayout(.vert)
-        paymentMethodLayout.tg_top.equal(10)
-        paymentMethodLayout.tg_vspace = 16
-        paymentMethodLayout.tg_width.equal(.fill)
-        paymentMethodLayout.tg_height.equal(.wrap)
-        contentLayout.addSubview(paymentMethodLayout)
+        paymentMethodLayout.addSubview(paymentMethodHeader)
         
         bankCardView.isHidden = true
         methodView.delegate = self
@@ -87,7 +92,7 @@ class PaymentsView : TGLinearLayout {
         
         let poweredLabel = UILabel()
         poweredLabel.font =  UIFont(name: "Futura-Medium", size: 12)
-        poweredLabel.text = "Powered by Wonder"
+        poweredLabel.text = "Powered by Wonder.app"
         poweredLabel.textColor = WonderPayment.uiConfig.primaryTextColor
         poweredLabel.tg_width.equal(.wrap)
         poweredLabel.tg_height.equal(.wrap)
@@ -95,11 +100,19 @@ class PaymentsView : TGLinearLayout {
         poweredLabel.tg_top.equal(16)
         contentLayout.addSubview(poweredLabel)
         
-        selectConfirmButton.isHidden = !selectMode
+        let confirmLayout = TGLinearLayout(.vert)
+        confirmLayout.backgroundColor = WonderPayment.uiConfig.secondaryBackground
+        confirmLayout.tg_width.equal(.fill)
+        confirmLayout.tg_height.equal(.wrap)
+        addSubview(confirmLayout)
+        
+        selectConfirmButton.isHidden = displayStyle != .confirm
         selectConfirmButton.isEnabled = false
+        selectConfirmButton.tg_horzMargin(16)
         selectConfirmButton.tg_top.equal(16)
+        selectConfirmButton.tg_bottom.equal(QMUIHelper.safeAreaInsetsForDeviceWithNotch.bottom + 16)
         selectConfirmButton.addTarget(self, action: #selector(onConfirm(_:)), for: .touchUpInside)
-        contentLayout.addSubview(selectConfirmButton)
+        confirmLayout.addSubview(selectConfirmButton)
     }
     
     @objc private func onConfirm(_ sender: Any) {
@@ -123,23 +136,23 @@ class PaymentsView : TGLinearLayout {
         headerView.tg_width.equal(.fill)
         headerView.tg_height.equal(.wrap)
         
-        let poweredView = TGLinearLayout(.horz)
-        poweredView.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
-        poweredView.layer.cornerRadius = 8
-        poweredView.tg_height.equal(34)
-        poweredView.tg_width.equal(.wrap)
-        poweredView.tg_padding = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-        
-        let poweredLabel = UILabel()
-        poweredLabel.font =  UIFont(name: "Futura-Medium", size: 14)
-        poweredLabel.text = "Powered by Wonder"
-        poweredLabel.textColor = WonderPayment.uiConfig.secondaryButtonColor
-        poweredLabel.tg_width.equal(.wrap)
-        poweredLabel.tg_height.equal(.wrap)
-        poweredLabel.tg_centerY.equal(0)
-        poweredView.addSubview(poweredLabel)
-        
-        headerView.addSubview(poweredView)
+//        let poweredView = TGLinearLayout(.horz)
+//        poweredView.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
+//        poweredView.layer.cornerRadius = 8
+//        poweredView.tg_height.equal(34)
+//        poweredView.tg_width.equal(.wrap)
+//        poweredView.tg_padding = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+//        
+//        let poweredLabel = UILabel()
+//        poweredLabel.font =  UIFont(name: "Futura-Medium", size: 14)
+//        poweredLabel.text = "Powered by Wonder"
+//        poweredLabel.textColor = WonderPayment.uiConfig.secondaryButtonColor
+//        poweredLabel.tg_width.equal(.wrap)
+//        poweredLabel.tg_height.equal(.wrap)
+//        poweredLabel.tg_centerY.equal(0)
+//        poweredView.addSubview(poweredLabel)
+//        
+//        headerView.addSubview(poweredView)
         
         let totalLabel = UILabel()
         totalLabel.text = "totalAmount".i18n

@@ -32,7 +32,8 @@ public class WonderPayment : NSObject {
     ) {
         let rootViewController = UIApplication.shared.keyWindow?.rootViewController
         let paymentsViewController = PaymentsViewController()
-        paymentsViewController.selectMode = false
+        paymentsViewController.sessionMode = .once
+        paymentsViewController.displayStyle = uiConfig.displayStyle
         paymentsViewController.intent = intent
         paymentsViewController.paymentCallback = callback
         paymentsViewController.modalPresentationStyle = .fullScreen
@@ -55,7 +56,8 @@ public class WonderPayment : NSObject {
     ) {
         let rootViewController = UIApplication.shared.keyWindow?.rootViewController
         let paymentsViewController = PaymentsViewController()
-        paymentsViewController.selectMode = true
+        paymentsViewController.sessionMode = .twice
+        paymentsViewController.displayStyle = uiConfig.displayStyle
         paymentsViewController.intent = intent
         paymentsViewController.selectCallback = callback
         paymentsViewController.modalPresentationStyle = .fullScreen

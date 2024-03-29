@@ -12,10 +12,10 @@ class CardItemView : TGLinearLayout, MethodItemView {
     
     var icon: String = ""
     var cardNumber: String = ""
-    var selectMode: Bool = false
+    var displayStyle: DisplayStyle = .oneClick
     var method: PaymentMethod?
     
-    lazy var radioButton = RadioButton(style: selectMode ? .radio : .check, cancellable: false)
+    lazy var radioButton = RadioButton(style: displayStyle == .confirm ? .radio : .check, cancellable: false)
     
     override var isSelected: Bool {
         didSet {
@@ -23,11 +23,11 @@ class CardItemView : TGLinearLayout, MethodItemView {
         }
     }
     
-    convenience init(icon: String, cardNumber: String, isSelected: Bool = false, selectMode: Bool = false) {
+    convenience init(icon: String, cardNumber: String, isSelected: Bool = false, displayStyle: DisplayStyle = .oneClick) {
         self.init(frame: .zero, orientation: .horz)
         self.icon = icon
         self.cardNumber = cardNumber
-        self.selectMode = selectMode
+        self.displayStyle = displayStyle
         self.isSelected = isSelected
         self.initView()
     }

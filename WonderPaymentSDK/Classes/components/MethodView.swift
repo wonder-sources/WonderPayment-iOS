@@ -15,13 +15,13 @@ protocol MethodViewDelegate {
 
 class MethodView : TGLinearLayout {
     
-    var selectMode = false
+    var displayStyle: DisplayStyle = .oneClick
     
-    lazy var applePayButton = ApplePayButton(selectMode: selectMode)
-    lazy var unionPayButton = MethodButton(image: "UnionPay", title: "unionPay".i18n, selectMode: selectMode)
-    lazy var wechatPayButton = MethodButton(image: "WechatPay", title: "wechatPay".i18n, selectMode: selectMode)
-    lazy var alipayButton = MethodButton(image: "Alipay", title: "alipay".i18n, selectMode: selectMode)
-    lazy var alipayHKButton = MethodButton(image: "Alipay", title: "alipayHK".i18n, selectMode: selectMode)
+    lazy var applePayButton = ApplePayButton(displayStyle: displayStyle)
+    lazy var unionPayButton = MethodButton(image: "UnionPay", title: "unionPay".i18n, displayStyle: displayStyle)
+    lazy var wechatPayButton = MethodButton(image: "WechatPay", title: "wechatPay".i18n, displayStyle: displayStyle)
+    lazy var alipayButton = MethodButton(image: "Alipay", title: "alipay".i18n, displayStyle: displayStyle)
+    lazy var alipayHKButton = MethodButton(image: "Alipay", title: "alipayHK".i18n, displayStyle: displayStyle)
     lazy var addCardButton = createAddCardButton()
     lazy var cardView = createCardView()
     lazy var itemsLayout = TGLinearLayout(.vert)
@@ -31,16 +31,16 @@ class MethodView : TGLinearLayout {
     
     var selectedMethod: PaymentMethod? {
         didSet{
-            cardConfirmButton.isHidden = selectMode || selectedMethod?.type != .creditCard
+            cardConfirmButton.isHidden = displayStyle == .confirm || selectedMethod?.type != .creditCard
             delegate?.onSelectedChange(selected: selectedMethod)
         }
     }
     
     var delegate: MethodViewDelegate?
 
-    convenience init(selectMode: Bool = false) {
+    convenience init(displayStyle: DisplayStyle = .oneClick) {
         self.init(frame: .zero, orientation: .vert)
-        self.selectMode = selectMode
+        self.displayStyle = displayStyle
         self.initView()
     }
     
@@ -67,7 +67,7 @@ class MethodView : TGLinearLayout {
         addSubview(alipayHKButton)
         
         
-        if WonderPayment.uiConfig.creditCardTop {
+        if displayStyle == .confirm {
             insertSubview(cardView, at: 0)
         } else {
             addSubview(cardView)
@@ -92,17 +92,20 @@ class MethodView : TGLinearLayout {
         }
         if (!items.isEmpty) {
             let divider = UIView()
-            divider.backgroundColor = .black.withAlphaComponent(0.2)
+            divider.backgroundColor = UIColor(hexString: "#FFE4E4E4")
             divider.tg_width.equal(.fill)
-            divider.tg_height.equal(QMUIHelper.pixelOne)
-            itemsLayout.addSubview(divider)
+            divider.tg_height.equal(1)
+            
+            if displayStyle == .oneClick {
+                itemsLayout.addSubview(divider)
+            }
 
             for index in 0..<items.count {
                 let item = items[index]
                 let icon = CardMap.getIcon(item.issuer ?? "")
                 let cardNumber = formatCardNumber(issuer: item.issuer ?? "", number: item.number ?? "")
-                let isSelected = item.default ?? false
-                let itemView = CardItemView(icon: icon, cardNumber: cardNumber,isSelected: isSelected, selectMode: selectMode)
+//                let isSelected = item.default ?? false
+                let itemView = CardItemView(icon: icon, cardNumber: cardNumber,isSelected: isSelected, displayStyle: displayStyle)
                 itemView.method = trans2PaymentMethod(item)
                 itemView.addGestureRecognizer(
                     UITapGestureRecognizer(
@@ -110,13 +113,16 @@ class MethodView : TGLinearLayout {
                         action: #selector(onMethodItemClick(_:))
                     )
                 )
-                if isSelected {
-                    selectedMethod = itemView.method
-                    lastSelected?.isSelected = false
-                    lastSelected = itemView
-                }
-                
+//                if isSelected {
+//                    selectedMethod = itemView.method
+//                    lastSelected?.isSelected = false
+//                    lastSelected = itemView
+//                }
                 itemsLayout.addSubview(itemView)
+            }
+            
+            if displayStyle == .confirm {
+                itemsLayout.addSubview(divider)
             }
         }
     }
@@ -151,7 +157,7 @@ class MethodView : TGLinearLayout {
             itemView = sender as! MethodItemView
         }
         let method = itemView.method
-        if !selectMode && method?.type != .creditCard {
+        if displayStyle == .oneClick && method?.type != .creditCard {
             delegate?.onSelectedConfirm(selected: method!)
             return
         }
@@ -200,9 +206,13 @@ class MethodView : TGLinearLayout {
         
         itemsLayout.tg_width.equal(.fill)
         itemsLayout.tg_height.equal(.wrap)
-        creditCardView.addSubview(itemsLayout)
+        if displayStyle == .confirm {
+            creditCardView.insertSubview(itemsLayout, at: 0)
+        } else {
+            creditCardView.addSubview(itemsLayout)
+        }
         
-        if !selectMode {
+        if displayStyle != .confirm {
             cardConfirmButton.isHidden = true
             cardConfirmButton.tg_bottom.equal(16)
             creditCardView.addSubview(cardConfirmButton)

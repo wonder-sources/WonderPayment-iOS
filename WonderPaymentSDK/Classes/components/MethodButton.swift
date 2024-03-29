@@ -12,7 +12,7 @@ import TangramKit
 class MethodButton : QMUIButton, MethodItemView {
     var image: String
     var title: String
-    var selectMode: Bool
+    var displayStyle: DisplayStyle
     var method: PaymentMethod?
     
     lazy var radioButton = RadioButton(style: .radio)
@@ -23,10 +23,10 @@ class MethodButton : QMUIButton, MethodItemView {
         }
     }
     
-    init(image: String, title: String, selectMode: Bool = false) {
+    init(image: String, title: String, displayStyle: DisplayStyle = .oneClick) {
         self.image = image
         self.title = title
-        self.selectMode = selectMode
+        self.displayStyle = displayStyle
         super.init(frame: .zero)
         self.initView()
     }
@@ -72,7 +72,7 @@ class MethodButton : QMUIButton, MethodItemView {
         radioButton.tg_centerY.equal(0)
         child.addSubview(radioButton)
         
-        if !selectMode {
+        if displayStyle == .oneClick {
             icon.tg_left.equal(100%)
             radioButton.alpha = 0
         }

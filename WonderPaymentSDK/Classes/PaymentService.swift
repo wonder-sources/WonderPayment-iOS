@@ -100,7 +100,7 @@ class PaymentService {
                 return
             }
             
-            //prettyPrint(jsonData: data)
+//            prettyPrint(jsonData: data)
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
@@ -227,7 +227,7 @@ class PaymentService {
                 return
             }
             
-            //prettyPrint(jsonData: data)
+//            prettyPrint(jsonData: data)
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])

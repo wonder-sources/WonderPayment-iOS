@@ -35,7 +35,7 @@ class PaymentStrings {
         "pending": "Pending",
         "initiatedAt": "Payment initiated at",
         "pendingPayment": "Pending Payment Status",
-        "pendingPaymentDesc": 
+        "pendingPaymentDesc":
 """
 The reason why you're seeing this status is because there might be a pending payment initiated (commonly when you initiate Wechat Pay or Alipay). What to do:
 
@@ -91,6 +91,12 @@ The reason why you're seeing this status is because there might be a pending pay
         "closeSession": "Close Payment Session?",
         "sureToLeave": "You haven’t finished the payment.Are you sure you want to leave?",
         "continuePayment": "Continue the Payment",
+        "paymentAmount": "Payment Amount",
+        "transactionID": "Transaction ID",
+        "RRN": "RRN",
+        "customerName": "Customer Name",
+        "transactionTime": "Transaction Time",
+        "invoiceAmount": "Invoice Amount",
     ]
     
     static let zh_CN = [
@@ -163,6 +169,12 @@ The reason why you're seeing this status is because there might be a pending pay
         "closeSession": "关闭付款会话？",
         "sureToLeave": "您尚未完成付款。您确定要离开吗？",
         "continuePayment": "继续付款",
+        "paymentAmount": "付款金额",
+        "transactionID": "交易ID",
+        "RRN":"RRN",
+        "customerName": "客户名称",
+        "transactionTime": "交易时间",
+        "invoiceAmount": "发票金额",
     ]
     
     static let zh_HK = [
@@ -235,5 +247,11 @@ The reason why you're seeing this status is because there might be a pending pay
         "closeSession": "關閉付款會話？",
         "sureToLeave": "您尚未完成付款。您確定要離開嗎？",
         "continuePayment": "繼續付款",
+        "paymentAmount": "付款金額",
+        "transactionID": "交易ID",
+        "RRN": "RRN",
+        "customerName": "客戶名稱",
+        "transactionTime": "交易時間",
+        "invoiceAmount": "發票金額",
     ]
 }

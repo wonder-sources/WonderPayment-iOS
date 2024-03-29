@@ -13,6 +13,12 @@ enum PaymentStatus {
     case normal,pending,error,success
 }
 
+enum SessionMode {
+    //once: 一次会话完成所有操作
+    //twice: 选择支付方式和支付拆分为两个会话
+    case once, twice
+}
+
 class PaymentsViewController: UIViewController {
     
     ///支付参数
@@ -20,7 +26,7 @@ class PaymentsViewController: UIViewController {
         didSet {
             let amountText = "\(CurrencySymbols.get(intent.currency))\(formatAmount(intent.amount))"
             mView.amountLabel.text = amountText
-            if !selectMode {
+            if sessionMode == .once {
                 let buttonText = "\("pay".i18n) \(amountText)"
                 mView.methodView.cardConfirmButton.setTitle(buttonText, for: .normal)
                 mView.bankCardView.confirmButton.setTitle(buttonText, for: .normal)
@@ -30,10 +36,12 @@ class PaymentsViewController: UIViewController {
     ///支付回调
     var paymentCallback: PaymentResultCallback?
     var selectCallback: SelectMethodCallback?
-    ///选择模式
-    var selectMode = false
+    ///会话模式
+    var sessionMode: SessionMode = .once
+    /// 显示风格
+    var displayStyle: DisplayStyle = .oneClick
     
-    lazy var mView = PaymentsView(selectMode: selectMode)
+    lazy var mView = PaymentsView(displayStyle: displayStyle, sessionMode: sessionMode)
     var paymentStatus: PaymentStatus = .normal {
         didSet {
             mView.setUIStatus(paymentStatus)
@@ -68,7 +76,7 @@ class PaymentsViewController: UIViewController {
         
         mView.onMethodConfirm = {
             [unowned self] method in
-            if self.selectMode {
+            if self.sessionMode == .twice {
                 self.selectCallback?(method)
                 self.dismiss()
             } else {
@@ -137,7 +145,7 @@ class PaymentsViewController: UIViewController {
     }
     
     @objc func close(_ sender: UIButton) {
-        if selectMode {
+        if sessionMode == .twice {
             self.dismiss()
         } else {
             if (paymentResult?.status != .completed) {
@@ -148,6 +156,7 @@ class PaymentsViewController: UIViewController {
                     paymentCallback?(paymentResult ?? PaymentResult(status: .canceled))
                 })
             } else {
+                self.dismiss()
                 paymentCallback?(paymentResult ?? PaymentResult(status: .canceled))
             }
         }
@@ -171,7 +180,7 @@ class PaymentsViewController: UIViewController {
     
     /// 添加卡片确认
     @objc func addCardConfirmed(_ sender: UIButton) {
-        if selectMode {
+        if sessionMode == .twice {
             let form = mView.bankCardView.form
             let expDate = form.expDate
             let arr = expDate.split(separator: "/")
@@ -289,7 +298,11 @@ extension PaymentsViewController: PaymentDelegate {
             paymentResult = PaymentResult(status: .failed, code: error.code, message: error.message)
         }
         if let result = result,let success = result.success, success {
+            paymentStatus = .success
+            mView.successfulView.setData(result, intent: intent)
             paymentResult = PaymentResult(status: .completed)
+        }
+        if !WonderPayment.uiConfig.showResult {
             paymentCallback?(paymentResult!)
             self.dismiss()
         }

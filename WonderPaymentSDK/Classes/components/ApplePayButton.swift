@@ -11,7 +11,7 @@ import TangramKit
 
 class ApplePayButton : QMUIButton, MethodItemView {
     
-    var selectMode = false
+    var displayStyle: DisplayStyle = .oneClick
     var radioButton: RadioButton?
     
     override var isSelected: Bool {
@@ -22,9 +22,9 @@ class ApplePayButton : QMUIButton, MethodItemView {
     
     var method: PaymentMethod?
     
-    convenience init(selectMode: Bool = false) {
+    convenience init(displayStyle: DisplayStyle = .oneClick) {
         self.init(frame: .zero)
-        self.selectMode = selectMode
+        self.displayStyle = displayStyle
         self.initView()
     }
     
@@ -33,7 +33,7 @@ class ApplePayButton : QMUIButton, MethodItemView {
         self.tg_width.equal(.fill)
         layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         
-        if selectMode {
+        if displayStyle == .confirm {
             
             let child = TGLinearLayout(.horz)
             child.tg_padding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
