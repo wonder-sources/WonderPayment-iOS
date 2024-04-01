@@ -13,7 +13,7 @@ class PendingView : TGLinearLayout {
     
     private func initView() {
         self.tg_padding = UIEdgeInsets.all(16)
-        self.layer.borderColor = WonderPayment.uiConfig.primaryButtonColor.cgColor
+        self.layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
         self.layer.borderWidth = 1
         self.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         

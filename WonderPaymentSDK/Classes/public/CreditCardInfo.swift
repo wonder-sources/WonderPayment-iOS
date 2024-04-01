@@ -1,5 +1,6 @@
 
-public struct CreditCardInfo: JSONDecodable {  // <-- here
+public struct CreditCardInfo: JSONDecodable, JSONEncodable {
+    
     public let id: Int?
     public let number: String?
     public let expMonth: String?
@@ -12,7 +13,7 @@ public struct CreditCardInfo: JSONDecodable {  // <-- here
     public let holderLastName: String?
     public let phone: String?
     
-    static func from(json: NSDictionary?) -> CreditCardInfo {
+    public static func from(json: NSDictionary?) -> CreditCardInfo {
         let id = json?["id"] as? Int
         let number = json?["number"] as? String
         let expMonth = json?["exp_month"] as? String
@@ -27,4 +28,19 @@ public struct CreditCardInfo: JSONDecodable {  // <-- here
         return CreditCardInfo(id: id, number: number, expMonth: expMonth, expYear: expYear, holderName: holderName, issuer: issuer, default: `default`, token: token, holderFirstName: holderFirstName, holderLastName: holderLastName, phone: phone)
     }
     
+    public func toJson() -> Dictionary<String, Any?> {
+        return [
+            "id": id,
+            "number": number,
+            "exp_month": expMonth,
+            "exp_year": expYear,
+            "holder_name": holderName,
+            "issuer": issuer,
+            "default": `default`,
+            "token": token,
+            "holder_first_name": holderFirstName,
+            "holder_last_name": holderLastName,
+            "phone": phone,
+        ]
+    }
 }

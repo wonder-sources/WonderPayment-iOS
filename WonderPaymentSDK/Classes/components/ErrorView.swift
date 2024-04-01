@@ -21,7 +21,7 @@ class ErrorView : TGLinearLayout {
     
     private func initView() {
         self.tg_padding = UIEdgeInsets.all(16)
-        self.layer.borderColor = WonderPayment.uiConfig.primaryButtonColor.cgColor
+        self.layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
         self.layer.borderWidth = 1
         self.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         
@@ -48,10 +48,10 @@ class ErrorView : TGLinearLayout {
         retryButton.tg_width.equal(.fill)
         retryButton.tg_height.equal(52)
         retryButton.tg_top.equal(16)
-        retryButton.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
+        retryButton.backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
         retryButton.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         retryButton.setTitle("retryPayment".i18n, for: .normal)
-        retryButton.setTitleColor(WonderPayment.uiConfig.secondaryButtonColor, for: .normal)
+        retryButton.setTitleColor(WonderPayment.uiConfig.primaryButtonColor, for: .normal)
         retryButton.titleLabel?.font = UIFont(name: "Futura-Medium", size: 16)
         addSubview(retryButton)
         

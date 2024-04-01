@@ -52,7 +52,7 @@ class ApplePayButton : QMUIButton, MethodItemView {
             let label = UILabel()
             label.text = "Apple Pay"
             label.font = UIFont(name: "Futura-Medium", size: 16)
-            label.textColor = WonderPayment.uiConfig.primaryButtonColor
+            label.textColor = WonderPayment.uiConfig.secondaryButtonColor
             label.tg_left.equal(8)
             label.tg_width.equal(.wrap)
             label.tg_height.equal(.wrap)
@@ -67,9 +67,9 @@ class ApplePayButton : QMUIButton, MethodItemView {
             child.addSubview(radioButton!)
             
             layer.borderWidth = 1
-            layer.borderColor = WonderPayment.uiConfig.primaryButtonColor.cgColor
+            layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
         } else {
-            self.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
+            self.backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
             self.setImage("ApplePay".svg, for: .normal)
         }
     }

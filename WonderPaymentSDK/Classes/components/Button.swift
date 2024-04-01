@@ -31,12 +31,12 @@ class Button : QMUIButton {
         
         switch(style) {
         case.primary:
-            backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
-            titleColor = WonderPayment.uiConfig.primaryButtonColor
-            layer.borderWidth = 1
-        case .secondary:
             backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
             titleColor = WonderPayment.uiConfig.secondaryButtonColor
+            layer.borderWidth = 1
+        case .secondary:
+            backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
+            titleColor = WonderPayment.uiConfig.primaryButtonColor
         }
         
         self.backgroundColor = backgroundColor

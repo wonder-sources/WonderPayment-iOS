@@ -1,4 +1,4 @@
-public class PaymentIntent {
+public class PaymentIntent : JSONDecodable, JSONEncodable {
     public var amount: Double
     public var currency: String
     public var orderNumber: String
@@ -21,5 +21,29 @@ public class PaymentIntent {
             paymentMethod: self.paymentMethod,
             transactionType: self.transactionType
         )
+    }
+    
+    public static func from(json: NSDictionary?) -> Self {
+        var paymentMethod: PaymentMethod?
+        if let methodJson = json?["paymentMethod"] as? NSDictionary {
+            paymentMethod = PaymentMethod.from(json: methodJson)
+        }
+        return PaymentIntent(
+            amount: json?["amount"] as? Double ?? 0.0,
+            currency: json?["currency"] as? String ?? "HKD",
+            orderNumber: json?["orderNumber"] as? String ?? "",
+            paymentMethod: paymentMethod,
+            transactionType: TransactionType(rawValue: json?["transactionType"] as? String ?? "") ?? .sale
+        ) as! Self
+    }
+    
+    func toJson() -> Dictionary<String, Any?> {
+        return [
+            "amount": amount,
+            "currency": currency,
+            "orderNumber": orderNumber,
+            "paymentMethod": paymentMethod?.toJson(),
+            "transactionType": transactionType.rawValue,
+        ]
     }
 }

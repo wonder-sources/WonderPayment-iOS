@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "WonderPaymentSDK"
-  s.version                 = "0.1.0"
+  s.version                 = "0.1.1"
   s.summary                 = "Wonder Payment SDK for iOS devices"
   s.description             = "beta testing"
 
@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.homepage                = "https://wonder.app/"
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author                  = "Wonder Developer"
-  s.source                  = { :git => "https://github.com/wonder-platform/WonderPayment-iOS.git", tag => '0.1.0' }
+  s.source                  = { :git => "https://github.com/wonder-platform/WonderPayment-iOS.git", }
   s.resource_bundles = {
       'WonderPaymentSDK_Resources' => [
       'WonderPaymentSDK/Assets/anim/**.*',

@@ -177,7 +177,7 @@ class MethodView : TGLinearLayout {
     
     private func createCardView() -> UIView {
         let creditCardView = TGLinearLayout(.vert)
-        creditCardView.backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
+        creditCardView.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
         creditCardView.layer.borderWidth = 1
         creditCardView.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         creditCardView.tg_width.equal(.fill)
@@ -192,7 +192,7 @@ class MethodView : TGLinearLayout {
         let label = UILabel()
         label.text = "card".i18n
         label.font = UIFont(name: "Futura-Medium", size: 16)
-        label.textColor = WonderPayment.uiConfig.primaryButtonColor
+        label.textColor = WonderPayment.uiConfig.secondaryButtonColor
         label.tg_width.equal(.wrap)
         label.tg_height.equal(.wrap)
         label.tg_centerY.equal(0)

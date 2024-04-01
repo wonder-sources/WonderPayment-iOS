@@ -20,7 +20,7 @@ class SuccessfulView : TGLinearLayout {
         layout1.tg_width.equal(.fill)
         layout1.tg_height.equal(.wrap)
         layout1.tg_padding = UIEdgeInsets.all(16)
-        layout1.layer.borderColor = WonderPayment.uiConfig.primaryButtonColor.cgColor
+        layout1.layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
         layout1.layer.borderWidth = 1
         layout1.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         addSubview(layout1)
@@ -41,7 +41,7 @@ class SuccessfulView : TGLinearLayout {
         
         detailsLayout.tg_width.equal(.fill)
         detailsLayout.tg_height.equal(.wrap)
-        detailsLayout.layer.borderColor = WonderPayment.uiConfig.primaryButtonColor.cgColor
+        detailsLayout.layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
         detailsLayout.layer.borderWidth = 1
         detailsLayout.layer.cornerRadius = 12
         detailsLayout.clipsToBounds = true

@@ -40,10 +40,10 @@ class BankCardView : TGLinearLayout {
         formLayout.addSubview(formView)
         
         confirmButton.isEnabled = false
-        confirmButton.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
-        confirmButton.qmui_setImageTintColor(WonderPayment.uiConfig.secondaryButtonDisableBackground, for: .disabled)
+        confirmButton.backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
+        confirmButton.qmui_setImageTintColor(WonderPayment.uiConfig.primaryButtonDisableBackground, for: .disabled)
         confirmButton.setTitle("saveThisCard".i18n, for: .normal)
-        confirmButton.setTitleColor(WonderPayment.uiConfig.secondaryButtonColor, for: .normal)
+        confirmButton.setTitleColor(WonderPayment.uiConfig.primaryButtonColor, for: .normal)
         confirmButton.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         confirmButton.titleLabel?.font = UIFont(name: "Futura-Medium", size: 16)
         confirmButton.tg_height.equal(52)
@@ -128,7 +128,7 @@ class BankCardView : TGLinearLayout {
         let label = UILabel()
         label.text = "cardPayment".i18n
         label.font = UIFont(name: "Futura-Medium", size: 16)
-        label.textColor = WonderPayment.uiConfig.primaryButtonColor
+        label.textColor = WonderPayment.uiConfig.secondaryButtonColor
         label.tg_width.equal(.wrap)
         label.tg_height.equal(.wrap)
         topLayout.addSubview(label)
