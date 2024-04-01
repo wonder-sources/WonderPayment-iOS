@@ -26,6 +26,7 @@ Pod::Spec.new do |s|
   s.dependency "lottie-ios", "3.3.0"
   s.dependency "IQKeyboardManagerSwift", "6.3.0"
   s.dependency "TangramKit"
+  s.dependency "UPPay"
 
   s.static_framework = true
 end
