@@ -1,5 +1,5 @@
 
-public class PaymentConfig : JSONDecodable {
+public class PaymentConfig : JSONDecodable, JSONEncodable {
     public var businessId: String = ""
     public var source: String = ""
     public var token: String = ""
@@ -21,10 +21,23 @@ public class PaymentConfig : JSONDecodable {
         config.applePay = ApplePayConfig.from(json: json?["applePay"] as? NSDictionary)
         return config as! Self
     }
+    
+    public func toJson() -> Dictionary<String, Any?> {
+        return [
+            "businessId": businessId,
+            "source": source,
+            "token": token,
+            "scheme": scheme,
+            "environment": environment.rawValue,
+            "locale": locale.rawValue,
+            "wechat": wechat?.toJson(),
+            "applePay": applePay?.toJson(),
+        ]
+    }
 }
 
 /// 相关配置参考 https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Access_Guide/iOS.html
-public class WechatConfig : JSONDecodable {
+public class WechatConfig : JSONDecodable, JSONEncodable {
     public var appId: String = ""
     public var universalLink: String = ""
     
@@ -39,9 +52,16 @@ public class WechatConfig : JSONDecodable {
             universalLink: json?["universalLink"] as? String ?? ""
         ) as! Self
     }
+    
+    public func toJson() -> Dictionary<String, Any?> {
+        return [
+            "appId": appId,
+            "universalLink": universalLink,
+        ]
+    }
 }
 
-public class ApplePayConfig : JSONDecodable {
+public class ApplePayConfig : JSONDecodable, JSONEncodable {
     /// Apple Developer 后台申请的商户ID
     public var merchantIdentifier: String = ""
     /// 两位国家码 CN, HK, US ...
@@ -57,5 +77,12 @@ public class ApplePayConfig : JSONDecodable {
             merchantIdentifier: json?["merchantIdentifier"] as? String ?? "",
             countryCode: json?["countryCode"] as? String ?? ""
         ) as! Self
+    }
+    
+    public func toJson() -> Dictionary<String, Any?> {
+        return [
+            "merchantIdentifier": merchantIdentifier,
+            "countryCode": countryCode,
+        ]
     }
 }

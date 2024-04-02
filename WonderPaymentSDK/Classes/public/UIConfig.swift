@@ -1,4 +1,4 @@
-public class UIConfig : JSONDecodable {
+public class UIConfig : JSONDecodable, JSONEncodable {
     public var background: UIColor = .white
     public var secondaryBackground: UIColor = UIColor(hexString: "#FFF7F8F9")
     public var primaryTextColor: UIColor = .black
@@ -50,6 +50,26 @@ public class UIConfig : JSONDecodable {
         if let hexString = value as? String {
             property = UIColor(hexString: hexString)
         }
+    }
+    
+    public func toJson() -> Dictionary<String, Any?> {
+        return [
+            "background": background.hexString,
+            "secondaryBackground": secondaryBackground.hexString,
+            "primaryTextColor": primaryTextColor.hexString,
+            "secondaryTextColor": secondaryTextColor.hexString,
+            "secondaryButtonColor": secondaryButtonColor.hexString,
+            "secondaryButtonBackground": secondaryButtonBackground.hexString,
+            "primaryButtonColor": primaryButtonColor.hexString,
+            "primaryButtonBackground": primaryButtonBackground.hexString,
+            "primaryButtonDisableBackground": primaryButtonDisableBackground.hexString,
+            "textFieldBackground": textFieldBackground.hexString,
+            "linkColor": linkColor.hexString,
+            "errorColor": errorColor.hexString,
+            "borderRadius": borderRadius,
+            "displayStyle": displayStyle.rawValue,
+            "showResult": showResult,
+        ]
     }
 }
 
