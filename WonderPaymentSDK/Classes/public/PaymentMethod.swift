@@ -25,7 +25,7 @@ public class PaymentMethod : JSONDecodable, JSONEncodable {
         ) as! Self
     }
     
-    func toJson() -> Dictionary<String, Any?> {
+    public func toJson() -> Dictionary<String, Any?> {
         return [
             "type": type.rawValue,
             "arguments": arguments,
