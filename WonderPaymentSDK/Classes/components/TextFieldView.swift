@@ -23,12 +23,12 @@ class TextFieldView : QMUITextField {
         backgroundColor = WonderPayment.uiConfig.textFieldBackground
         textColor = WonderPayment.uiConfig.primaryTextColor
         tintColor = WonderPayment.uiConfig.primaryTextColor
-        layer.cornerRadius = WonderPayment.uiConfig.borderRadius
+        layer.cornerRadius = min(WonderPayment.uiConfig.borderRadius, 25)
         attributedPlaceholder = NSAttributedString(
             string: placeholder ?? "",
             attributes: [
                 NSAttributedString.Key.foregroundColor: WonderPayment.uiConfig.secondaryTextColor,
-                NSAttributedString.Key.font : UIFont(name: "Futura", size: 16)!
+                NSAttributedString.Key.font : UIFont(name: "Outfit", size: 16)!
             ]
         )
         returnKeyType = .done

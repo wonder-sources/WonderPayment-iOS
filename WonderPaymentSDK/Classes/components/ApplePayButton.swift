@@ -31,7 +31,8 @@ class ApplePayButton : QMUIButton, MethodItemView {
     private func initView() {
         self.tg_height.equal(56)
         self.tg_width.equal(.fill)
-        layer.cornerRadius = WonderPayment.uiConfig.borderRadius
+        backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
+        layer.cornerRadius = min(WonderPayment.uiConfig.borderRadius, 28)
         
         if displayStyle == .confirm {
             
@@ -49,9 +50,7 @@ class ApplePayButton : QMUIButton, MethodItemView {
             icon.tg_centerY.equal(0)
             child.addSubview(icon)
             
-            let label = UILabel()
-            label.text = "Apple Pay"
-            label.font = UIFont(name: "Futura-Medium", size: 16)
+            let label = Label("Apple Pay", size: 16, fontStyle: .medium)
             label.textColor = WonderPayment.uiConfig.secondaryButtonColor
             label.tg_left.equal(8)
             label.tg_width.equal(.wrap)

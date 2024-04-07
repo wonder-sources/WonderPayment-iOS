@@ -25,7 +25,7 @@ class MethodView : TGLinearLayout {
     lazy var addCardButton = createAddCardButton()
     lazy var cardView = createCardView()
     lazy var itemsLayout = TGLinearLayout(.vert)
-    lazy var cardConfirmButton = Button(title: "confirm".i18n, style: .secondary)
+    lazy var cardConfirmButton = Button(title: "confirm".i18n, style: .primary)
     
     var lastSelected: MethodItemView?
     
@@ -189,9 +189,7 @@ class MethodView : TGLinearLayout {
         createLayout.tg_height.equal(56)
         creditCardView.addSubview(createLayout)
         
-        let label = UILabel()
-        label.text = "card".i18n
-        label.font = UIFont(name: "Futura-Medium", size: 16)
+        let label = Label("card".i18n, size: 16, fontStyle: .medium)
         label.textColor = WonderPayment.uiConfig.secondaryButtonColor
         label.tg_width.equal(.wrap)
         label.tg_height.equal(.wrap)

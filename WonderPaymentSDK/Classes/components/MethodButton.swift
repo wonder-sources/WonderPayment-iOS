@@ -38,7 +38,7 @@ class MethodButton : QMUIButton, MethodItemView {
     private func initView() {
         backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
         layer.borderWidth = 1
-        layer.cornerRadius = WonderPayment.uiConfig.borderRadius
+        layer.cornerRadius = min(WonderPayment.uiConfig.borderRadius, 28)
         tg_width.equal(.fill)
         tg_height.equal(56)
         
@@ -56,9 +56,7 @@ class MethodButton : QMUIButton, MethodItemView {
         icon.tg_centerY.equal(0)
         child.addSubview(icon)
         
-        let label = UILabel()
-        label.text = title
-        label.font = UIFont(name: "Futura-Medium", size: 16)
+        let label = Label(title, size: 16, fontStyle: .medium)
         label.textColor = WonderPayment.uiConfig.secondaryButtonColor
         label.tg_left.equal(8)
         label.tg_width.equal(.wrap)

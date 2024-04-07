@@ -12,7 +12,7 @@ class ErrorView : TGLinearLayout {
     
     lazy var errorCodeLabel = Label(errorMessage?.code ?? "",color: WonderPayment.uiConfig.errorColor, size: 14, fontStyle: .medium)
     lazy var errorMsgLabel = Label(errorMessage?.message ?? "",color: WonderPayment.uiConfig.errorColor, size: 14, fontStyle: .medium)
-    lazy var retryButton = QMUIButton()
+    lazy var retryButton = Button(title:"retryPayment".i18n, style: .primary)
     
     convenience init() {
         self.init(frame: .zero, orientation: .vert)
@@ -45,14 +45,7 @@ class ErrorView : TGLinearLayout {
         errorMsgLabel.textAlignment = .center
         addSubview(errorMsgLabel)
         
-        retryButton.tg_width.equal(.fill)
-        retryButton.tg_height.equal(52)
         retryButton.tg_top.equal(16)
-        retryButton.backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
-        retryButton.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
-        retryButton.setTitle("retryPayment".i18n, for: .normal)
-        retryButton.setTitleColor(WonderPayment.uiConfig.primaryButtonColor, for: .normal)
-        retryButton.titleLabel?.font = UIFont(name: "Futura-Medium", size: 16)
         addSubview(retryButton)
         
     }

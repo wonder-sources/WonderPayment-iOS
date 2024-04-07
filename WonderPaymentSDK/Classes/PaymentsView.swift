@@ -15,7 +15,7 @@ class PaymentsView : TGLinearLayout {
     lazy var pendingView = PendingView()
     lazy var errorView = ErrorView()
     lazy var successfulView = SuccessfulView()
-    lazy var selectConfirmButton = Button(title: "confirm".i18n, style: .secondary)
+    lazy var selectConfirmButton = Button(title: "confirm".i18n, style: .primary)
     
     var onMethodConfirm: SelectMethodCallback?
     
@@ -76,9 +76,7 @@ class PaymentsView : TGLinearLayout {
         paymentMethodLayout.tg_height.equal(.wrap)
         contentLayout.addSubview(paymentMethodLayout)
         
-        let paymentMethodHeader = UILabel()
-        paymentMethodHeader.text = "selectPaymentMethod".i18n
-        paymentMethodHeader.font = UIFont(name: "Futura-Medium", size: 16)
+        let paymentMethodHeader = Label("selectPaymentMethod".i18n, size: 16, fontStyle: .medium)
         paymentMethodHeader.textColor = WonderPayment.uiConfig.primaryTextColor
         paymentMethodHeader.tg_width.equal(.fill)
         paymentMethodHeader.tg_height.equal(.wrap)
@@ -90,9 +88,7 @@ class PaymentsView : TGLinearLayout {
         paymentMethodLayout.addSubview(bankCardView)
         paymentMethodLayout.addSubview(methodView)
         
-        let poweredLabel = UILabel()
-        poweredLabel.font =  UIFont(name: "Futura-Medium", size: 12)
-        poweredLabel.text = "Powered by Wonder.app"
+        let poweredLabel = Label("Powered by Wonder.app", size: 12, fontStyle: .medium)
         poweredLabel.textColor = WonderPayment.uiConfig.primaryTextColor
         poweredLabel.tg_width.equal(.wrap)
         poweredLabel.tg_height.equal(.wrap)
@@ -126,7 +122,10 @@ class PaymentsView : TGLinearLayout {
         titleBar.titleLabel.text = "paymentMethod".i18n
         titleBar.titleLabel.textColor = WonderPayment.uiConfig.primaryTextColor
         titleBar.titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
-        titleBar.rightView.setImage("close".svg, for: .normal)
+        titleBar.rightView.setImage(
+            "close".svg?.qmui_image(withTintColor: WonderPayment.uiConfig.primaryTextColor),
+            for: .normal
+        )
         
         return titleBar
     }
@@ -136,27 +135,25 @@ class PaymentsView : TGLinearLayout {
         headerView.tg_width.equal(.fill)
         headerView.tg_height.equal(.wrap)
         
-//        let poweredView = TGLinearLayout(.horz)
-//        poweredView.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
-//        poweredView.layer.cornerRadius = 8
-//        poweredView.tg_height.equal(34)
-//        poweredView.tg_width.equal(.wrap)
-//        poweredView.tg_padding = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
-//        
-//        let poweredLabel = UILabel()
-//        poweredLabel.font =  UIFont(name: "Futura-Medium", size: 14)
-//        poweredLabel.text = "Powered by Wonder"
-//        poweredLabel.textColor = WonderPayment.uiConfig.secondaryButtonColor
-//        poweredLabel.tg_width.equal(.wrap)
-//        poweredLabel.tg_height.equal(.wrap)
-//        poweredLabel.tg_centerY.equal(0)
-//        poweredView.addSubview(poweredLabel)
-//        
-//        headerView.addSubview(poweredView)
+        //        let poweredView = TGLinearLayout(.horz)
+        //        poweredView.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
+        //        poweredView.layer.cornerRadius = 8
+        //        poweredView.tg_height.equal(34)
+        //        poweredView.tg_width.equal(.wrap)
+        //        poweredView.tg_padding = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        //
+        //        let poweredLabel = UILabel()
+        //        poweredLabel.font =  UIFont(name: "Outfit-Medium", size: 14)
+        //        poweredLabel.text = "Powered by Wonder"
+        //        poweredLabel.textColor = WonderPayment.uiConfig.secondaryButtonColor
+        //        poweredLabel.tg_width.equal(.wrap)
+        //        poweredLabel.tg_height.equal(.wrap)
+        //        poweredLabel.tg_centerY.equal(0)
+        //        poweredView.addSubview(poweredLabel)
+        //
+        //        headerView.addSubview(poweredView)
         
-        let totalLabel = UILabel()
-        totalLabel.text = "totalAmount".i18n
-        totalLabel.font = UIFont(name: "Futura-Medium", size: 16)
+        let totalLabel = Label("totalAmount".i18n, size: 16, fontStyle: .medium)
         totalLabel.textColor = WonderPayment.uiConfig.secondaryTextColor
         totalLabel.tg_width.equal(.wrap)
         totalLabel.tg_height.equal(.wrap)
@@ -164,7 +161,7 @@ class PaymentsView : TGLinearLayout {
         headerView.addSubview(totalLabel)
         
         amountLabel.text = "HK$0.00"
-        amountLabel.font = UIFont(name: "Futura-Bold", size: 28)
+        amountLabel.font = UIFont(name: "Outfit-SemiBold", size: 28)
         amountLabel.textColor = WonderPayment.uiConfig.primaryTextColor
         amountLabel.tg_width.equal(.wrap)
         amountLabel.tg_height.equal(.wrap)
@@ -182,9 +179,7 @@ class PaymentsView : TGLinearLayout {
         securedIcon.tg_height.equal(.wrap)
         securedLayout.addSubview(securedIcon)
         
-        let securedLabel = UILabel()
-        securedLabel.text = "securedCheckout".i18n
-        securedLabel.font = UIFont(name: "Futura-Medium", size: 16)
+        let securedLabel = Label("securedCheckout".i18n, size: 16, fontStyle: .medium)
         securedLabel.textColor = WonderPayment.uiConfig.secondaryTextColor
         securedLabel.tg_left.equal(4)
         securedLabel.tg_width.equal(.wrap)

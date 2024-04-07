@@ -5,7 +5,7 @@ class BankCardView : TGLinearLayout {
     
     lazy var backButton: UIButton = createBackButton()
     lazy var codeView = DialingCodeView()
-    lazy var confirmButton = QMUIButton()
+    lazy var confirmButton = Button(title: "confirm".i18n, style: .primary)
     lazy var formView = createFormView()
     lazy var formLayout = TGLinearLayout(.vert)
     lazy var cardNumberField = createFormTextField(title: "cardNumber".i18n, placeholder: "inputCardNumber".i18n, keyboardType: .numberPad, maxLength: 19, format: "XXXX XXXX ", tag: 1)
@@ -40,14 +40,6 @@ class BankCardView : TGLinearLayout {
         formLayout.addSubview(formView)
         
         confirmButton.isEnabled = false
-        confirmButton.backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
-        confirmButton.qmui_setImageTintColor(WonderPayment.uiConfig.primaryButtonDisableBackground, for: .disabled)
-        confirmButton.setTitle("saveThisCard".i18n, for: .normal)
-        confirmButton.setTitleColor(WonderPayment.uiConfig.primaryButtonColor, for: .normal)
-        confirmButton.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
-        confirmButton.titleLabel?.font = UIFont(name: "Futura-Medium", size: 16)
-        confirmButton.tg_height.equal(52)
-        confirmButton.tg_width.equal(.fill)
         confirmButton.tg_top.equal(16)
         addSubview(confirmButton)
     }
@@ -125,9 +117,7 @@ class BankCardView : TGLinearLayout {
         backButton.tg_right.equal(100%)
         topLayout.addSubview(backButton)
         
-        let label = UILabel()
-        label.text = "cardPayment".i18n
-        label.font = UIFont(name: "Futura-Medium", size: 16)
+        let label = Label("cardPayment".i18n, size: 16, fontStyle: .medium)
         label.textColor = WonderPayment.uiConfig.secondaryButtonColor
         label.tg_width.equal(.wrap)
         label.tg_height.equal(.wrap)
@@ -145,7 +135,7 @@ class BankCardView : TGLinearLayout {
         let button = QMUIButton()
         button.setTitle("← \("back".i18n)", for: .normal)
         button.setTitleColor(WonderPayment.uiConfig.primaryTextColor, for: .normal)
-        button.titleLabel?.font = UIFont(name: "Futura-Medium", size: 16)
+        button.titleLabel?.font = UIFont(name: "Outfit-Medium", size: 16)
         button.tg_width.equal(.wrap)
         button.tg_height.equal(.wrap)
         return button

@@ -46,7 +46,8 @@ class CardItemView : TGLinearLayout, MethodItemView {
         iconView.tg_centerY.equal(0)
         addSubview(iconView)
         
-        let cardNumberLabel = Label(cardNumber)
+        let cardNumberLabel = Label(cardNumber, size: 16, fontStyle: .medium)
+        cardNumberLabel.textColor = WonderPayment.uiConfig.secondaryButtonColor
         cardNumberLabel.tg_left.equal(8)
         cardNumberLabel.tg_height.equal(.wrap)
         cardNumberLabel.tg_width.equal(.fill)

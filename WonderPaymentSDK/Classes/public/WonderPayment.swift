@@ -25,6 +25,20 @@ public class WonderPayment : NSObject {
     static var wechatPayDelegate = WechatPayDelegate()
     static var applePayDelegate = ApplePayDelegate()
     
+    public static func initSDK(
+        paymentConfig: PaymentConfig? = nil,
+        uiConfig: UIConfig? = nil
+    ){
+        if let paymentConfig = paymentConfig {
+            WonderPayment.paymentConfig = paymentConfig
+        }
+        if let uiConfig = uiConfig {
+            WonderPayment.uiConfig = uiConfig
+        }
+        _ = CustomFonts.loadFonts
+        registerApp()
+    }
+    
     /// UI支付
     public static func present(
         intent: PaymentIntent,
@@ -51,7 +65,7 @@ public class WonderPayment : NSObject {
     
     /// 选择支付方式
     public static func select(
-        intent: PaymentIntent, 
+        intent: PaymentIntent,
         callback: @escaping SelectMethodCallback
     ) {
         let rootViewController = UIApplication.shared.keyWindow?.rootViewController

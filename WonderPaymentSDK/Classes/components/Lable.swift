@@ -16,9 +16,9 @@ class Label : QMUILabel {
     }
     
     enum FontStyle : String {
-        case normal = "Futura",
-             medium = "Futura-Medium",
-             bold = "Futura-Bold"
+        case normal = "Outfit-Regular",
+             medium = "Outfit-Medium",
+             bold = "Outfit-SemiBold"
     }
     
     var color: UIColor = WonderPayment.uiConfig.primaryTextColor

@@ -1,13 +1,33 @@
 
 public class PaymentConfig : JSONDecodable, JSONEncodable {
-    public var businessId: String = ""
-    public var source: String = ""
-    public var token: String = ""
-    public var scheme: String = ""
-    public var environment: PaymentEnvironment = .production
-    public var locale: Locale = .zh_HK
+    public var businessId: String
+    public var source: String
+    public var token: String
+    public var scheme: String
+    public var environment: PaymentEnvironment
+    public var locale: Locale
     public var wechat: WechatConfig?
     public var applePay: ApplePayConfig?
+    
+    public init(
+        businessId: String = "",
+        source: String = "",
+        token: String = "",
+        scheme: String = "",
+        environment: PaymentEnvironment = .production,
+        locale: Locale = .zh_HK,
+        wechat: WechatConfig? = nil,
+        applePay: ApplePayConfig? = nil
+    ) {
+        self.businessId = businessId
+        self.source = source
+        self.token = token
+        self.scheme = scheme
+        self.environment = environment
+        self.locale = locale
+        self.wechat = wechat
+        self.applePay = applePay
+    }
     
     public static func from(json: NSDictionary?) -> Self {
         let config = PaymentConfig()

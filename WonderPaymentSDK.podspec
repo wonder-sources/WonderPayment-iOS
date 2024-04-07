@@ -13,7 +13,8 @@ Pod::Spec.new do |s|
       'WonderPaymentSDK_Resources' => [
       'WonderPaymentSDK/Assets/anim/**.*',
       'WonderPaymentSDK/Assets/icons/common/**.*',
-      'WonderPaymentSDK/Assets/icons/flags/**.*'
+      'WonderPaymentSDK/Assets/icons/flags/**.*',
+      'WonderPaymentSDK/Assets/fonts/**.*'
       ]
     }
   s.source_files = 'WonderPaymentSDK/Classes/**/*'

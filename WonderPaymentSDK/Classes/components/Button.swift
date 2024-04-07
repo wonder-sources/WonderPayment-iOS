@@ -11,12 +11,12 @@ import QMUIKit
 class Button : QMUIButton {
     
     enum ButtonStyle {
-        case primary, secondary
+        case secondary, primary
     }
     
-    var style: ButtonStyle = .primary
+    var style: ButtonStyle = .secondary
     
-    convenience init(title: String, image: UIImage? = nil, imageSpacing: CGFloat = 8, style: ButtonStyle = .primary) {
+    convenience init(title: String, image: UIImage? = nil, imageSpacing: CGFloat = 8, style: ButtonStyle = .secondary) {
         self.init(frame: .zero)
         self.style = style
         setTitle(title, for: .normal)
@@ -30,19 +30,19 @@ class Button : QMUIButton {
         let titleColor: UIColor
         
         switch(style) {
-        case.primary:
+        case.secondary:
             backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
             titleColor = WonderPayment.uiConfig.secondaryButtonColor
             layer.borderWidth = 1
-        case .secondary:
+        case .primary:
             backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
             titleColor = WonderPayment.uiConfig.primaryButtonColor
         }
         
         self.backgroundColor = backgroundColor
         setTitleColor(titleColor, for: .normal)
-        layer.cornerRadius = WonderPayment.uiConfig.borderRadius
-        titleLabel?.font = UIFont(name: "Futura-Medium", size: 16)
+        layer.cornerRadius = min(WonderPayment.uiConfig.borderRadius, 26)
+        titleLabel?.font = UIFont(name: "Outfit-Medium", size: 16)
         tg_height.equal(52)
         tg_width.equal(.fill)
     }

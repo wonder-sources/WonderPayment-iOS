@@ -1,24 +1,55 @@
 public class UIConfig : JSONDecodable, JSONEncodable {
-    public var background: UIColor = .white
-    public var secondaryBackground: UIColor = UIColor(hexString: "#FFF7F8F9")
-    public var primaryTextColor: UIColor = .black
-    public var secondaryTextColor: UIColor = UIColor(hexString: "#FF8E8E93")
-    public var secondaryButtonColor: UIColor = .black
-    public var secondaryButtonBackground: UIColor = .white
-    public var primaryButtonColor: UIColor = .white
-    public var primaryButtonBackground: UIColor = .black
-    public var primaryButtonDisableBackground: UIColor = UIColor(hexString: "#FF8E8E93")
-    public var textFieldBackground: UIColor = UIColor(hexString: "#FFF5F5F5")
-    public var linkColor: UIColor = UIColor(hexString: "#FF0094FF")
-    public var errorColor: UIColor = UIColor(hexString: "#FFFC2E01")
-    public var borderRadius: CGFloat = 12
+    public var background: UIColor
+    public var secondaryBackground: UIColor
+    public var primaryTextColor: UIColor
+    public var secondaryTextColor: UIColor
+    public var secondaryButtonColor: UIColor
+    public var secondaryButtonBackground: UIColor
+    public var primaryButtonColor: UIColor
+    public var primaryButtonBackground: UIColor
+    public var primaryButtonDisableBackground: UIColor
+    public var textFieldBackground: UIColor
+    public var linkColor: UIColor
+    public var errorColor: UIColor
+    public var borderRadius: CGFloat
     /// 展示风格
-    public var displayStyle: DisplayStyle = .oneClick
+    public var displayStyle: DisplayStyle
     /// 是否在SDK内展示支付结果
-    public var showResult: Bool = true
+    public var showResult: Bool
     
     
-    //public var mode: UIMode = .auto
+    public init(background: UIColor = .white,
+         secondaryBackground: UIColor = UIColor(hexString: "#FFF7F8F9"),
+         primaryTextColor: UIColor = .black,
+         secondaryTextColor: UIColor = UIColor(hexString: "#FF8E8E93"),
+         secondaryButtonColor: UIColor = .black,
+         secondaryButtonBackground: UIColor = .white,
+         primaryButtonColor: UIColor = .white,
+         primaryButtonBackground: UIColor = .black,
+         primaryButtonDisableBackground: UIColor = UIColor(hexString: "#FF8E8E93"),
+         textFieldBackground: UIColor = UIColor(hexString: "#FFF5F5F5"),
+         linkColor: UIColor = UIColor(hexString: "#FF0094FF"),
+         errorColor: UIColor = UIColor(hexString: "#FFFC2E01"),
+         borderRadius: CGFloat = 12,
+         displayStyle: DisplayStyle = .oneClick,
+         showResult: Bool = true
+    ) {
+        self.background = background
+        self.secondaryBackground = secondaryBackground
+        self.primaryTextColor = primaryTextColor
+        self.secondaryTextColor = secondaryTextColor
+        self.secondaryButtonColor = secondaryButtonColor
+        self.secondaryButtonBackground = secondaryButtonBackground
+        self.primaryButtonColor = primaryButtonColor
+        self.primaryButtonBackground = primaryButtonBackground
+        self.primaryButtonDisableBackground = primaryButtonDisableBackground
+        self.textFieldBackground = textFieldBackground
+        self.linkColor = linkColor
+        self.errorColor = errorColor
+        self.borderRadius = borderRadius
+        self.displayStyle = displayStyle
+        self.showResult = showResult
+    }
     
     public static func from(json: NSDictionary?) -> Self {
         let config = UIConfig()

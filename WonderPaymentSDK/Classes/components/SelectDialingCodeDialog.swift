@@ -79,7 +79,7 @@ class SelectDialingCodeDialog : TGRelativeLayout {
         searchTextField.tg_top.equal(6)
         searchTextField.tg_height.equal(42)
         searchTextField.tg_width.equal(.fill)
-        searchTextField.layer.cornerRadius = 10
+        searchTextField.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         searchTextField.textInsets = UIEdgeInsets.only(left: 2, right: 16)
         contentView.addSubview(searchTextField)
         

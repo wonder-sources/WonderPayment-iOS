@@ -96,7 +96,7 @@ class DialogView : UIView {
         contentView.tg_height.equal(.wrap)
         contentView.tg_padding = UIEdgeInsets.all(24)
         contentView.backgroundColor = WonderPayment.uiConfig.background
-        contentView.layer.cornerRadius = 12
+        contentView.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         addSubview(contentView)
         
         if let title = title {
@@ -117,7 +117,7 @@ class DialogView : UIView {
         }
         
         if let button1 = button1 {
-            let button = Button(title: button1, style: .secondary)
+            let button = Button(title: button1, style: .primary)
             button.tg_top.equal(20)
             button.tag = 1
             button.addTarget(self, action: #selector(onButtonClick(_:)), for: .touchUpInside)
@@ -125,7 +125,7 @@ class DialogView : UIView {
         }
         
         if let button2 = button2 {
-            let button = Button(title: button2, style: .primary)
+            let button = Button(title: button2, style: .secondary)
             button.tg_top.equal(12)
             button.tag = 2
             button.addTarget(self, action: #selector(onButtonClick(_:)), for: .touchUpInside)
