@@ -73,6 +73,7 @@ class MethodView : TGLinearLayout {
             addSubview(cardView)
         }
         
+        applePayButton.isHidden = true
         unionPayButton.isHidden = true
         wechatPayButton.isHidden = true
         alipayButton.isHidden = true
