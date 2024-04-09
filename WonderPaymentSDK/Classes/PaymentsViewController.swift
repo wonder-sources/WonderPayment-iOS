@@ -89,7 +89,8 @@ class PaymentsViewController: UIViewController {
     
     private func loadData() {
         let businessId = WonderPayment.paymentConfig.businessId
-        PaymentService.queryPaymentMethods(businessId: businessId) { 
+        let isPreAuth = intent.transactionType == .preAuth
+        PaymentService.queryPaymentMethods(businessId: businessId) {
             [weak self] config, err in
             let supportList = config?.supportPaymentMethod ?? []
             var supportCard = false
@@ -99,11 +100,11 @@ class PaymentsViewController: UIViewController {
             for item in supportList {
                 if (CardMap.names.keys.contains(item)) {
                     supportCard = true
-                } else if (item == "unionpay_wallet") {
+                } else if (item == "unionpay_wallet" && !isPreAuth) {
                     supportUnionPay = true
-                } else if (item == "alipay") {
+                } else if (item == "alipay" && !isPreAuth) {
                     supportAlipay = true
-                } else if (item == "wechat") {
+                } else if (item == "wechat" && !isPreAuth) {
                     supportWechat = true
                 }
             }
