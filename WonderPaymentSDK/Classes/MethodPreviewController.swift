@@ -66,10 +66,8 @@ class MethodPreviewController: UIViewController {
                     return
                 }
                 self?.delegate?.tokenDeleted(token: token)
-                Tips.show(image: "deleted".svg, title: "cardDeleted".i18n, subTitle: "cardDeletedSuccess".i18n) {
-                    _ in
-                    self?.navigationController?.popViewController(animated: true)
-                }
+                self?.navigationController?.popViewController(animated: true)
+                Tips.show(image: "deleted".svg, title: "cardDeleted".i18n, subTitle: "cardDeletedSuccess".i18n)
             }
         })
         

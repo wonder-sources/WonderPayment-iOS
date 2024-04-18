@@ -11,22 +11,36 @@ class Loading {
     static var loadingController: QMUIModalPresentationViewController?
     
     static func show(style: LoadingStyle = .small) {
-        dismiss()
-        let loadingView : UIView
-        if style == .small {
-            loadingView = SmallLoadingView()
-        } else {
-            loadingView = FullScreenLoadingView()
+        
+        func waitDismiss(completion: @escaping () -> Void) {
+            if loadingController == nil {
+                completion()
+            } else {
+                dismiss(animated: false) { _ in
+                    completion()
+                }
+            }
         }
-        loadingController = QMUIModalPresentationViewController()
-        loadingController?.contentViewMargins = UIEdgeInsets.zero
-        loadingController?.contentView = loadingView
-        loadingController?.isModal = true
-        loadingController?.showWith(animated: true)
+        
+        waitDismiss {
+            let loadingView : UIView
+            if style == .small {
+                loadingView = SmallLoadingView()
+            } else {
+                loadingView = FullScreenLoadingView()
+            }
+            loadingController = QMUIModalPresentationViewController()
+            loadingController?.contentViewMargins = UIEdgeInsets.zero
+            loadingController?.contentView = loadingView
+            loadingController?.isModal = true
+            loadingController?.showWith(animated: true)
+            print("Loading.show(\(style)), \(Date()), hash: \(loadingController.hashValue)")
+        }
     }
     
-    static func dismiss(completion: ((Bool) -> Void)? = nil) {
-        loadingController?.hideWith(animated: true) { completed in
+    static func dismiss(animated: Bool = true, completion: ((Bool) -> Void)? = nil) {
+        print("Loading.dismiss(), \(Date()), hash: \(loadingController.hashValue)")
+        loadingController?.hideWith(animated: animated) { completed in
             loadingController = nil
             completion?(completed)
         }

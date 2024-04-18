@@ -242,9 +242,19 @@ class PaymentsViewController: UIViewController {
                     "last_name": form.lastName,
                     "phone_number": form.phone,
                 ],
-                "is_auto_save": form.save,
+                //"is_auto_save": form.save,
             ]
-            cardPay(args)
+            if form.save {
+                bindCard(args) {
+                    [weak self] cardInfo in
+                    guard let cardInfo = cardInfo else {
+                       return
+                    }
+                    self?.cardPay(["token": cardInfo.token])
+                }
+            } else {
+                cardPay(args)
+            }
         }
     }
     
@@ -256,24 +266,43 @@ class PaymentsViewController: UIViewController {
     }
     
     private func addCard(_ args: [String: Any?]) {
+        bindCard(args) {
+            [weak self] cardInfo in
+            guard let cardInfo = cardInfo else {
+               return
+            }
+            Tips.show(image: "verified".svg, title: "cardVerified".i18n, subTitle: "canStartPaying".i18n) {
+                [weak self] _ in
+                self?.resetUI()
+                self?.cards?.insert(cardInfo, at: 0)
+                self?.mView.methodView.setCardItems(self?.cards ?? [])
+            }
+        }
+    }
+    
+    
+    private func bindCard(_ args: [String: Any?], completion: ((CreditCardInfo?) -> Void)? = nil) {
         Loading.show()
         PaymentService.bindCard(cardInfo: args as NSDictionary) {
             [weak self] cardInfo, error in
             Loading.dismiss()
             
             guard let cardInfo = cardInfo else {
+                completion?(nil)
                 Tips.show(style: .error, title: error?.code, subTitle: error?.message)
                 return
             }
             
             self?.checkIfValid(cardInfo) { valid in
-                if !valid { return }
-                Tips.show(image: "verified".svg, title: "cardVerified".i18n, subTitle: "canStartPaying".i18n) {
-                    [weak self] _ in
-                    self?.resetUI()
-                    self?.cards?.insert(cardInfo, at: 0)
-                    self?.mView.methodView.setCardItems(self?.cards ?? [])
+                if !valid {
+                    completion?(nil)
+                    let code = ErrorMessage._3dsVerificationError.code
+                    let message = ErrorMessage._3dsVerificationError.message
+                    Tips.show(style: .error, title: code, subTitle: message)
+                    return
                 }
+                
+                completion?(cardInfo)
             }
         }
     }
@@ -287,7 +316,7 @@ class PaymentsViewController: UIViewController {
             browserController.url = card.verifyUrl
             browserController.finishedCallback = {
                 [weak self] result in
-                if let succeed = result as? Bool, !succeed {
+                guard let succeed = result as? Bool, succeed else {
                     callback(false)
                     return
                 }
@@ -303,7 +332,7 @@ class PaymentsViewController: UIViewController {
     
     private func checkPaymentTokenIsValid(
         _ card: CreditCardInfo,
-        retryCount: Int = 3,
+        retryCount: Int = 60 ,
         callback: @escaping (Bool) -> Void
     ) {
         guard let uuid = card.verifyUuid, let token = card.token else {
@@ -316,7 +345,7 @@ class PaymentsViewController: UIViewController {
         }
         PaymentService.checkPaymentTokenIsValid(uuid: uuid, token: token) {
             [weak self] result, err in
-            guard let valid = result else {
+            guard let valid = result, valid else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     let count = retryCount - 1
                     self?.checkPaymentTokenIsValid(card, retryCount: count, callback: callback)

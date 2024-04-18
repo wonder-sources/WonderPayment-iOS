@@ -82,17 +82,21 @@ public class WechatConfig : JSONDecodable, JSONEncodable {
 public class ApplePayConfig : JSONDecodable, JSONEncodable {
     /// Apple Developer 后台申请的商户ID
     public var merchantIdentifier: String = ""
+    /// 商户名称
+    public var merchantName: String = ""
     /// 两位国家码 CN, HK, US ...
     public var countryCode: String = ""
     
-    public init(merchantIdentifier: String, countryCode: String) {
+    public init(merchantIdentifier: String, merchantName: String, countryCode: String) {
         self.merchantIdentifier = merchantIdentifier
+        self.merchantName = merchantName
         self.countryCode = countryCode
     }
     
     public static func from(json: NSDictionary?) -> Self {
         return ApplePayConfig(
             merchantIdentifier: json?["merchantIdentifier"] as? String ?? "",
+            merchantName: json?["merchantName"] as? String ?? "",
             countryCode: json?["countryCode"] as? String ?? ""
         ) as! Self
     }
@@ -100,6 +104,7 @@ public class ApplePayConfig : JSONDecodable, JSONEncodable {
     public func toJson() -> Dictionary<String, Any?> {
         return [
             "merchantIdentifier": merchantIdentifier,
+            "merchantName": merchantName,
             "countryCode": countryCode,
         ]
     }

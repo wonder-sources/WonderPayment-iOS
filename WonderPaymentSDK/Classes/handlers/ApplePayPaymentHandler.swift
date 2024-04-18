@@ -14,13 +14,14 @@ class ApplePayPaymentHandler: PaymentHander {
         let networks: [PKPaymentNetwork] = [.visa, .masterCard, .amex, .discover, .JCB, .chinaUnionPay]
         let request = PKPaymentRequest()
         let merchantIdentifier = WonderPayment.paymentConfig.applePay?.merchantIdentifier ?? ""
+        let merchantName = WonderPayment.paymentConfig.applePay?.merchantName ?? ""
         request.merchantIdentifier = merchantIdentifier
         request.supportedNetworks = networks
         request.merchantCapabilities = [.capability3DS, .capabilityEMV]
         request.countryCode = WonderPayment.paymentConfig.applePay?.countryCode ?? ""
         request.currencyCode = intent.currency
         request.paymentSummaryItems = [
-            PKPaymentSummaryItem(label: "", amount: NSDecimalNumber(value: intent.amount))
+            PKPaymentSummaryItem(label: merchantName, amount: NSDecimalNumber(value: intent.amount))
         ]
         
         if let controller = PKPaymentAuthorizationViewController(paymentRequest: request) {
