@@ -10,9 +10,9 @@ import UIKit
 import PassKit
 
 class NavigationController: UINavigationController {
-    override var childViewControllerForStatusBarStyle: UIViewController? {
-        return visibleViewController
-    }
+//    override var childViewControllerForStatusBarStyle: UIViewController? {
+//        return visibleViewController
+//    }
 }
 
 public typealias PaymentResultCallback = (PaymentResult) -> Void
