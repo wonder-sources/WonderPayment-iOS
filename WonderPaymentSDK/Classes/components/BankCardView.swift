@@ -8,12 +8,6 @@ class BankCardView : TGLinearLayout {
     lazy var confirmButton = Button(title: "confirm".i18n, style: .primary)
     lazy var formView = createFormView()
     lazy var formLayout = TGLinearLayout(.vert)
-    lazy var cardNumberField = createFormTextField(title: "cardNumber".i18n, placeholder: "inputCardNumber".i18n, keyboardType: .numberPad, maxLength: 19, format: "XXXX XXXX ", tag: 1)
-    lazy var expiryField = createFormTextField(title: "expiryDate".i18n, placeholder: "YY/MM", keyboardType: .numberPad, maxLength: 4,format: "XX/XX", tag: 2)
-    lazy var cvvField = createFormTextField(title: "cvv".i18n, placeholder: "CVV", keyboardType: .numberPad, maxLength: 3, tag: 3)
-    lazy var firstNameField = createFormTextField(title: "firstName".i18n, placeholder: "inputFirstName".i18n, maxLength: 30, tag: 4)
-    lazy var lastNameField = createFormTextField(title: "lastName".i18n, placeholder: "inputLastName".i18n, maxLength: 30, tag: 5)
-    lazy var phoneNumberField = createFormTextField(title: "phoneNumber".i18n, placeholder: "inputPhoneNumber".i18n, keyboardType: .numberPad, maxLength: 12, leftView: codeView, tag: 6)
     
     var form = CardForm()
     
@@ -49,7 +43,7 @@ class BankCardView : TGLinearLayout {
         formView.tg_width.equal(.fill)
         formView.tg_height.equal(.wrap)
         
-        
+        let cardNumberField = createFormTextField(title: "cardNumber".i18n, placeholder: "inputCardNumber".i18n, keyboardType: .numberPad, maxLength: 19, format: "XXXX XXXX ", tag: 1)
         cardNumberField.tg_top.equal(10)
         cardNumberField.validator = validateCardNumber
         formView.addSubview(cardNumberField)
@@ -60,21 +54,26 @@ class BankCardView : TGLinearLayout {
         hLayout.tg_top.equal(16)
         formView.addSubview(hLayout)
         
+        let expiryField = createFormTextField(title: "expiryDate".i18n, placeholder: "YY/MM", keyboardType: .numberPad, maxLength: 4,format: "XX/XX", tag: 2)
         expiryField.tg_right.equal(16)
         expiryField.validator = validateExpiry
         hLayout.addSubview(expiryField)
         
+        let cvvField = createFormTextField(title: "cvv".i18n, placeholder: "CVV", keyboardType: .numberPad, maxLength: 4, tag: 3)
         cvvField.validator = validateCVV
         hLayout.addSubview(cvvField)
         
+        let firstNameField = createFormTextField(title: "firstName".i18n, placeholder: "inputFirstName".i18n, maxLength: 30, tag: 4)
         firstNameField.tg_top.equal(16)
         firstNameField.validator = validateName
         formView.addSubview(firstNameField)
         
+        let lastNameField = createFormTextField(title: "lastName".i18n, placeholder: "inputLastName".i18n, maxLength: 30, tag: 5)
         lastNameField.tg_top.equal(16)
         lastNameField.validator = validateName
         formView.addSubview(lastNameField)
         
+        let phoneNumberField = createFormTextField(title: "phoneNumber".i18n, placeholder: "inputPhoneNumber".i18n, keyboardType: .numberPad, maxLength: 12, leftView: codeView, tag: 6)
         phoneNumberField.tg_top.equal(16)
         phoneNumberField.validator = validatePhone
         formView.addSubview(phoneNumberField)
@@ -143,6 +142,7 @@ class BankCardView : TGLinearLayout {
     
     private func createFormTextField(title: String, placeholder: String, keyboardType: UIKeyboardType = .default, maxLength: UInt, leftView: UIView? = nil, format: String? = nil, tag: Int = 0) -> FormTextFieldView {
         let formTextField = FormTextFieldView(title: title, placeholder: placeholder, keyboardType: keyboardType, maxLength: maxLength, leftView: leftView, format: format)
+        formTextField.tag = tag
         formTextField.textField.tag = tag
         formTextField.textField.addTarget(self, action: #selector(onTextFieldValueChange(_:)), for: .editingChanged)
         return formTextField
@@ -168,12 +168,13 @@ class BankCardView : TGLinearLayout {
             }
         default: ()
         }
-        let formValid = cardNumberField.isValid 
-        && expiryField.isValid
-        && cvvField.isValid
-        && firstNameField.isValid
-        && lastNameField.isValid
-        && phoneNumberField.isValid
+        
+        var formValid = true
+        for tag in 1...6 {
+            if let formTextFieldView = formView.viewWithTag(tag) as? FormTextFieldView {
+                formValid = formTextFieldView.isValid
+            }
+        }
         confirmButton.isEnabled = formValid
     }
     

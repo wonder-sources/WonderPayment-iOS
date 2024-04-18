@@ -25,9 +25,10 @@ class Loading {
         loadingController?.showWith(animated: true)
     }
     
-    static func dismiss() {
-        loadingController?.hideWith(animated: true) { _ in
+    static func dismiss(completion: ((Bool) -> Void)? = nil) {
+        loadingController?.hideWith(animated: true) { completed in
             loadingController = nil
+            completion?(completed)
         }
     }
 }

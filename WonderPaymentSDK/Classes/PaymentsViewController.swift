@@ -21,9 +21,19 @@ enum SessionMode {
 
 class PaymentsViewController: UIViewController {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        let isDark = WonderPayment.uiConfig.background.qmui_colorIsDark
+        if #available(iOS 13.0, *) {
+            return isDark ? .lightContent : .darkContent
+        } else {
+            return isDark ? .lightContent : .default
+        }
+    }
+    
     ///支付参数
-    var intent: PaymentIntent! {
+    var intent: PaymentIntent? {
         didSet {
+            guard let intent = intent else { return }
             let amountText = "\(CurrencySymbols.get(intent.currency))\(formatAmount(intent.amount))"
             mView.amountLabel.text = amountText
             if sessionMode == .once {
@@ -40,8 +50,15 @@ class PaymentsViewController: UIViewController {
     var sessionMode: SessionMode = .once
     /// 显示风格
     var displayStyle: DisplayStyle = .oneClick
+    /// 查看编辑模式
+    var previewMode: Bool = false
     
-    lazy var mView = PaymentsView(displayStyle: displayStyle, sessionMode: sessionMode)
+    lazy var mView = PaymentsView(
+        displayStyle: displayStyle,
+        sessionMode: sessionMode,
+        previewMode: previewMode,
+        transactionType: intent?.transactionType ?? .sale
+    )
     var paymentStatus: PaymentStatus = .normal {
         didSet {
             mView.setUIStatus(paymentStatus)
@@ -76,11 +93,17 @@ class PaymentsViewController: UIViewController {
         
         mView.onMethodConfirm = {
             [unowned self] method in
+            if previewMode {
+                let previewController = MethodPreviewController(method: method, delegate: self)
+                self.navigationController?.pushViewController(previewController, animated: true)
+                return
+            }
             if self.sessionMode == .twice {
                 self.selectCallback?(method)
                 self.dismiss()
             } else {
-                let paymentIntent = self.intent.copy()
+                guard let intent = intent else { return }
+                let paymentIntent = intent.copy()
                 paymentIntent.paymentMethod = method
                 pay(intent: paymentIntent, delegate: self)
             }
@@ -88,9 +111,8 @@ class PaymentsViewController: UIViewController {
     }
     
     private func loadData() {
-        let businessId = WonderPayment.paymentConfig.businessId
-        let isPreAuth = intent.transactionType == .preAuth
-        PaymentService.queryPaymentMethods(businessId: businessId) {
+        let isPreAuth = intent?.transactionType == .preAuth
+        PaymentService.queryPaymentMethods() {
             [weak self] config, err in
             let supportList = config?.supportPaymentMethod ?? []
             var supportCard = false
@@ -146,7 +168,7 @@ class PaymentsViewController: UIViewController {
     }
     
     @objc func close(_ sender: UIButton) {
-        if sessionMode == .twice {
+        if sessionMode == .twice || previewMode {
             self.dismiss()
         } else {
             if (paymentResult?.status != .completed) {
@@ -181,7 +203,7 @@ class PaymentsViewController: UIViewController {
     
     /// 添加卡片确认
     @objc func addCardConfirmed(_ sender: UIButton) {
-        if sessionMode == .twice {
+        if sessionMode == .twice || previewMode {
             let form = mView.bankCardView.form
             let expDate = form.expDate
             let arr = expDate.split(separator: "/")
@@ -194,7 +216,6 @@ class PaymentsViewController: UIViewController {
                 "number": form.number,
                 "cvv": form.cvv,
                 "holder_name": "\(form.firstName) \(form.lastName)",
-                "default": true,
                 "billing_address": [
                     "first_name": form.firstName,
                     "last_name": form.lastName,
@@ -228,21 +249,25 @@ class PaymentsViewController: UIViewController {
     }
     
     private func cardPay(_ args: [String: Any?]) {
+        guard let intent = intent else { return }
         let paymentIntent = intent.copy()
-        paymentIntent.paymentMethod = PaymentMethod(type: .creditCard, arguments: args)
+        paymentIntent.paymentMethod = PaymentMethod(type: .creditCard, arguments: args as NSDictionary)
         pay(intent: paymentIntent, delegate: self)
     }
     
     private func addCard(_ args: [String: Any?]) {
         Loading.show()
-        PaymentService.bindCard(cardInfo: args) { cardInfo, error in
+        PaymentService.bindCard(cardInfo: args as NSDictionary) {
+            [weak self] cardInfo, error in
             Loading.dismiss()
-            if let error = error {
-                Tips.show(style: .error, title: error.code, subTitle: error.message)
+            
+            guard let cardInfo = cardInfo else {
+                Tips.show(style: .error, title: error?.code, subTitle: error?.message)
                 return
             }
             
-            if let cardInfo = cardInfo {
+            self?.checkIfValid(cardInfo) { valid in
+                if !valid { return }
                 Tips.show(image: "verified".svg, title: "cardVerified".i18n, subTitle: "canStartPaying".i18n) {
                     [weak self] _ in
                     self?.resetUI()
@@ -253,6 +278,54 @@ class PaymentsViewController: UIViewController {
         }
     }
     
+    private func checkIfValid(_ card: CreditCardInfo, callback: @escaping (Bool) -> Void) {
+        if card.state == "success" {
+            callback(true)
+        } else {
+            let browserController = BrowserViewController()
+            browserController.modalPresentationStyle = .fullScreen
+            browserController.url = card.verifyUrl
+            browserController.finishedCallback = {
+                [weak self] result in
+                if let succeed = result as? Bool, !succeed {
+                    callback(false)
+                    return
+                }
+                Loading.show()
+                self?.checkPaymentTokenIsValid(card) { valid in
+                    Loading.dismiss()
+                    callback(valid)
+                }
+            }
+            self.present(browserController, animated: true)
+        }
+    }
+    
+    private func checkPaymentTokenIsValid(
+        _ card: CreditCardInfo,
+        retryCount: Int = 3,
+        callback: @escaping (Bool) -> Void
+    ) {
+        guard let uuid = card.verifyUuid, let token = card.token else {
+            callback(false)
+            return
+        }
+        if retryCount < 1 {
+            callback(false)
+            return
+        }
+        PaymentService.checkPaymentTokenIsValid(uuid: uuid, token: token) {
+            [weak self] result, err in
+            guard let valid = result else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    let count = retryCount - 1
+                    self?.checkPaymentTokenIsValid(card, retryCount: count, callback: callback)
+                }
+                return
+            }
+            callback(valid)
+        }
+    }
 }
 
 extension PaymentsViewController: PaymentDelegate {
@@ -271,6 +344,8 @@ extension PaymentsViewController: PaymentDelegate {
             name = "alipay".i18n
         case .alipayHK:
             name = "alipayHK".i18n
+        case .creditCard:
+            name = "card".i18n
         default:
             name = ""
             
@@ -298,9 +373,9 @@ extension PaymentsViewController: PaymentDelegate {
             mView.errorView.errorMessage = error
             paymentResult = PaymentResult(status: .failed, code: error.code, message: error.message)
         }
-        if let result = result,let success = result.success, success {
+        if let transaction = result?.transaction, transaction.success {
             paymentStatus = .success
-            mView.successfulView.setData(result, intent: intent)
+            mView.successfulView.setData(result!, intent: intent)
             paymentResult = PaymentResult(status: .completed)
         }
         if !WonderPayment.uiConfig.showResult {
@@ -311,5 +386,12 @@ extension PaymentsViewController: PaymentDelegate {
     
     func onCanceled() {
         
+    }
+}
+
+extension PaymentsViewController : MethodPreviewDelegate {
+    func tokenDeleted(token: String) {
+        cards?.removeAll(where: {$0.token == token})
+        mView.methodView.setCardItems(cards ?? [])
     }
 }

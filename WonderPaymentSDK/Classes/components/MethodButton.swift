@@ -14,19 +14,21 @@ class MethodButton : QMUIButton, MethodItemView {
     var title: String
     var displayStyle: DisplayStyle
     var method: PaymentMethod?
+    var previewMode: Bool
     
-    lazy var radioButton = RadioButton(style: .radio)
+    var radioButton: RadioButton?
     
     override var isSelected: Bool {
         didSet {
-            radioButton.isSelected = isSelected
+            radioButton?.isSelected = isSelected
         }
     }
     
-    init(image: String, title: String, displayStyle: DisplayStyle = .oneClick) {
+    init(image: String, title: String, displayStyle: DisplayStyle = .oneClick, previewMode: Bool = false) {
         self.image = image
         self.title = title
         self.displayStyle = displayStyle
+        self.previewMode = previewMode
         super.init(frame: .zero)
         self.initView()
     }
@@ -64,15 +66,21 @@ class MethodButton : QMUIButton, MethodItemView {
         label.tg_centerY.equal(0)
         child.addSubview(label)
         
-        radioButton.tg_left.equal(100%)
-        radioButton.tg_width.equal(.wrap)
-        radioButton.tg_height.equal(.wrap)
-        radioButton.tg_centerY.equal(0)
-        child.addSubview(radioButton)
-        
-        if displayStyle == .oneClick {
-            icon.tg_left.equal(100%)
-            radioButton.alpha = 0
+        if previewMode {
+            let imageView = UIImageView(image: "arrow_right".svg)
+            imageView.tg_centerY.equal(0)
+            imageView.tg_left.equal(100%)
+            child.addSubview(imageView)
+        } else if (displayStyle == .confirm) {
+            radioButton = RadioButton(style: .radio)
+            radioButton!.tg_left.equal(100%)
+            radioButton!.tg_width.equal(.wrap)
+            radioButton!.tg_height.equal(.wrap)
+            radioButton!.tg_centerY.equal(0)
+            child.addSubview(radioButton!)
+        } else {
+            icon.tg_left.equal(50%)
+            label.tg_right.equal(50%)
         }
     }
 }

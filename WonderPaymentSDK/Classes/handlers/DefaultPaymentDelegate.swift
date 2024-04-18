@@ -28,7 +28,7 @@ class DefaultPaymentDelegate : PaymentDelegate {
         if let error = error {
             paymentResult = PaymentResult(status: .failed, code: error.code, message: error.message)
         }
-        if let result = result,let success = result.success, success {
+        if let transaction = result?.transaction, transaction.success {
             paymentResult = PaymentResult(status: .completed)
         }
         callback(paymentResult)

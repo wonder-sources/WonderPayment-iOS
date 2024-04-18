@@ -9,6 +9,12 @@ import Foundation
 import UIKit
 import PassKit
 
+class NavigationController: UINavigationController {
+    override var childViewControllerForStatusBarStyle: UIViewController? {
+        return visibleViewController
+    }
+}
+
 public typealias PaymentResultCallback = (PaymentResult) -> Void
 public typealias SelectMethodCallback = (PaymentMethod) -> Void
 public typealias DataCallback = ([String: Any?]) -> Void
@@ -76,6 +82,17 @@ public class WonderPayment : NSObject {
         paymentsViewController.selectCallback = callback
         paymentsViewController.modalPresentationStyle = .fullScreen
         rootViewController?.present(paymentsViewController, animated: true)
+    }
+    
+    /// 查看管理支付方式
+    public static func preview() {
+        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+        let paymentsViewController = PaymentsViewController()
+        paymentsViewController.previewMode = true
+        let navController = NavigationController(rootViewController: paymentsViewController)
+        navController.navigationBar.isHidden = true
+        navController.modalPresentationStyle = .fullScreen
+        rootViewController?.present(navController, animated: true)
     }
     
     /// 三方支付回调处理

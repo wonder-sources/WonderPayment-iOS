@@ -10,8 +10,50 @@ class PaymentService {
         }
     }
     
-    static func queryPaymentMethods(businessId: String, completion: @escaping (PaymentMethodConfig?, ErrorMessage?) -> Void) {
-        let urlString = "https://\(domain)/svc/oms/public/api/v1/payment_sdk/payment_methods"
+    static var _3dsConfig: NSDictionary {
+        let host: String
+        switch(WonderPayment.paymentConfig.environment) {
+        case .staging:
+            host = "pay-stg.wonder.app"
+        case .alpha:
+            host = "pay-alpha.wonder.app"
+        case .production:
+            host = "pay.wonder.app"
+        }
+        var lang = "en"
+        let locale = WonderPayment.paymentConfig.locale
+        if locale != .en_US {
+            lang = locale.rawValue
+        }
+        
+        return [
+            "success_return_url": "https://\(host)/\(lang)/payment/3ds/auth/successful",
+            "fail_return_url": "https://\(host)/\(lang)/payment/3ds/auth/failed",
+        ]
+    }
+    
+    static var requestTime: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.dateFormat = "yyyyMMddHHmmss"
+        return dateFormatter.string(from: Date())
+    }
+    
+    static var credential: String {
+        return "\(appId)/\(requestTime)/Wonder-HMAC-SHA256"
+    }
+    
+    static var appId: String {
+        return WonderPayment.paymentConfig.appId
+    }
+    
+    static var appSecret: String {
+        return WonderPayment.paymentConfig.appSecret
+    }
+    
+    ///查询支付方式
+    static func queryPaymentMethods(completion: @escaping (PaymentMethodConfig?, ErrorMessage?) -> Void) {
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/payment_methods"
         guard let url = URL(string: urlString) else {
             UI.call { completion(nil, .unknownError) }
             return
@@ -19,7 +61,8 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue(businessId, forHTTPHeaderField: "x-p-business-id")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -46,48 +89,34 @@ class PaymentService {
         task.resume()
     }
     
-    
+    /// 支付
     static func payOrder(
-        amount: Double,
-        paymentMethod: String,
-        paymentData: [String: Any?],
-        transactionType: TransactionType,
-        orderNum: String,
-        businessId: String,
+        intent: PaymentIntent,
         completion: @escaping (PayResult?, ErrorMessage?) -> Void
     )  {
-        let uuid = UUID().uuidString
-        let urlString = "https://\(domain)/svc/oms/public/api/v1/payment_sdk/orders/\(orderNum)/pay"
+        
+        let uuid = UUID().uuidString.lowercased()
+        let paymentArgs: [String: Any] = [
+            "number": intent.orderNumber,
+            "payment": ["uuid": uuid].merge(intent.paymentMethod?.arguments),
+            "additional_line_items": intent.lineItems?.map({$0.toJson()}) ?? [],
+        ]
+        
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/payments"
         guard let url = URL(string: urlString) else {
             UI.call { completion(nil, .unknownError) }
             return
         }
         
-        var paymentArgs = paymentData
-        paymentArgs["amount"] = amount
-        if transactionType == .preAuth {
-            paymentArgs["consume_mode"] = "pre_authorize"
-        }
-        
-        let params: [String: Any] = [
-            "payment": [
-                "uuid": uuid,
-                paymentMethod: [paymentArgs]
-            ]
-        ]
-        
-        //prettyPrint(arrayOrMap: params)
-        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(WonderPayment.paymentConfig.source, forHTTPHeaderField: "X-INTEGRATION-SOURCE")
-        request.setValue(WonderPayment.paymentConfig.token, forHTTPHeaderField: "X-INTEGRATION-CUSTOMER")
-        request.setValue(businessId, forHTTPHeaderField: "x-p-business-id")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
         
+        
         do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: params, options: [])
+            request.httpBody = try JSONSerialization.data(withJSONObject: paymentArgs, options: [])
         } catch {
             UI.call { completion(nil, .dataFormatError) }
             return
@@ -106,7 +135,8 @@ class PaymentService {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
                 let resp = PaymentResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
-                    let result = PayResult.from(json: resp.data as? NSDictionary)
+                    var result = PayResult.from(json: resp.data as? NSDictionary)
+                    result.transaction = result.order.transactions?.first(where: {$0.uuid == uuid})
                     UI.call { completion(result, nil) }
                 } else {
                     UI.call { completion(nil, resp.error) }
@@ -118,16 +148,18 @@ class PaymentService {
         task.resume()
     }
     
-    static func queryCardList(limit: Int = 1000, completion: @escaping ([CreditCardInfo]?, ErrorMessage?) -> Void) {
-        let urlString = "https://\(domain)/svc/oms/public/api/v1/payment_sdk/credit_cards/list?limit=\(limit)"
+    /// 查询卡片列表
+    static func queryCardList(completion: @escaping ([CreditCardInfo]?, ErrorMessage?) -> Void) {
+        let customerId = WonderPayment.paymentConfig.customerId
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)/payment_tokens"
         guard let url = URL(string: urlString) else {
             UI.call { completion(nil, .unknownError) }
             return
         }
         
         var request = URLRequest(url: url)
-        request.setValue(WonderPayment.paymentConfig.source, forHTTPHeaderField: "X-INTEGRATION-SOURCE")
-        request.setValue(WonderPayment.paymentConfig.token, forHTTPHeaderField: "X-INTEGRATION-CUSTOMER")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
         
         let session = URLSession.shared
@@ -143,7 +175,11 @@ class PaymentService {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
                 let resp = PaymentResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
-                    let cardList = CreditCardInfo.from(jsonArray: resp.data as? NSArray)
+                    let list = DynamicJson(value: resp.data)["payment_tokens"].array
+                    let arr = list.filter({
+                        $0["token_type"].string == "CreditCard" && $0["state"].string == "success"
+                    }).map({$0.value})
+                    let cardList = CreditCardInfo.from(jsonArray: arr as NSArray)
                     UI.call { completion(cardList , nil) }
                 } else {
                     UI.call { completion(nil, resp.error) }
@@ -155,8 +191,10 @@ class PaymentService {
         task.resume()
     }
     
-    static func bindCard(cardInfo: [String: Any?], completion: @escaping (CreditCardInfo?, ErrorMessage?) -> Void) {
-        let urlString = "https://\(domain)/svc/oms/public/api/v1/payment_sdk/credit_cards/bind"
+    /// 绑定卡片
+    static func bindCard(cardInfo: NSDictionary, completion: @escaping (CreditCardInfo?, ErrorMessage?) -> Void) {
+        let customerId = WonderPayment.paymentConfig.customerId
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)/payment_tokens"
         
         guard let url = URL(string: urlString) else {
             UI.call { completion(nil, .unknownError) }
@@ -166,12 +204,15 @@ class PaymentService {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(WonderPayment.paymentConfig.source, forHTTPHeaderField: "X-INTEGRATION-SOURCE")
-        request.setValue(WonderPayment.paymentConfig.token, forHTTPHeaderField: "X-INTEGRATION-CUSTOMER")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
         
+        let dataParams = [
+            "card": ["3ds": _3dsConfig].merge(cardInfo)
+        ]
+        
         do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: cardInfo, options: [])
+            request.httpBody = try JSONSerialization.data(withJSONObject: dataParams, options: [])
         } catch {
             UI.call { completion(nil, .dataFormatError) }
             return
@@ -189,7 +230,8 @@ class PaymentService {
 //                prettyPrint(arrayOrMap: json)
                 let resp = PaymentResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
-                    let card = CreditCardInfo.from(json: resp.data as? NSDictionary)
+                    let dataJson = resp.data as? NSDictionary
+                    let card = CreditCardInfo.from(json: dataJson?["payment_token"] as? NSDictionary)
                     UI.call { completion(card, nil) }
                 } else {
                     UI.call { completion(nil, resp.error) }
@@ -202,24 +244,28 @@ class PaymentService {
         task.resume()
     }
     
-    static func getPayResult(
-        uuid: String,
-        orderNum: String,
-        businessId: String,
-        completion: @escaping (PayResult?, ErrorMessage?) -> Void
-    ){
-        let urlString = "https://\(domain)/svc/oms/public/api/v1/payment_sdk/orders/\(orderNum)/transactions/\(uuid)"
+    /// 删除PaymentToken
+    static func deletePaymentToken(token: String, completion: @escaping (Bool?, ErrorMessage?) -> Void) {
+        let customerId = WonderPayment.paymentConfig.customerId
+        
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)/payment_tokens"
         guard let url = URL(string: urlString) else {
             UI.call { completion(nil, .unknownError) }
             return
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue(WonderPayment.paymentConfig.source, forHTTPHeaderField: "X-INTEGRATION-SOURCE")
-        request.setValue(WonderPayment.paymentConfig.token, forHTTPHeaderField: "X-INTEGRATION-CUSTOMER")
-        request.setValue(businessId, forHTTPHeaderField: "x-p-business-id")
+        request.httpMethod = "DELETE"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: ["token": token], options: [])
+        } catch {
+            UI.call { completion(nil, .dataFormatError) }
+            return
+        }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
@@ -233,8 +279,120 @@ class PaymentService {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
                 let resp = PaymentResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
-                    let result = PayResult.from(json: resp.data as? NSDictionary)
-                    
+                    let dataJson = resp.data as? NSDictionary
+                    let success = dataJson?["success"] as? Bool
+                    UI.call { completion(success, nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    /// 检查PaymentToken是否已验证
+    static func checkPaymentTokenIsValid(
+        uuid: String,
+        token: String,
+        completion: @escaping (Bool?, ErrorMessage?) -> Void
+    ) {
+        let customerId = WonderPayment.paymentConfig.customerId
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)/payment_tokens/check"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
+        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: [
+                "payment_token": [
+                    "verify_uuid": uuid,
+                    "token": token,
+                ]
+            ], options: [])
+        } catch {
+            UI.call { completion(nil, .dataFormatError) }
+            return
+        }
+        
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+//            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    let dataJson = DynamicJson(value: resp.data)
+                    let valid = dataJson["payment_token"]["state"].string == "success"
+                    UI.call { completion(valid, nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    /// 获取支付结果
+    static func getPayResult(
+        uuid: String,
+        orderNum: String,
+        completion: @escaping (PayResult?, ErrorMessage?) -> Void
+    ){
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/orders/check"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
+        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: [
+                "order": ["number": orderNum]
+            ], options: [])
+        } catch {
+            UI.call { completion(nil, .dataFormatError) }
+            return
+        }
+        
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+//            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    var result = PayResult.from(json: resp.data as? NSDictionary)
+                    result.transaction = result.order.transactions?.first(where: {$0.uuid == uuid})
                     UI.call { completion(result, nil) }
                 } else {
                     UI.call { completion(nil, resp.error) }
@@ -251,14 +409,13 @@ class PaymentService {
     static func loopForResult(
         uuid: String,
         orderNum: String,
-        businessId: String,
         completion: @escaping (PayResult?, ErrorMessage?) -> Void
     ) {
-        getPayResult(uuid: uuid, orderNum: orderNum, businessId: businessId) { result, error in
-            if let result = result, let isPending = result.isPending {
-                if isPending  {
+        getPayResult(uuid: uuid, orderNum: orderNum) { result, error in
+            if let transaction = result?.transaction {
+                if transaction.isPending  {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                        loopForResult(uuid: uuid, orderNum: orderNum, businessId: businessId, completion: completion)
+                        loopForResult(uuid: uuid, orderNum: orderNum, completion: completion)
                     })
                 } else {
                     completion(result, error)

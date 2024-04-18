@@ -4,13 +4,22 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
     public var orderNumber: String
     public var paymentMethod: PaymentMethod?
     public var transactionType: TransactionType = .sale
+    public var lineItems: [LineItem]?
     
-    public init(amount: Double, currency: String, orderNumber: String, paymentMethod: PaymentMethod? = nil, transactionType: TransactionType = .sale) {
+    public init(
+        amount: Double,
+        currency: String,
+        orderNumber: String,
+        paymentMethod: PaymentMethod? = nil,
+        transactionType: TransactionType = .sale,
+        lineItems: [LineItem]? = nil
+    ) {
         self.amount = amount
         self.currency = currency
         self.orderNumber = orderNumber
         self.paymentMethod = paymentMethod
         self.transactionType = transactionType
+        self.lineItems = lineItems
     }
     
     public func copy() -> PaymentIntent {
@@ -19,7 +28,8 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
             currency: self.currency,
             orderNumber: self.orderNumber,
             paymentMethod: self.paymentMethod,
-            transactionType: self.transactionType
+            transactionType: self.transactionType,
+            lineItems: self.lineItems?.map({$0.copy()})
         )
     }
     
@@ -33,7 +43,8 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
             currency: json?["currency"] as? String ?? "HKD",
             orderNumber: json?["orderNumber"] as? String ?? "",
             paymentMethod: paymentMethod,
-            transactionType: TransactionType(rawValue: json?["transactionType"] as? String ?? "") ?? .sale
+            transactionType: TransactionType(rawValue: json?["transactionType"] as? String ?? "") ?? .sale,
+            lineItems: LineItem.from(jsonArray: json?["line_items"] as? NSArray)
         ) as! Self
     }
     
@@ -44,6 +55,7 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
             "orderNumber": orderNumber,
             "paymentMethod": paymentMethod?.toJson(),
             "transactionType": transactionType.rawValue,
+            "lineItems": lineItems?.map({$0.toJson()}),
         ]
     }
 }

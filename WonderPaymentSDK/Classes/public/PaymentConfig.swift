@@ -1,8 +1,8 @@
 
 public class PaymentConfig : JSONDecodable, JSONEncodable {
-    public var businessId: String
-    public var source: String
-    public var token: String
+    public var appId: String
+    public var appSecret: String
+    public var customerId: String
     public var scheme: String
     public var environment: PaymentEnvironment
     public var locale: Locale
@@ -10,18 +10,18 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
     public var applePay: ApplePayConfig?
     
     public init(
-        businessId: String = "",
-        source: String = "",
-        token: String = "",
+        appId: String = "",
+        appSecret: String = "",
+        customerId: String = "",
         scheme: String = "",
         environment: PaymentEnvironment = .production,
         locale: Locale = .zh_HK,
         wechat: WechatConfig? = nil,
         applePay: ApplePayConfig? = nil
     ) {
-        self.businessId = businessId
-        self.source = source
-        self.token = token
+        self.appId = appId
+        self.appSecret = appSecret
+        self.customerId = customerId
         self.scheme = scheme
         self.environment = environment
         self.locale = locale
@@ -31,9 +31,8 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
     
     public static func from(json: NSDictionary?) -> Self {
         let config = PaymentConfig()
-        config.businessId = json?["businessId"] as? String ?? ""
-        config.source = json?["source"] as? String ?? ""
-        config.token = json?["token"] as? String ?? ""
+        config.appId = json?["appId"] as? String ?? ""
+        config.appSecret = json?["appSecret"] as? String ?? ""
         config.scheme = json?["scheme"] as? String ?? ""
         config.environment = PaymentEnvironment(rawValue: json?["environment"] as? String ?? "") ?? .production
         config.locale = Locale(rawValue: json?["locale"] as? String ?? "") ?? .zh_HK
@@ -44,9 +43,8 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
     
     public func toJson() -> Dictionary<String, Any?> {
         return [
-            "businessId": businessId,
-            "source": source,
-            "token": token,
+            "appId": appId,
+            "appSecret": appSecret,
             "scheme": scheme,
             "environment": environment.rawValue,
             "locale": locale.rawValue,

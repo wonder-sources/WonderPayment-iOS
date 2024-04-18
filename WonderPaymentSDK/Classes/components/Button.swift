@@ -11,7 +11,7 @@ import QMUIKit
 class Button : QMUIButton {
     
     enum ButtonStyle {
-        case secondary, primary
+        case secondary, primary, warning
     }
     
     var style: ButtonStyle = .secondary
@@ -37,12 +37,19 @@ class Button : QMUIButton {
         case .primary:
             backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
             titleColor = WonderPayment.uiConfig.primaryButtonColor
+        case .warning:
+            backgroundColor = .white
+            titleColor = WonderPayment.uiConfig.errorColor
         }
         
         self.backgroundColor = backgroundColor
         setTitleColor(titleColor, for: .normal)
         layer.cornerRadius = min(WonderPayment.uiConfig.borderRadius, 26)
         titleLabel?.font = UIFont(name: "Outfit-Medium", size: 16)
+        if style == .warning {
+            self.layer.borderWidth = 1
+            self.layer.borderColor = titleColor.cgColor
+        }
         tg_height.equal(52)
         tg_width.equal(.fill)
     }

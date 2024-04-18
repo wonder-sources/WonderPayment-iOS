@@ -50,8 +50,8 @@ class SuccessfulView : TGLinearLayout {
     }
     
     func setData(_ data: PayResult, intent: PaymentIntent) {
-        let currency = data.currency ?? "HKD"
-        let amount = data.amount ?? 0.00
+        let currency = data.transaction?.currency ?? "HKD"
+        let amount = data.transaction?.amount ?? 0.00
         let amountText = "\(CurrencySymbols.get(currency))\(formatAmount(amount))"
         amountLabel.text = amountText
         
@@ -64,7 +64,7 @@ class SuccessfulView : TGLinearLayout {
         headerLayout.backgroundColor = WonderPayment.uiConfig.secondaryBackground
         detailsLayout.addSubview(headerLayout)
 
-        let orderNumberLabel = Label(data.referenceId ?? "")
+        let orderNumberLabel = Label(data.order.referenceNumber)
         orderNumberLabel.tg_width.equal(.fill)
         orderNumberLabel.tg_height.equal(.wrap)
         headerLayout.addSubview(orderNumberLabel)
@@ -78,7 +78,7 @@ class SuccessfulView : TGLinearLayout {
         
         itemsLayout.addSubview(KeyValueItem(key: "paymentAmount".i18n, value: amountText))
         
-        let paymentData = DynamicJson(value: data.paymentData)
+        let paymentData = DynamicJson(value: data.transaction?.paymentData)
         
         if let nameAndIcon = getNameAndIcon(intent.paymentMethod?.type.rawValue) {
             itemsLayout.addSubview(KeyValueItem(key: "paymentMethod".i18n, value: nameAndIcon.0, valueIcon: nameAndIcon.1))
@@ -96,7 +96,7 @@ class SuccessfulView : TGLinearLayout {
             itemsLayout.addSubview(KeyValueItem(key: "customerName".i18n, value: customerName))
         }
         
-        if let createdAt = data.createdAt {
+        if let createdAt = data.transaction?.createdAt {
             var formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
             if let localDate = formatter.date(from: createdAt) {

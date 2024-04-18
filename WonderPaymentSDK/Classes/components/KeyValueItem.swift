@@ -39,6 +39,31 @@ class KeyValueItem : TGLinearLayout {
         self.initView()
     }
     
+//    private func initView() {
+//        self.tg_width.equal(.fill)
+//        self.tg_height.equal(.wrap)
+//        
+//        keyLabel.tg_width.equal(.wrap)
+//        keyLabel.tg_height.equal(.wrap)
+//        keyLabel.tg_right.equal(20)
+//        addSubview(keyLabel)
+//        
+//         
+//        valueIconView.image = valueIcon
+//        valueIconView.tg_left.equal(100%)
+//        valueIconView.tg_right.equal(4)
+//        valueIconView.tg_width.equal(.wrap)
+//        valueIconView.tg_height.equal(.wrap)
+//        valueIconView.contentMode = .scaleAspectFit
+//        addSubview(valueIconView)
+//        
+//        valueLabel.tg_height.equal(.wrap)
+//        //let maxWidth = UIScreen.main.bounds.width / 2 - 62
+//        valueLabel.tg_width.equal(.wrap)//.max(maxWidth)
+//        valueLabel.textAlignment = .right
+//        addSubview(valueLabel)
+//    }
+    
     private func initView() {
         self.tg_width.equal(.fill)
         self.tg_height.equal(.wrap)
@@ -48,19 +73,20 @@ class KeyValueItem : TGLinearLayout {
         keyLabel.tg_right.equal(20)
         addSubview(keyLabel)
         
-         
-        valueIconView.image = valueIcon
-        valueIconView.tg_left.equal(100%)
-        valueIconView.tg_right.equal(4)
-        valueIconView.tg_width.equal(.wrap)
-        valueIconView.tg_height.equal(.wrap)
-        valueIconView.contentMode = .scaleAspectFit
-        addSubview(valueIconView)
+        if let icon = valueIcon {
+            valueIconView.image = icon
+            valueIconView.tg_left.equal(100%)
+            valueIconView.tg_right.equal(4)
+            valueIconView.tg_width.equal(.wrap)
+            valueIconView.tg_height.equal(.wrap)
+            valueIconView.contentMode = .scaleAspectFit
+            addSubview(valueIconView)
+        }
         
         valueLabel.tg_height.equal(.wrap)
-        //let maxWidth = UIScreen.main.bounds.width / 2 - 62
-        valueLabel.tg_width.equal(.wrap)//.max(maxWidth)
+        valueLabel.tg_width.equal(valueIcon == nil ? .fill : .wrap)
         valueLabel.textAlignment = .right
+       
         addSubview(valueLabel)
     }
 }

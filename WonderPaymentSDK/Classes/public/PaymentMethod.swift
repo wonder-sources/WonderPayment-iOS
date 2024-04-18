@@ -11,9 +11,9 @@ public enum PaymentMethodType: String {
 
 public class PaymentMethod : JSONDecodable, JSONEncodable {
     public var type: PaymentMethodType
-    public var arguments: Any?
+    public var arguments: NSDictionary?
     
-    public init(type: PaymentMethodType, arguments: Any? = nil) {
+    public init(type: PaymentMethodType, arguments: NSDictionary? = nil) {
         self.type = type
         self.arguments = arguments
     }

@@ -16,12 +16,13 @@ protocol MethodViewDelegate {
 class MethodView : TGLinearLayout {
     
     var displayStyle: DisplayStyle = .oneClick
+    var previewMode: Bool
     
-    lazy var applePayButton = ApplePayButton(displayStyle: displayStyle)
-    lazy var unionPayButton = MethodButton(image: "UnionPay", title: "unionPay".i18n, displayStyle: displayStyle)
-    lazy var wechatPayButton = MethodButton(image: "WechatPay", title: "wechatPay".i18n, displayStyle: displayStyle)
-    lazy var alipayButton = MethodButton(image: "Alipay", title: "alipay".i18n, displayStyle: displayStyle)
-    lazy var alipayHKButton = MethodButton(image: "Alipay", title: "alipayHK".i18n, displayStyle: displayStyle)
+    lazy var applePayButton = ApplePayButton(displayStyle: displayStyle, previewMode: previewMode)
+    lazy var unionPayButton = MethodButton(image: "UnionPay", title: "unionPay".i18n, displayStyle: displayStyle, previewMode: previewMode)
+    lazy var wechatPayButton = MethodButton(image: "WechatPay", title: "wechatPay".i18n, displayStyle: displayStyle, previewMode: previewMode)
+    lazy var alipayButton = MethodButton(image: "Alipay", title: "alipay".i18n, displayStyle: displayStyle, previewMode: previewMode)
+    lazy var alipayHKButton = MethodButton(image: "Alipay", title: "alipayHK".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var addCardButton = createAddCardButton()
     lazy var cardView = createCardView()
     lazy var itemsLayout = TGLinearLayout(.vert)
@@ -31,17 +32,22 @@ class MethodView : TGLinearLayout {
     
     var selectedMethod: PaymentMethod? {
         didSet{
-            cardConfirmButton.isHidden = displayStyle == .confirm || selectedMethod?.type != .creditCard
+            cardConfirmButton.isHidden = previewMode || displayStyle == .confirm || selectedMethod?.type != .creditCard
             delegate?.onSelectedChange(selected: selectedMethod)
         }
     }
     
     var delegate: MethodViewDelegate?
 
-    convenience init(displayStyle: DisplayStyle = .oneClick) {
-        self.init(frame: .zero, orientation: .vert)
+    init(displayStyle: DisplayStyle = .oneClick, previewMode: Bool = false) {
         self.displayStyle = displayStyle
+        self.previewMode = previewMode
+        super.init(frame: .zero, orientation: .vert)
         self.initView()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func initView() {
@@ -67,7 +73,7 @@ class MethodView : TGLinearLayout {
         addSubview(alipayHKButton)
         
         
-        if displayStyle == .confirm {
+        if displayStyle == .confirm || previewMode {
             insertSubview(cardView, at: 0)
         } else {
             addSubview(cardView)
@@ -106,7 +112,7 @@ class MethodView : TGLinearLayout {
                 let icon = CardMap.getIcon(item.issuer ?? "")
                 let cardNumber = formatCardNumber(issuer: item.issuer ?? "", number: item.number ?? "")
 //                let isSelected = item.default ?? false
-                let itemView = CardItemView(icon: icon, cardNumber: cardNumber,isSelected: isSelected, displayStyle: displayStyle)
+                let itemView = CardItemView(icon: icon, cardNumber: cardNumber,isSelected: isSelected, displayStyle: displayStyle, previewMode: previewMode)
                 itemView.method = trans2PaymentMethod(item)
                 itemView.addGestureRecognizer(
                     UITapGestureRecognizer(
@@ -122,7 +128,7 @@ class MethodView : TGLinearLayout {
                 itemsLayout.addSubview(itemView)
             }
             
-            if displayStyle == .confirm {
+            if displayStyle == .confirm || previewMode {
                 itemsLayout.addSubview(divider)
             }
         }
@@ -134,6 +140,7 @@ class MethodView : TGLinearLayout {
         let expYear = cardInfo.expYear ?? ""
         let expMonth = cardInfo.expMonth ?? ""
         let args: [String : Any?] = [
+            "issuer": cardInfo.issuer,
             "exp_date": "\(expYear)\(expMonth)",
             "exp_year": expYear,
             "exp_month": expMonth,
@@ -144,10 +151,9 @@ class MethodView : TGLinearLayout {
             "billing_address": [
                 "first_name": firstName,
                 "last_name": lastName,
-                "phone_number": cardInfo.phone,
             ],
         ]
-        return PaymentMethod(type: .creditCard, arguments: args)
+        return PaymentMethod(type: .creditCard, arguments: args as NSDictionary)
     }
     
     @objc private func onMethodItemClick(_ sender: Any) {
@@ -158,7 +164,7 @@ class MethodView : TGLinearLayout {
             itemView = sender as! MethodItemView
         }
         let method = itemView.method
-        if displayStyle == .oneClick && method?.type != .creditCard {
+        if previewMode || (displayStyle == .oneClick && method?.type != .creditCard) {
             delegate?.onSelectedConfirm(selected: method!)
             return
         }
@@ -205,7 +211,7 @@ class MethodView : TGLinearLayout {
         
         itemsLayout.tg_width.equal(.fill)
         itemsLayout.tg_height.equal(.wrap)
-        if displayStyle == .confirm {
+        if displayStyle == .confirm || previewMode {
             creditCardView.insertSubview(itemsLayout, at: 0)
         } else {
             creditCardView.addSubview(itemsLayout)

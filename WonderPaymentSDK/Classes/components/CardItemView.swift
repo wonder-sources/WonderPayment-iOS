@@ -14,22 +14,28 @@ class CardItemView : TGLinearLayout, MethodItemView {
     var cardNumber: String = ""
     var displayStyle: DisplayStyle = .oneClick
     var method: PaymentMethod?
+    var previewMode: Bool
     
-    lazy var radioButton = RadioButton(style: displayStyle == .confirm ? .radio : .check, cancellable: false)
+    var radioButton: RadioButton?
     
     override var isSelected: Bool {
         didSet {
-            radioButton.isSelected = isSelected
+            radioButton?.isSelected = isSelected
         }
     }
     
-    convenience init(icon: String, cardNumber: String, isSelected: Bool = false, displayStyle: DisplayStyle = .oneClick) {
-        self.init(frame: .zero, orientation: .horz)
+    init(icon: String, cardNumber: String, isSelected: Bool = false, displayStyle: DisplayStyle = .oneClick, previewMode: Bool = false) {
         self.icon = icon
         self.cardNumber = cardNumber
         self.displayStyle = displayStyle
+        self.previewMode = previewMode
+        super.init(frame: .zero, orientation: .horz)
         self.isSelected = isSelected
         self.initView()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func initView() {
@@ -54,12 +60,20 @@ class CardItemView : TGLinearLayout, MethodItemView {
         cardNumberLabel.tg_centerY.equal(0)
         addSubview(cardNumberLabel)
         
-        radioButton.isSelected = isSelected
-        radioButton.isUserInteractionEnabled = false
-        radioButton.tg_width.equal(26)
-        radioButton.tg_height.equal(26)
-        radioButton.tg_centerY.equal(0)
-        radioButton.tg_left.equal(16)
-        addSubview(radioButton)
+        if previewMode {
+            let imageView = UIImageView(image: "arrow_right".svg)
+            imageView.tg_centerY.equal(0)
+            addSubview(imageView)
+        } else {
+            radioButton = RadioButton(style: displayStyle == .confirm ? .radio : .check, cancellable: false)
+            radioButton!.isSelected = isSelected
+            radioButton!.isUserInteractionEnabled = false
+            radioButton!.tg_width.equal(26)
+            radioButton!.tg_height.equal(26)
+            radioButton!.tg_centerY.equal(0)
+            radioButton!.tg_left.equal(16)
+            addSubview(radioButton!)
+        }
+        
     }
 }

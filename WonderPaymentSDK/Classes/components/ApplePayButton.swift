@@ -11,7 +11,8 @@ import TangramKit
 
 class ApplePayButton : QMUIButton, MethodItemView {
     
-    var displayStyle: DisplayStyle = .oneClick
+    var displayStyle: DisplayStyle
+    var previewMode: Bool
     var radioButton: RadioButton?
     
     override var isSelected: Bool {
@@ -22,10 +23,15 @@ class ApplePayButton : QMUIButton, MethodItemView {
     
     var method: PaymentMethod?
     
-    convenience init(displayStyle: DisplayStyle = .oneClick) {
-        self.init(frame: .zero)
+    init(displayStyle: DisplayStyle = .oneClick, previewMode: Bool = false) {
         self.displayStyle = displayStyle
+        self.previewMode = previewMode
+        super.init(frame: .zero)
         self.initView()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     private func initView() {
@@ -34,7 +40,7 @@ class ApplePayButton : QMUIButton, MethodItemView {
         backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
         layer.cornerRadius = min(WonderPayment.uiConfig.borderRadius, 28)
         
-        if displayStyle == .confirm {
+        if displayStyle == .confirm || previewMode {
             
             let child = TGLinearLayout(.horz)
             child.tg_padding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -58,12 +64,20 @@ class ApplePayButton : QMUIButton, MethodItemView {
             label.tg_centerY.equal(0)
             child.addSubview(label)
             
-            radioButton = RadioButton(style: .radio)
-            radioButton!.tg_left.equal(100%)
-            radioButton!.tg_width.equal(.wrap)
-            radioButton!.tg_height.equal(.wrap)
-            radioButton!.tg_centerY.equal(0)
-            child.addSubview(radioButton!)
+            if displayStyle == .confirm {
+                radioButton = RadioButton(style: .radio)
+                radioButton!.tg_left.equal(100%)
+                radioButton!.tg_width.equal(.wrap)
+                radioButton!.tg_height.equal(.wrap)
+                radioButton!.tg_centerY.equal(0)
+                child.addSubview(radioButton!)
+            } else if previewMode {
+                let imageView = UIImageView(image: "arrow_right".svg)
+                imageView.tg_centerY.equal(0)
+                imageView.tg_left.equal(100%)
+                child.addSubview(imageView)
+            }
+            
             
             layer.borderWidth = 1
             layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor

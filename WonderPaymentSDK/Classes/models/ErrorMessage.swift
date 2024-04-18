@@ -14,4 +14,8 @@ struct ErrorMessage {
     static var dataFormatError: ErrorMessage {
         return ErrorMessage(code: "EO100003", message: "dataFormatError".i18n)
     }
+    
+    static var _3dsVerificationError: ErrorMessage {
+        return ErrorMessage(code: "EO100004", message: "3dsVerificationFailed".i18n)
+    }
 }

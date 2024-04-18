@@ -19,9 +19,8 @@ class ApplePayPaymentHandler: PaymentHander {
         request.merchantCapabilities = [.capability3DS, .capabilityEMV]
         request.countryCode = WonderPayment.paymentConfig.applePay?.countryCode ?? ""
         request.currencyCode = intent.currency
-        let source = WonderPayment.paymentConfig.source
         request.paymentSummaryItems = [
-            PKPaymentSummaryItem(label: source, amount: NSDecimalNumber(value: intent.amount))
+            PKPaymentSummaryItem(label: "", amount: NSDecimalNumber(value: intent.amount))
         ]
         
         if let controller = PKPaymentAuthorizationViewController(paymentRequest: request) {
@@ -34,20 +33,25 @@ class ApplePayPaymentHandler: PaymentHander {
                     return
                 }
                 
+                var modeArgs: NSDictionary?
+                if (intent.transactionType == .preAuth) {
+                    modeArgs = ["consume_mode": "pre_authorize"]
+                }
+                intent.paymentMethod?.arguments = [
+                    "apple_pay": [
+                        "amount": "\(intent.amount)",
+                        "merchant_identifier": merchantIdentifier,
+                        "token_base64": token,
+                    ].merge(modeArgs)
+                ]
+                
                 // Token给到后端进行实际支付
-                PaymentService.payOrder(
-                    amount: intent.amount,
-                    paymentMethod: PaymentMethodType.applePay.rawValue,
-                    paymentData:  ["merchant_identifier": merchantIdentifier, "token_base64": token],
-                    transactionType: intent.transactionType,
-                    orderNum: intent.orderNumber,
-                    businessId: WonderPayment.paymentConfig.businessId
-                ) {
+                PaymentService.payOrder(intent: intent) {
                     result, error in
                     
                     if (error != nil) {
                         completion?(PKPaymentAuthorizationResult(status: .failure, errors: nil))
-                        delegate.onFinished(intent: intent, result: result, error: error)
+                        delegate.onFinished(intent: intent, result: nil, error: error)
                         return
                     }
                     
@@ -55,10 +59,9 @@ class ApplePayPaymentHandler: PaymentHander {
                     completion?(PKPaymentAuthorizationResult(status: .success, errors: nil))
                     
                     let orderNumber = intent.orderNumber
-                    let businessId = WonderPayment.paymentConfig.businessId
-                    if let result = result, let isPending = result.isPending, isPending {
+                    if let transaction = result?.transaction, transaction.isPending {
                         delegate.onProcessing()
-                        PaymentService.loopForResult(uuid: result.uuid!, orderNum: orderNumber, businessId: businessId) {
+                        PaymentService.loopForResult(uuid: transaction.uuid, orderNum: orderNumber) {
                             result, error in
                             delegate.onFinished(intent: intent, result: result, error: error)
                         }

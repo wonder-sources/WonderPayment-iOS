@@ -10,20 +10,13 @@ import Foundation
 class UPPaymentHandler : PaymentHander {
     
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
-        let arguments = intent.paymentMethod?.arguments as? [String: Any?]
-        let args = arguments ?? [:]
         delegate.onProcessing()
-        PaymentService.payOrder(
-            amount: intent.amount,
-            paymentMethod: PaymentMethodType.unionPay.rawValue,
-            paymentData: args,
-            transactionType: intent.transactionType,
-            orderNum: intent.orderNumber,
-            businessId: WonderPayment.paymentConfig.businessId
-        ) {
+        
+        PaymentService.payOrder(intent: intent) {
             result, error in
-            if let result = result , let args = result.acquirerResponseBody {
-                let json = DynamicJson.from(args)
+            if let transaction = result?.transaction
+            {
+                let json = DynamicJson.from(transaction.acquirerResponseBody)
                 guard let paymentString = json["unionpay_wallet"]["in_app"]["payinfo"].string else {
                     delegate.onFinished(intent: intent, result: result, error: .dataFormatError)
                     return
@@ -38,11 +31,9 @@ class UPPaymentHandler : PaymentHander {
                     let code = data["code"] as? String
                     let data = data["data"]
                     if code == "success" {
-                        let uuid = result.uuid
                         let orderNum = intent.orderNumber
-                        let businessId = WonderPayment.paymentConfig.businessId
                         delegate.onProcessing()
-                        PaymentService.loopForResult(uuid: uuid!, orderNum: orderNum, businessId: businessId) {
+                        PaymentService.loopForResult(uuid: transaction.uuid, orderNum: orderNum) {
                             result, error in
                             delegate.onFinished(intent: intent, result: result, error: error)
                         }
