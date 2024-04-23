@@ -16,7 +16,6 @@ class CardMap {
         "discover": "Discover",
         "diners": "DinersClub",
         "amex": "AmericanExpress",
-        "unionpay": "UnionPay",
     ]
     
     static let names = [
@@ -27,6 +26,5 @@ class CardMap {
         "discover": "Discover",
         "diners": "Diners Club",
         "amex": "Amex",
-        "unionpay": "UnionPay",
     ]
 }

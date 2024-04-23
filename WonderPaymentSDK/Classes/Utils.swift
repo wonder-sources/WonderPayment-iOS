@@ -66,3 +66,27 @@ func alert(_ message: String) {
     dialogController.addCancelButton(withText: "Cancel")
     dialogController.show()
 }
+
+func getMethodNameAndIcon(_ method: PaymentMethod) -> (String, String?) {
+    switch method.type {
+    case .alipay:
+        return ("alipay".i18n, "Alipay")
+    case .alipayHK:
+        return ("alipayHK".i18n, "Alipay")
+    case .applePay:
+        return ("Apple Pay", "ApplePay2")
+    case .creditCard:
+        let issuer = method.arguments?["issuer"] as? String
+        let name = CardMap.getName(issuer ?? "")
+        let icon = CardMap.getIcon(issuer ?? "")
+        return (name, icon)
+    case .fps:
+        return ("FPS", "FPS")
+    case .octopus:
+        return ("octopus".i18n, "Octopus")
+    case .unionPay:
+        return ("unionPay".i18n, "UnionPay")
+    case .wechat:
+        return  ("wechatPay".i18n, "WechatPay")
+    }
+}

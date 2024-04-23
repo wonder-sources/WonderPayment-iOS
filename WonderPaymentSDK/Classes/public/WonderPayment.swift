@@ -17,9 +17,11 @@ class NavigationController: UINavigationController {
 
 public typealias PaymentResultCallback = (PaymentResult) -> Void
 public typealias SelectMethodCallback = (PaymentMethod) -> Void
+public typealias DefaultMethodCallback = (PaymentMethod?) -> Void
 public typealias DataCallback = ([String: Any?]) -> Void
 public typealias ApplePayCompletion = (PKPaymentAuthorizationResult) -> Void
 public typealias AppyPayCallback = (String?, ApplePayCompletion?) -> Void
+public typealias CompletionCallback = (Bool) -> Void
 
 public class WonderPayment : NSObject {
     public static var uiConfig = UIConfig()
@@ -28,6 +30,7 @@ public class WonderPayment : NSObject {
     static var alipayCallback: DataCallback?
     static var wechatPayCallback: DataCallback?
     static var applePayCallback: AppyPayCallback?
+    static var octopusCallback: DataCallback?
     static var wechatPayDelegate = WechatPayDelegate()
     static var applePayDelegate = ApplePayDelegate()
     
@@ -78,7 +81,7 @@ public class WonderPayment : NSObject {
         let paymentsViewController = PaymentsViewController()
         paymentsViewController.sessionMode = .twice
         paymentsViewController.displayStyle = uiConfig.displayStyle
-        paymentsViewController.intent = intent
+//        paymentsViewController.intent = intent
         paymentsViewController.selectCallback = callback
         paymentsViewController.modalPresentationStyle = .fullScreen
         rootViewController?.present(paymentsViewController, animated: true)
@@ -105,6 +108,9 @@ public class WonderPayment : NSObject {
                 alipayCallback?(callbackData)
                 alipayCallback = nil
             }
+        } else if (url.host == "octopus") {
+            octopusCallback?([:])
+            octopusCallback = nil
         }
         UPPaymentControl.default().handlePaymentResult(url) { code, data in
             //code : success, fail, cancel
@@ -121,6 +127,45 @@ public class WonderPayment : NSObject {
         if let appId = paymentConfig.wechat?.appId,
            let universalLink = paymentConfig.wechat?.universalLink {
             WXApi.registerApp(appId, universalLink: universalLink)
+        }
+    }
+    
+    /// 获取默认支付方式
+    public static func getDefaultPaymentMethod(callback: @escaping DefaultMethodCallback) {
+        PaymentService.getCustomerProfile { data, error in
+            guard let data = data else {
+                callback(nil)
+                return
+            }
+            guard let method = data["customer"]["default_payment_method"].string else {
+                callback(nil)
+                return
+            }
+            guard let type = PaymentMethodType(rawValue: method) else {
+                callback(nil)
+                return
+            }
+            let paymentMethod = PaymentMethod(type: type)
+            if type == .creditCard {
+                let args = data["customer"]["default_payment_token"].value
+                let cardInfo = CreditCardInfo.from(json: args as? NSDictionary)
+                paymentMethod.arguments = cardInfo.toPaymentArguments()
+            }
+            callback(paymentMethod)
+        }
+    }
+    
+    /// 设置默认支付方式
+    public static func setDefaultPaymentMethod(
+        _ paymentMethod: PaymentMethod,
+        callback: @escaping CompletionCallback
+    ) {
+        let args: NSMutableDictionary = ["default_payment_method": paymentMethod.type.rawValue]
+        if paymentMethod.type == .creditCard, let token = paymentMethod.arguments?["token"] as? String {
+            args["default_payment_token"] = token
+        }
+        PaymentService.setCustomerProfile(args) { result, error in
+            callback(result == true)
         }
     }
 }

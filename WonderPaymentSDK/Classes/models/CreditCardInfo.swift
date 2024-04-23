@@ -1,21 +1,21 @@
 
-public struct CreditCardInfo: JSONDecodable {
+struct CreditCardInfo: JSONDecodable {
     
-    public let number: String?
-    public let expMonth: String?
-    public let expYear: String?
-    public let holderName: String?
-    public let issuer: String?
-    public let `default`: Bool?
-    public let token: String?
-    public let holderFirstName: String?
-    public let holderLastName: String?
+    let number: String?
+    let expMonth: String?
+    let expYear: String?
+    let holderName: String?
+    let issuer: String?
+    let `default`: Bool?
+    let token: String?
+    let holderFirstName: String?
+    let holderLastName: String?
     //success,pending,failed
-    public let state: String?
-    public let verifyUrl: String?
-    public let verifyUuid: String?
+    let state: String?
+    let verifyUrl: String?
+    let verifyUuid: String?
     
-    public static func from(json: NSDictionary?) -> CreditCardInfo {
+    static func from(json: NSDictionary?) -> CreditCardInfo {
         let dynamicJson = DynamicJson(value: json)
         let number = dynamicJson["credit_card"]["number"].string
         let expMonth = dynamicJson["credit_card"]["exp_month"].string
@@ -30,6 +30,25 @@ public struct CreditCardInfo: JSONDecodable {
         let verifyUrl = dynamicJson["verify_url"].string
         let verifyUuid = dynamicJson["verify_uuid"].string
         return CreditCardInfo(number: number, expMonth: expMonth, expYear: expYear, holderName: holderName, issuer: issuer, default: `default`, token: token, holderFirstName: holderFirstName, holderLastName: holderLastName, state: state, verifyUrl: verifyUrl, verifyUuid: verifyUuid)
+    }
+    
+    func toPaymentArguments() -> NSDictionary {
+        let expYear = expYear ?? ""
+        let expMonth = expMonth ?? ""
+        return [
+            "issuer": issuer ?? "",
+            "exp_date": "\(expYear)\(expMonth)",
+            "exp_year": expYear,
+            "exp_month": expMonth,
+            "number": number ?? "",
+            "token": token ?? "",
+            "holder_name": holderName ?? "",
+            "card_reader_mode": "manual",
+            "billing_address": [
+                "first_name": holderFirstName ?? "",
+                "last_name": holderLastName ?? "",
+            ],
+        ]
     }
     
 }

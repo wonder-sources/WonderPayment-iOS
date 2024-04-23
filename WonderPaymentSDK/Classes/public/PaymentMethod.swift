@@ -1,8 +1,8 @@
 public enum PaymentMethodType: String {
-    case creditCard = "credit_cards",
+    case creditCard = "credit_card",
          applePay = "apple_pay",
          unionPay = "unionpay_wallet",
-         wechat = "wechatpay",
+         wechat = "wechat",
          alipayHK = "alipay_hk",
          alipay = "alipay",
          fps = "fps",

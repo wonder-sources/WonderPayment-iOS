@@ -79,6 +79,14 @@ func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
             ]
         ]
         hander = AlipayPaymentHandler()
+    case .octopus:
+        intent.paymentMethod?.arguments = [
+            "octopus": [
+                "amount": "\(intent.amount)",
+                "in_app": [:]
+            ]
+        ]
+        hander = OctopusPaymentHandler()
     default:()
     }
     hander?.pay(intent: intent, delegate: delegate)

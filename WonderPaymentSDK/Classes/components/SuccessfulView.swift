@@ -80,8 +80,10 @@ class SuccessfulView : TGLinearLayout {
         
         let paymentData = DynamicJson(value: data.transaction?.paymentData)
         
-        if let nameAndIcon = getNameAndIcon(intent.paymentMethod?.type.rawValue) {
-            itemsLayout.addSubview(KeyValueItem(key: "paymentMethod".i18n, value: nameAndIcon.0, valueIcon: nameAndIcon.1))
+        
+        if let method = intent.paymentMethod {
+            let nameAndIcon = getMethodNameAndIcon(method)
+            itemsLayout.addSubview(KeyValueItem(key: "paymentMethod".i18n, value: nameAndIcon.0, valueIcon: nameAndIcon.1?.svg))
         }
         
         if let transactionId = paymentData["new_gateway_txn_id"].string {
@@ -110,15 +112,4 @@ class SuccessfulView : TGLinearLayout {
         itemsLayout.addSubview(KeyValueItem(key: "invoiceAmount".i18n, value: amountText))
     }
     
-    private func getNameAndIcon(_ key: String?) -> (String, UIImage?)? {
-        let methodsData = [
-            "apple_pay": ("Apple Pay", "ApplePay2".svg),
-            "unionpay_wallet": ("unionPay".i18n, "UnionPay".svg),
-            "wechatpay": ("wechatPay".i18n, "WechatPay".svg),
-            "alipay_hk": ("alipayHK".i18n, "Alipay".svg),
-            "alipay": ("alipay".i18n, "Alipay".svg),
-            "credit_cards": ("card".i18n, nil),
-        ]
-        return methodsData[key ?? ""]
-    }
 }

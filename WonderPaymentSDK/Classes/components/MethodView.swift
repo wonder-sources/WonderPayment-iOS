@@ -23,6 +23,7 @@ class MethodView : TGLinearLayout {
     lazy var wechatPayButton = MethodButton(image: "WechatPay", title: "wechatPay".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var alipayButton = MethodButton(image: "Alipay", title: "alipay".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var alipayHKButton = MethodButton(image: "Alipay", title: "alipayHK".i18n, displayStyle: displayStyle, previewMode: previewMode)
+    lazy var octopusButton = MethodButton(image: "Octopus", title: "octopus".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var addCardButton = createAddCardButton()
     lazy var cardView = createCardView()
     lazy var itemsLayout = TGLinearLayout(.vert)
@@ -60,17 +61,21 @@ class MethodView : TGLinearLayout {
         wechatPayButton.method = PaymentMethod(type: .wechat)
         alipayButton.method = PaymentMethod(type: .alipay)
         alipayHKButton.method = PaymentMethod(type: .alipayHK)
+        octopusButton.method = PaymentMethod(type: .octopus)
+        
         applePayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         unionPayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         wechatPayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         alipayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         alipayHKButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
+        octopusButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         
         addSubview(applePayButton)
         addSubview(unionPayButton)
         addSubview(wechatPayButton)
         addSubview(alipayButton)
         addSubview(alipayHKButton)
+        addSubview(octopusButton)
         
         
         if displayStyle == .confirm || previewMode {
@@ -85,6 +90,7 @@ class MethodView : TGLinearLayout {
         alipayButton.isHidden = true
         alipayHKButton.isHidden = true
         cardView.isHidden = true
+        octopusButton.isHidden = true
     }
     
     func setCardItems(_ items: [CreditCardInfo]) {
@@ -113,7 +119,7 @@ class MethodView : TGLinearLayout {
                 let cardNumber = formatCardNumber(issuer: item.issuer ?? "", number: item.number ?? "")
 //                let isSelected = item.default ?? false
                 let itemView = CardItemView(icon: icon, cardNumber: cardNumber,isSelected: isSelected, displayStyle: displayStyle, previewMode: previewMode)
-                itemView.method = trans2PaymentMethod(item)
+                itemView.method = PaymentMethod(type: .creditCard, arguments: item.toPaymentArguments())
                 itemView.addGestureRecognizer(
                     UITapGestureRecognizer(
                         target: self,
@@ -132,28 +138,6 @@ class MethodView : TGLinearLayout {
                 itemsLayout.addSubview(divider)
             }
         }
-    }
-    
-    private func trans2PaymentMethod(_ cardInfo: CreditCardInfo) -> PaymentMethod {
-        let firstName = cardInfo.holderFirstName ?? ""
-        let lastName = cardInfo.holderLastName ?? ""
-        let expYear = cardInfo.expYear ?? ""
-        let expMonth = cardInfo.expMonth ?? ""
-        let args: [String : Any?] = [
-            "issuer": cardInfo.issuer,
-            "exp_date": "\(expYear)\(expMonth)",
-            "exp_year": expYear,
-            "exp_month": expMonth,
-            "number": cardInfo.number,
-            "token": cardInfo.token,
-            "holder_name": cardInfo.holderName,
-            "card_reader_mode": "manual",
-            "billing_address": [
-                "first_name": firstName,
-                "last_name": lastName,
-            ],
-        ]
-        return PaymentMethod(type: .creditCard, arguments: args as NSDictionary)
     }
     
     @objc private func onMethodItemClick(_ sender: Any) {

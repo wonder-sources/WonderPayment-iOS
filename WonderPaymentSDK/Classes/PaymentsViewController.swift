@@ -119,6 +119,7 @@ class PaymentsViewController: UIViewController {
             var supportUnionPay = false
             var supportAlipay = false
             var supportWechat = false
+            var supportOctopus = true
             for item in supportList {
                 if (CardMap.names.keys.contains(item)) {
                     supportCard = true
@@ -128,6 +129,8 @@ class PaymentsViewController: UIViewController {
                     supportAlipay = true
                 } else if (item == "wechat" && !isPreAuth) {
                     supportWechat = true
+                }else if (item == "octopus" && !isPreAuth) {
+                    supportOctopus = true
                 }
             }
             
@@ -142,6 +145,7 @@ class PaymentsViewController: UIViewController {
             self?.mView.methodView.alipayButton.isHidden = !supportAlipay
             self?.mView.methodView.alipayHKButton.isHidden = !supportAlipay
             self?.mView.methodView.wechatPayButton.isHidden = !(supportWechat && wechatPayConfigured)
+            self?.mView.methodView.octopusButton.isHidden = !supportOctopus
         }
     }
     
@@ -363,23 +367,8 @@ extension PaymentsViewController: PaymentDelegate {
         Loading.dismiss()
         paymentStatus = .pending
         resetUI()
-        let name: String
-        switch(intent.paymentMethod?.type) {
-        case .unionPay:
-            name = "unionPay".i18n
-        case.wechat:
-            name = "wechatPay".i18n
-        case .alipay:
-            name = "alipay".i18n
-        case .alipayHK:
-            name = "alipayHK".i18n
-        case .creditCard:
-            name = "card".i18n
-        default:
-            name = ""
-            
-        }
-        mView.pendingView.paymentItem.value = name
+        let nameAndIcon = getMethodNameAndIcon(intent.paymentMethod!)
+        mView.pendingView.paymentItem.value = nameAndIcon.0
         let date = Date()
         let dateFormatter = DateFormatter()
         dateFormatter.amSymbol = "AM"

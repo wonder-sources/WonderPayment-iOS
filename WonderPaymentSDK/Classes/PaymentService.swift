@@ -51,6 +51,93 @@ class PaymentService {
         return WonderPayment.paymentConfig.appSecret
     }
     
+    ///获取默认支付方式
+    static func getCustomerProfile(completion: @escaping (DynamicJson?, ErrorMessage?) -> Void) {
+        let customerId = WonderPayment.paymentConfig.customerId
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
+        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+//            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    let data = DynamicJson(value: resp.data)
+                    UI.call { completion(data, nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        task.resume()
+    }
+    
+    ///设置支付方式
+    static func setCustomerProfile(
+        _ profile: NSDictionary,
+        completion: @escaping (Bool?, ErrorMessage?) -> Void
+    ) {
+        let customerId = WonderPayment.paymentConfig.customerId
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
+        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: profile, options: [])
+        } catch {
+            UI.call { completion(nil, .dataFormatError) }
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+//            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    UI.call { completion(true, nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        task.resume()
+    }
+    
     ///查询支付方式
     static func queryPaymentMethods(completion: @escaping (PaymentMethodConfig?, ErrorMessage?) -> Void) {
         let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/payment_methods"
