@@ -47,10 +47,6 @@ class PaymentService {
         return WonderPayment.paymentConfig.appId
     }
     
-    static var appSecret: String {
-        return WonderPayment.paymentConfig.appSecret
-    }
-    
     ///获取默认支付方式
     static func getCustomerProfile(completion: @escaping (DynamicJson?, ErrorMessage?) -> Void) {
         let customerId = WonderPayment.paymentConfig.customerId

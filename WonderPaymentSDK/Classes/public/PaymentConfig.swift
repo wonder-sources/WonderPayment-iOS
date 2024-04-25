@@ -1,7 +1,6 @@
 
 public class PaymentConfig : JSONDecodable, JSONEncodable {
     public var appId: String
-    public var appSecret: String
     public var customerId: String
     public var scheme: String
     public var environment: PaymentEnvironment
@@ -20,7 +19,6 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
         applePay: ApplePayConfig? = nil
     ) {
         self.appId = appId
-        self.appSecret = appSecret
         self.customerId = customerId
         self.scheme = scheme
         self.environment = environment
@@ -32,7 +30,6 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
     public static func from(json: NSDictionary?) -> Self {
         let config = PaymentConfig()
         config.appId = json?["appId"] as? String ?? ""
-        config.appSecret = json?["appSecret"] as? String ?? ""
         config.customerId = json?["customerId"] as? String ?? ""
         config.scheme = json?["scheme"] as? String ?? ""
         config.environment = PaymentEnvironment(rawValue: json?["environment"] as? String ?? "") ?? .production
@@ -45,7 +42,6 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
     public func toJson() -> Dictionary<String, Any?> {
         return [
             "appId": appId,
-            "appSecret": appSecret,
             "customerId": customerId,
             "scheme": scheme,
             "environment": environment.rawValue,

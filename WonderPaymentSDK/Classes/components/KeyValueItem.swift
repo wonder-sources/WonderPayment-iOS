@@ -80,6 +80,7 @@ class KeyValueItem : TGLinearLayout {
             valueIconView.tg_width.equal(.wrap)
             valueIconView.tg_height.equal(.wrap)
             valueIconView.contentMode = .scaleAspectFit
+            valueIconView.tg_centerY.equal(0)
             addSubview(valueIconView)
         }
         

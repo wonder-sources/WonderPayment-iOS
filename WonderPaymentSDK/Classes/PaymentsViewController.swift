@@ -114,12 +114,12 @@ class PaymentsViewController: UIViewController {
         let isPreAuth = intent?.transactionType == .preAuth
         PaymentService.queryPaymentMethods() {
             [weak self] config, err in
-            let supportList = config?.supportPaymentMethod ?? []
+            let supportList = config?.supportPaymentMethods ?? []
             var supportCard = false
             var supportUnionPay = false
             var supportAlipay = false
             var supportWechat = false
-            var supportOctopus = true
+            var supportOctopus = false
             for item in supportList {
                 if (CardMap.names.keys.contains(item)) {
                     supportCard = true

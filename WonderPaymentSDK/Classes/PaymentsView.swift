@@ -72,7 +72,7 @@ class PaymentsView : TGLinearLayout {
         contentLayout.tg_height.equal(.wrap)
         scrollView.addSubview(contentLayout)
         
-        if !previewMode {
+        if !(previewMode || sessionMode == .twice) {
             let amountView = initAmountView()
             amountView.tg_bottom.equal(16)
             contentLayout.addSubview(amountView)

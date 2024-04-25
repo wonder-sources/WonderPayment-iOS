@@ -74,14 +74,14 @@ public class WonderPayment : NSObject {
     
     /// 选择支付方式
     public static func select(
-        intent: PaymentIntent,
+        transactionType: TransactionType,
         callback: @escaping SelectMethodCallback
     ) {
         let rootViewController = UIApplication.shared.keyWindow?.rootViewController
         let paymentsViewController = PaymentsViewController()
         paymentsViewController.sessionMode = .twice
         paymentsViewController.displayStyle = uiConfig.displayStyle
-//        paymentsViewController.intent = intent
+        paymentsViewController.intent = PaymentIntent(amount: 0, currency: "", orderNumber: "", transactionType: transactionType)
         paymentsViewController.selectCallback = callback
         paymentsViewController.modalPresentationStyle = .fullScreen
         rootViewController?.present(paymentsViewController, animated: true)

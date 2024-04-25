@@ -4,6 +4,7 @@ import TangramKit
 class SuccessfulView : TGLinearLayout {
     
     lazy var amountLabel = Label("HK$0.00",size: 28, fontStyle: .bold)
+    lazy var titleLabel = Label("successfulPayment".i18n,size: 18, fontStyle: .medium)
     lazy var detailsLayout = TGLinearLayout(.vert)
     
     convenience init() {
@@ -29,7 +30,6 @@ class SuccessfulView : TGLinearLayout {
         icon.tg_centerX.equal(0)
         layout1.addSubview(icon)
         
-        let titleLabel = Label("successfulPayment".i18n,size: 18, fontStyle: .medium)
         titleLabel.tg_centerX.equal(0)
         titleLabel.tg_top.equal(8)
         layout1.addSubview(titleLabel)
@@ -50,6 +50,10 @@ class SuccessfulView : TGLinearLayout {
     }
     
     func setData(_ data: PayResult, intent: PaymentIntent) {
+        if (intent.transactionType == .preAuth) {
+            titleLabel.text = "successfulPreAuth".i18n
+        }
+        
         let currency = data.transaction?.currency ?? "HKD"
         let amount = data.transaction?.amount ?? 0.00
         let amountText = "\(CurrencySymbols.get(currency))\(formatAmount(amount))"
@@ -76,13 +80,21 @@ class SuccessfulView : TGLinearLayout {
         itemsLayout.tg_vspace = 16
         detailsLayout.addSubview(itemsLayout)
         
-        itemsLayout.addSubview(KeyValueItem(key: "paymentAmount".i18n, value: amountText))
+        if intent.transactionType == .sale {
+            itemsLayout.addSubview(KeyValueItem(key: "paymentAmount".i18n, value: amountText))
+        }
         
         let paymentData = DynamicJson(value: data.transaction?.paymentData)
         
         
         if let method = intent.paymentMethod {
-            let nameAndIcon = getMethodNameAndIcon(method)
+            var paymentMethod = method
+            if (method.type == .creditCard) {
+                let paymentData = data.transaction?.paymentData as? NSDictionary
+                let cardType = paymentData?["credit_card_type"] as? String
+                paymentMethod = PaymentMethod(type: .creditCard, arguments: ["issuer": cardType ?? ""])
+            }
+            let nameAndIcon = getMethodNameAndIcon(paymentMethod)
             itemsLayout.addSubview(KeyValueItem(key: "paymentMethod".i18n, value: nameAndIcon.0, valueIcon: nameAndIcon.1?.svg))
         }
         
@@ -109,7 +121,12 @@ class SuccessfulView : TGLinearLayout {
             }
         }
         
-        itemsLayout.addSubview(KeyValueItem(key: "invoiceAmount".i18n, value: amountText))
+        if intent.transactionType == .sale {
+            itemsLayout.addSubview(KeyValueItem(key: "invoiceAmount".i18n, value: amountText))
+        }
+        if intent.transactionType == .preAuth {
+            itemsLayout.addSubview(KeyValueItem(key: "preAuthAmount".i18n, value: amountText))
+        }
     }
     
 }

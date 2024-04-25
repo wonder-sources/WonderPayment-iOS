@@ -29,7 +29,7 @@ func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
                 "payment_token": [
                     "amount": "\(intent.amount)",
                     "token": token
-                ]
+                ].merge(modeArgs)
             ]
         } else {
             intent.paymentMethod?.arguments = [
