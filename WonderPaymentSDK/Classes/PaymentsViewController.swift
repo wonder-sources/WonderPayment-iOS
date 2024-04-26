@@ -121,15 +121,15 @@ class PaymentsViewController: UIViewController {
             var supportWechat = false
             var supportOctopus = false
             for item in supportList {
-                if (CardMap.names.keys.contains(item)) {
+                if (item == PaymentMethodType.creditCard.rawValue) {
                     supportCard = true
-                } else if (item == "unionpay_wallet" && !isPreAuth) {
+                } else if (item == PaymentMethodType.unionPay.rawValue && !isPreAuth) {
                     supportUnionPay = true
-                } else if (item == "alipay" && !isPreAuth) {
+                } else if (item == PaymentMethodType.alipay.rawValue && !isPreAuth) {
                     supportAlipay = true
-                } else if (item == "wechat" && !isPreAuth) {
+                } else if (item == PaymentMethodType.wechat.rawValue && !isPreAuth) {
                     supportWechat = true
-                }else if (item == "octopus" && !isPreAuth) {
+                }else if (item == PaymentMethodType.octopus.rawValue && !isPreAuth) {
                     supportOctopus = true
                 }
             }
@@ -211,8 +211,8 @@ class PaymentsViewController: UIViewController {
             let form = mView.bankCardView.form
             let expDate = form.expDate
             let arr = expDate.split(separator: "/")
-            let expYear = arr.first
-            let expMonth = arr.last
+            let expMonth = arr.first
+            let expYear = arr.last
             let args: [String : Any?] = [
                 "exp_date": expDate.replace("/", with: ""),
                 "exp_year": expYear,
@@ -231,8 +231,8 @@ class PaymentsViewController: UIViewController {
             let form = mView.bankCardView.form
             let expDate = form.expDate
             let arr = expDate.split(separator: "/")
-            let expYear = arr.first
-            let expMonth = arr.last
+            let expMonth = arr.first
+            let expYear = arr.last
             let args: [String : Any?] = [
                 "exp_date": expDate.replace("/", with: ""),
                 "exp_year": expYear,

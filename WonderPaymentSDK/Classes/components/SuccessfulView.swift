@@ -30,6 +30,7 @@ class SuccessfulView : TGLinearLayout {
         icon.tg_centerX.equal(0)
         layout1.addSubview(icon)
         
+        titleLabel.textAlignment = .center
         titleLabel.tg_centerX.equal(0)
         titleLabel.tg_top.equal(8)
         layout1.addSubview(titleLabel)
@@ -111,11 +112,11 @@ class SuccessfulView : TGLinearLayout {
         }
         
         if let createdAt = data.transaction?.createdAt {
-            var formatter = DateFormatter()
-            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
-            if let localDate = formatter.date(from: createdAt) {
-                formatter = DateFormatter()
+            let utcISODateFormatter = ISO8601DateFormatter()
+            if let localDate = utcISODateFormatter.date(from: createdAt) {
+                let formatter = DateFormatter()
                 formatter.dateFormat = "d MMM yyyy,HH:mm:ss"
+                
                 let formatted = formatter.string(from: localDate)
                 itemsLayout.addSubview(KeyValueItem(key: "transactionTime".i18n, value: formatted))
             }

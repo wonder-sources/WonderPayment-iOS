@@ -1,12 +1,12 @@
 import TangramKit
+import SVGKit
 
 class BanksView : TGLinearLayout {
     
-    var spacing: Int = 2
-    
-    convenience init(spacing: Int = 2) {
+
+    convenience init(spacing: CGFloat = 2) {
         self.init(frame: .zero, orientation: .horz)
-        self.spacing = spacing
+        self.tg_space = spacing
         self.initView()
     }
     
@@ -14,31 +14,24 @@ class BanksView : TGLinearLayout {
     private func initView() {
         self.tg_width.equal(.wrap)
         self.tg_height.equal(.wrap)
-        addSubview(createCardIcon("Visa", spacing: 3))
-        addSubview(createCardIcon("MasterCard"))
-        addSubview(createCardIcon("AmericanExpress"))
+        addSubview(createCardIcon("Visa"))
+        addSubview(createCardIcon("MasterCard", height: 23))
+        addSubview(createCardIcon("AmericanExpress", width: 33, height: 21))
         addSubview(createCardIcon("ChinaUnion"))
         addSubview(createCardIcon("JCB"))
         addSubview(createCardIcon("Discover"))
         addSubview(createCardIcon("DinersClub"))
     }
     
-    private func createCardIcon(_ icon: String, spacing: CGFloat = 0) -> UIView {
-        let container = TGLinearLayout(.horz)
-        container.tg_width.equal(26)
-        container.tg_height.equal(24)
-        container.tg_left.equal(self.spacing)
-        container.tg_right.equal(spacing)
-        container.tg_centerY.equal(0)
-        
-        let imageView = UIImageView(image: icon.svg)
-        imageView.tg_width.equal(.wrap)
-        imageView.tg_height.equal(.wrap)
+    private func createCardIcon(_ icon: String, width: Int = 26, height: Int = 24) -> UIView {
+        let imageView = UIImageView()
+        imageView.tg_width.equal(width)
+        imageView.tg_height.equal(height)
         imageView.tg_centerY.equal(0)
-        imageView.tg_centerX.equal(0)
-        imageView.contentMode = .scaleAspectFit
-        container.addSubview(imageView)
-        
-        return container
+        if let url = resBundle?.url(forResource: "\(icon)_26", withExtension: "png"),
+           let image = try? UIImage(data: Data(contentsOf: url)) {
+            imageView.image = image
+        }
+        return imageView
     }
 }

@@ -54,7 +54,7 @@ class BankCardView : TGLinearLayout {
         hLayout.tg_top.equal(16)
         formView.addSubview(hLayout)
         
-        let expiryField = createFormTextField(title: "expiryDate".i18n, placeholder: "YY/MM", keyboardType: .numberPad, maxLength: 4,format: "XX/XX", tag: 2)
+        let expiryField = createFormTextField(title: "expiryDate".i18n, placeholder: "MM/YY", keyboardType: .numberPad, maxLength: 4,format: "XX/XX", tag: 2)
         expiryField.tg_right.equal(16)
         expiryField.validator = validateExpiry
         hLayout.addSubview(expiryField)
@@ -209,8 +209,7 @@ extension BankCardView {
             return "enterValidExpiry".i18n
         }
         let arr = expiry.split(separator: "/")
-        //let expYear = String(arr.first!)
-        let expMonth = String(arr.last!)
+        let expMonth = String(arr.first!)
         let month = Int(expMonth) ?? 0
         if (month < 1 || month > 12) {
             return "enterValidExpiry".i18n
