@@ -21,7 +21,12 @@ class UPPaymentHandler : PaymentHander {
                     delegate.onFinished(intent: intent, result: result, error: .dataFormatError)
                     return
                 }
-                guard let viewController = UIViewController.current() else {
+//                guard let viewController = UIViewController.current() else {
+//                    delegate.onFinished(intent: intent, result: result, error: .unknownError)
+//                    return
+//                }
+//                
+                guard let viewController = UIApplication.shared.keyWindow?.rootViewController else {
                     delegate.onFinished(intent: intent, result: result, error: .unknownError)
                     return
                 }

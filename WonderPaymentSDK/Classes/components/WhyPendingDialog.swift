@@ -17,7 +17,9 @@ class WhyPendingDialog : TGRelativeLayout {
         
         contentView.backgroundColor = WonderPayment.uiConfig.background
         contentView.tg_width.equal(.fill)
-        contentView.tg_height.equal(.wrap).min(500)
+        let screenSize = UIScreen.main.bounds
+        let minSize = screenSize.height - 44 - QMUIHelper.safeAreaInsetsForDeviceWithNotch.top
+        contentView.tg_height.equal(.wrap).min(minSize)
         contentView.tg_bottom.equal((-100)%)
         contentView.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         contentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]

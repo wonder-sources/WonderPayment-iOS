@@ -86,17 +86,17 @@ class SuccessfulView : TGLinearLayout {
         }
         
         let paymentData = DynamicJson(value: data.transaction?.paymentData)
-        
-        
-        if let method = intent.paymentMethod {
-            var paymentMethod = method
-            if (method.type == .creditCard) {
-                let paymentData = data.transaction?.paymentData as? NSDictionary
-                let cardType = paymentData?["credit_card_type"] as? String
-                paymentMethod = PaymentMethod(type: .creditCard, arguments: ["issuer": cardType ?? ""])
-            }
-            let nameAndIcon = getMethodNameAndIcon(paymentMethod)
+        let type = paymentData["acquirer_type"].string ?? ""
+        if let methodType = PaymentMethodType(rawValue: type) {
+            let nameAndIcon = getMethodNameAndIcon(PaymentMethod(type: methodType))
             itemsLayout.addSubview(KeyValueItem(key: "paymentMethod".i18n, value: nameAndIcon.0, valueIcon: nameAndIcon.1?.svg))
+        } else {
+            if CardMap.names.keys.contains(type) {
+                let name = CardMap.getName(type)
+                let icon = CardMap.getIcon(type)
+                let last4 = paymentData["last_4_digits"].string ?? ""
+                itemsLayout.addSubview(KeyValueItem(key: "paymentMethod".i18n, value: "\(name)**\(last4)", valueIcon: icon.svg))
+            }
         }
         
         if let transactionId = paymentData["new_gateway_txn_id"].string {

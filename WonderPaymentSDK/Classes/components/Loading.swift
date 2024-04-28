@@ -34,12 +34,10 @@ class Loading {
             loadingController?.contentView = loadingView
             loadingController?.isModal = true
             loadingController?.showWith(animated: true)
-            print("Loading.show(\(style)), \(Date()), hash: \(loadingController.hashValue)")
         }
     }
     
     static func dismiss(animated: Bool = true, completion: ((Bool) -> Void)? = nil) {
-        print("Loading.dismiss(), \(Date()), hash: \(loadingController.hashValue)")
         loadingController?.hideWith(animated: animated) { completed in
             loadingController = nil
             completion?(completed)

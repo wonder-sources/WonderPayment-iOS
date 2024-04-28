@@ -72,7 +72,7 @@ func getMethodNameAndIcon(_ method: PaymentMethod) -> (String, String?) {
     case .alipay:
         return ("alipay".i18n, "Alipay")
     case .alipayHK:
-        return ("alipayHK".i18n, "Alipay")
+        return ("alipayHK".i18n, "AlipayHK")
     case .applePay:
         return ("Apple Pay", "ApplePay2")
     case .creditCard:

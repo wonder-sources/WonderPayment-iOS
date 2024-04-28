@@ -99,8 +99,9 @@ class PaymentsViewController: UIViewController {
                 return
             }
             if self.sessionMode == .twice {
-                self.selectCallback?(method)
-                self.dismiss()
+                self.dismiss() {
+                    self.selectCallback?(method)
+                }
             } else {
                 guard let intent = intent else { return }
                 let paymentIntent = intent.copy()
@@ -115,13 +116,16 @@ class PaymentsViewController: UIViewController {
         PaymentService.queryPaymentMethods() {
             [weak self] config, err in
             let supportList = config?.supportPaymentMethods ?? []
+            var supportApplePay = false
             var supportCard = false
             var supportUnionPay = false
             var supportAlipay = false
             var supportWechat = false
             var supportOctopus = false
             for item in supportList {
-                if (item == PaymentMethodType.creditCard.rawValue) {
+                if (item == PaymentMethodType.applePay.rawValue) {
+                    supportApplePay = true
+                } else if (item == PaymentMethodType.creditCard.rawValue) {
                     supportCard = true
                 } else if (item == PaymentMethodType.unionPay.rawValue && !isPreAuth) {
                     supportUnionPay = true
@@ -140,7 +144,7 @@ class PaymentsViewController: UIViewController {
             }
             let applePayConfigured = WonderPayment.paymentConfig.applePay != nil
             let wechatPayConfigured = WonderPayment.paymentConfig.wechat != nil
-            self?.mView.methodView.applePayButton.isHidden = !applePayConfigured
+            self?.mView.methodView.applePayButton.isHidden = !supportApplePay || !applePayConfigured
             self?.mView.methodView.unionPayButton.isHidden = !supportUnionPay
             self?.mView.methodView.alipayButton.isHidden = !supportAlipay
             self?.mView.methodView.alipayHKButton.isHidden = !supportAlipay
@@ -163,8 +167,8 @@ class PaymentsViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-    private func dismiss() {
-        self.presentingViewController?.dismiss(animated: true)
+    private func dismiss(completion: (() -> Void)? = nil) {
+        self.presentingViewController?.dismiss(animated: true, completion: completion)
     }
     
     @objc func onTap(_ sender: UIView) {

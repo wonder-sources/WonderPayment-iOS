@@ -78,9 +78,6 @@ class MethodButton : QMUIButton, MethodItemView {
             radioButton!.tg_height.equal(.wrap)
             radioButton!.tg_centerY.equal(0)
             child.addSubview(radioButton!)
-        } else {
-            icon.tg_left.equal(50%)
-            label.tg_right.equal(50%)
         }
     }
 }

@@ -22,7 +22,7 @@ class MethodView : TGLinearLayout {
     lazy var unionPayButton = MethodButton(image: "UnionPay", title: "unionPay".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var wechatPayButton = MethodButton(image: "WechatPay", title: "wechatPay".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var alipayButton = MethodButton(image: "Alipay", title: "alipay".i18n, displayStyle: displayStyle, previewMode: previewMode)
-    lazy var alipayHKButton = MethodButton(image: "Alipay", title: "alipayHK".i18n, displayStyle: displayStyle, previewMode: previewMode)
+    lazy var alipayHKButton = MethodButton(image: "AlipayHK", title: "alipayHK".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var octopusButton = MethodButton(image: "Octopus", title: "octopus".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var addCardButton = createAddCardButton()
     lazy var cardView = createCardView()
