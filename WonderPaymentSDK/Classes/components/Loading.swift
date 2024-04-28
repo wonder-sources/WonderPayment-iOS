@@ -38,6 +38,10 @@ class Loading {
     }
     
     static func dismiss(animated: Bool = true, completion: ((Bool) -> Void)? = nil) {
+        if loadingController == nil {
+            completion?(true)
+            return
+        }
         loadingController?.hideWith(animated: animated) { completed in
             loadingController = nil
             completion?(completed)

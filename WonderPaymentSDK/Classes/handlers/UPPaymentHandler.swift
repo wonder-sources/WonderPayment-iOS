@@ -21,34 +21,34 @@ class UPPaymentHandler : PaymentHander {
                     delegate.onFinished(intent: intent, result: result, error: .dataFormatError)
                     return
                 }
-//                guard let viewController = UIViewController.current() else {
-//                    delegate.onFinished(intent: intent, result: result, error: .unknownError)
-//                    return
-//                }
-//                
-                guard let viewController = UIApplication.shared.keyWindow?.rootViewController else {
-                    delegate.onFinished(intent: intent, result: result, error: .unknownError)
-                    return
-                }
-                delegate.onInterrupt(intent: intent)
-                UPPaymentControl.default().startPay(paymentString, fromScheme: WonderPayment.paymentConfig.scheme, mode: "00", viewController: viewController)
-                WonderPayment.unionPayCallback = { data in
-                    let code = data["code"] as? String
-                    let data = data["data"]
-                    if code == "success" {
-                        let orderNum = intent.orderNumber
-                        delegate.onProcessing()
-                        PaymentService.loopForResult(uuid: transaction.uuid, orderNum: orderNum) {
-                            result, error in
-                            delegate.onFinished(intent: intent, result: result, error: error)
+
+                Loading.dismiss() { _ in
+                    delegate.onInterrupt(intent: intent)
+                    
+                    guard let viewController = UIViewController.current() else {
+                        delegate.onFinished(intent: intent, result: result, error: .unknownError)
+                        return
+                    }
+                    
+                    UPPaymentControl.default().startPay(paymentString, fromScheme: WonderPayment.paymentConfig.scheme, mode: "00", viewController: viewController)
+                    WonderPayment.unionPayCallback = { data in
+                        let code = data["code"] as? String
+                        //let data = data["data"]
+                        if code == "success" {
+                            let orderNum = intent.orderNumber
+                            delegate.onProcessing()
+                            PaymentService.loopForResult(uuid: transaction.uuid, orderNum: orderNum) {
+                                result, error in
+                                delegate.onFinished(intent: intent, result: result, error: error)
+                            }
+                        } else if code == "fail" {
+                            delegate.onFinished(intent: intent, result: nil, error: .unknownError)
+                        } else if code == "cancel" {
+                            delegate.onCanceled()
                         }
-                    } else if code == "fail" {
-                        delegate.onFinished(intent: intent, result: nil, error: .unknownError)
-                    } else if code == "cancel" {
-                        delegate.onCanceled()
                     }
                 }
-                
+
             } else {
                 delegate.onFinished(intent: intent, result: result, error: error)
             }
