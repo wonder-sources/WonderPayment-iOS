@@ -234,7 +234,7 @@ extension BankCardView {
             return "required".i18n
         }
         
-        let pattern = "^[a-zA-Z\\u4E00-\\u9FA5]*$" // 匹配英文字母和中文汉字
+        let pattern = "^[\\sa-zA-Z\\u4E00-\\u9FA5]*$" // 匹配英文字母和中文汉字
         let regex = try! NSRegularExpression(pattern: pattern, options: [])
         let range = NSRange(location: 0, length: name.utf16.count)
         if regex.firstMatch(in: name, options: [], range: range) == nil {
