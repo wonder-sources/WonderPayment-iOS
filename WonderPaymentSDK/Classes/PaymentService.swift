@@ -377,10 +377,10 @@ class PaymentService {
     }
     
     /// 检查PaymentToken是否已验证
-    static func checkPaymentTokenIsValid(
+    static func checkPaymentTokenState(
         uuid: String,
         token: String,
-        completion: @escaping (Bool?, ErrorMessage?) -> Void
+        completion: @escaping (String?, ErrorMessage?) -> Void
     ) {
         let customerId = WonderPayment.paymentConfig.customerId
         let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)/payment_tokens/check"
@@ -421,8 +421,7 @@ class PaymentService {
                 let resp = PaymentResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let dataJson = DynamicJson(value: resp.data)
-                    let valid = dataJson["payment_token"]["state"].string == "success"
-                    UI.call { completion(valid, nil) }
+                    UI.call { completion(dataJson["payment_token"]["state"].string, nil) }
                 } else {
                     UI.call { completion(nil, resp.error) }
                 }

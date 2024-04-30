@@ -32,7 +32,7 @@ class OctopusPaymentHandler : PaymentHander {
                 }
           
                 delegate.onInterrupt(intent: intent)
-                let scheme = WonderPayment.paymentConfig.scheme
+                let scheme = WonderPayment.paymentConfig.fromScheme
                 let urlString = "\(paymentString)&return=\(scheme)://octopus"
                 guard let url = URL(string: urlString) else {
                     delegate.onFinished(intent: intent, result: result, error: .dataFormatError)

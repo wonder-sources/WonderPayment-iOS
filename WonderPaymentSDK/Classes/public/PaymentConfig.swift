@@ -2,7 +2,7 @@
 public class PaymentConfig : JSONDecodable, JSONEncodable {
     public var appId: String
     public var customerId: String
-    public var scheme: String
+    public var fromScheme: String
     public var environment: PaymentEnvironment
     public var locale: Locale
     public var wechat: WechatConfig?
@@ -12,7 +12,7 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
         appId: String = "",
         appSecret: String = "",
         customerId: String = "",
-        scheme: String = "",
+        fromScheme: String = "",
         environment: PaymentEnvironment = .production,
         locale: Locale = .zh_HK,
         wechat: WechatConfig? = nil,
@@ -20,7 +20,7 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
     ) {
         self.appId = appId
         self.customerId = customerId
-        self.scheme = scheme
+        self.fromScheme = fromScheme
         self.environment = environment
         self.locale = locale
         self.wechat = wechat
@@ -31,7 +31,7 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
         let config = PaymentConfig()
         config.appId = json?["appId"] as? String ?? ""
         config.customerId = json?["customerId"] as? String ?? ""
-        config.scheme = json?["scheme"] as? String ?? ""
+        config.fromScheme = json?["fromScheme"] as? String ?? ""
         config.environment = PaymentEnvironment(rawValue: json?["environment"] as? String ?? "") ?? .production
         config.locale = Locale(rawValue: json?["locale"] as? String ?? "") ?? .zh_HK
         config.wechat = WechatConfig.from(json: json?["wechat"] as? NSDictionary)
@@ -43,7 +43,7 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
         return [
             "appId": appId,
             "customerId": customerId,
-            "scheme": scheme,
+            "fromScheme": fromScheme,
             "environment": environment.rawValue,
             "locale": locale.rawValue,
             "wechat": wechat?.toJson(),

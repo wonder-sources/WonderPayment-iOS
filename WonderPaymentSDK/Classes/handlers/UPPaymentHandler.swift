@@ -30,7 +30,7 @@ class UPPaymentHandler : PaymentHander {
                         return
                     }
                     
-                    UPPaymentControl.default().startPay(paymentString, fromScheme: WonderPayment.paymentConfig.scheme, mode: "00", viewController: viewController)
+                    UPPaymentControl.default().startPay(paymentString, fromScheme: WonderPayment.paymentConfig.fromScheme, mode: "00", viewController: viewController)
                     WonderPayment.unionPayCallback = { data in
                         let code = data["code"] as? String
                         //let data = data["data"]

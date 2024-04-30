@@ -1,8 +1,8 @@
 import TangramKit
 
-class Banner : UIView {
+class Banner : TGFrameLayout {
     
-    let backgroundLayer = CAGradientLayer()
+//    let backgroundLayer = CAGradientLayer()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -14,52 +14,42 @@ class Banner : UIView {
     }
     
     private func initView() {
-        backgroundLayer.cornerRadius = WonderPayment.uiConfig.borderRadius
-        backgroundLayer.colors = [
-            UIColor(hexString: "#EED1AF").cgColor,
-            UIColor(hexString: "#FAEAD2").cgColor
-        ]
-        backgroundLayer.startPoint = CGPoint(x: 0, y: 0)
-        backgroundLayer.endPoint = CGPoint(x: 1, y: 1)
-        layer.addSublayer(backgroundLayer)
+        self.tg_width.equal(.fill)
+        self.tg_height.equal(.wrap)
         
-        let layout = TGLinearLayout(.vert)
-        layout.tg_width.equal(.fill)
-        layout.tg_height.equal(.fill)
-        layout.tg_padding = UIEdgeInsets(top: 18, left: 20, bottom: 0, right: 20)
-        addSubview(layout)
+        let imageView = SvgImageView(named: "ad_bg")
+        imageView.tg_width.equal(.fill)
+        imageView.tg_height.equal(.wrap)
+        addSubview(imageView)
+        
+        let centerLayout = TGLinearLayout(.vert)
+        centerLayout.tg_width.equal(.fill)
+        centerLayout.tg_height.equal(.wrap)
+        centerLayout.tg_centerY.equal(0)
+        centerLayout.tg_left.equal(20)
+        centerLayout.tg_right.equal(20)
+        addSubview(centerLayout)
         
         let label1 = UILabel()
-        label1.text = "hailDiscount".i18n
-        label1.font = UIFont(name: "Helvetica-Bold", size: 18)
-        label1.textColor = UIColor(hexString: "#FF75604E")
+        label1.text = "streetHailPay".i18n
+        label1.font = UIFont(name: "Helvetica-Bold", size: 14)
+        label1.textColor = UIColor(hexString: "#FF523535")
         label1.tg_width.equal(.fill)
         label1.tg_height.equal(.wrap)
-        layout.addSubview(label1)
+        centerLayout.addSubview(label1)
         
         let label2 = UILabel()
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.2
-        label2.attributedText = NSAttributedString(string: "enjoyStreetHail".i18n, attributes: [.paragraphStyle: paragraphStyle])
-        label2.font = UIFont(name: "Helvetica-Light", size: 14)
-        label2.textColor = UIColor(hexString: "#FFA08770")
-        label2.tg_top.equal(8)
+        let text = "serviceFee".i18n
+        let range = (text as NSString).range(of: "$0")
+        let attributedString = NSMutableAttributedString(string: text)
+        attributedString.addAttribute(.foregroundColor, value: UIColor(hexString: "#FF523535"), range: NSRange(location: 0, length: text.count))
+        attributedString.addAttribute(.foregroundColor, value: UIColor.red, range: range)
+        label2.attributedText = attributedString
+        label2.font = UIFont(name: "Helvetica-Bold", size: 24)
+        label2.tg_top.equal(4)
         label2.tg_width.equal(.fill)
         label2.tg_height.equal(.wrap)
-        layout.addSubview(label2)
-        
-        let label3 = UILabel()
-        label3.text = "serviceFee".i18n
-        label3.font = UIFont(name: "Helvetica-Bold", size: 24)
-        label3.textColor = UIColor(hexString: "#FF75604E")
-        label3.tg_top.equal(12)
-        label3.tg_width.equal(.fill)
-        label3.tg_height.equal(.wrap)
-        layout.addSubview(label3)
+        centerLayout.addSubview(label2)
     }
     
-    override func layoutSublayers(of layer: CALayer) {
-        super.layoutSublayers(of: layer)
-        backgroundLayer.frame = CGRect(x: 0, y: 0 , width: frame.width, height: frame.height)
-    }
 }

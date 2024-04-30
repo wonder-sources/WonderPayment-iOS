@@ -25,7 +25,7 @@ class AlipayPaymentHandler : PaymentHander {
           
                 delegate.onInterrupt(intent: intent)
                 
-                AlipaySDK.defaultService().payOrder(paymentString, fromScheme: WonderPayment.paymentConfig.scheme) { 
+                AlipaySDK.defaultService().payOrder(paymentString, fromScheme: WonderPayment.paymentConfig.fromScheme) { 
                     data in
                     //WebView 回调
                     let resultStatus = data?["resultStatus"]

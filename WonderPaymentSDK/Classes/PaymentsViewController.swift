@@ -351,16 +351,20 @@ class PaymentsViewController: UIViewController {
             callback(false)
             return
         }
-        PaymentService.checkPaymentTokenIsValid(uuid: uuid, token: token) {
-            [weak self] result, err in
-            guard let valid = result, valid else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    let count = retryCount - 1
-                    self?.checkPaymentTokenIsValid(card, retryCount: count, callback: callback)
-                }
+        PaymentService.checkPaymentTokenState(uuid: uuid, token: token) {
+            [weak self] state, err in
+            if state == "success" {
+                callback(true)
+                return
+            } else if state == "fail" {
+                callback(false)
                 return
             }
-            callback(valid)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                let count = retryCount - 1
+                self?.checkPaymentTokenIsValid(card, retryCount: count, callback: callback)
+            }
         }
     }
 }

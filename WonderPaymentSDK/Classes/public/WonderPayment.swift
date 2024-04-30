@@ -122,6 +122,11 @@ public class WonderPayment : NSObject {
         return true
     }
     
+    /// handleOpenUniversalLink
+    public static func handleOpenUniversalLink(userActivity: NSUserActivity) -> Bool {
+        return WXApi.handleOpenUniversalLink(userActivity, delegate: WonderPayment.wechatPayDelegate)
+    }
+    
     /// 注册SDK
     public static func registerApp() {
         if let appId = paymentConfig.wechat?.appId,
