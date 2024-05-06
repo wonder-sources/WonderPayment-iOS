@@ -58,7 +58,7 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
@@ -101,7 +101,7 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
@@ -146,7 +146,7 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
@@ -196,7 +196,7 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
@@ -245,7 +245,7 @@ class PaymentService {
         }
         
         var request = URLRequest(url: url)
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
@@ -291,7 +291,7 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
@@ -345,7 +345,7 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
@@ -398,7 +398,7 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
@@ -455,7 +455,7 @@ class PaymentService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("20", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
