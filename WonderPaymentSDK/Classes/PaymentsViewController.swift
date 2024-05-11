@@ -106,6 +106,7 @@ class PaymentsViewController: UIViewController {
                 guard let intent = intent else { return }
                 let paymentIntent = intent.copy()
                 paymentIntent.paymentMethod = method
+                paymentResult = nil
                 pay(intent: paymentIntent, delegate: self)
             }
         }
@@ -205,6 +206,7 @@ class PaymentsViewController: UIViewController {
     ///重新支付
     @objc func retry(_ sender: UIButton) {
         if let intent = lastPaymentIntent {
+            paymentResult = nil
             pay(intent: intent, delegate: self)
         }
     }
@@ -270,6 +272,7 @@ class PaymentsViewController: UIViewController {
         guard let intent = intent else { return }
         let paymentIntent = intent.copy()
         paymentIntent.paymentMethod = PaymentMethod(type: .creditCard, arguments: args as NSDictionary)
+        paymentResult = nil
         pay(intent: paymentIntent, delegate: self)
     }
     
@@ -356,7 +359,7 @@ class PaymentsViewController: UIViewController {
             if state == "success" {
                 callback(true)
                 return
-            } else if state == "fail" {
+            } else if state == "failed" {
                 callback(false)
                 return
             }
