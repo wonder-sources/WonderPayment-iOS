@@ -18,4 +18,8 @@ struct ErrorMessage {
     static var _3dsVerificationError: ErrorMessage {
         return ErrorMessage(code: "EO100004", message: "3dsVerificationFailed".i18n)
     }
+    
+    static var unsupportedError: ErrorMessage {
+        return ErrorMessage(code: "EO100005", message: "unsupportedError".i18n)
+    }
 }

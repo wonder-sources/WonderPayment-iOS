@@ -20,6 +20,11 @@ import Foundation
 class OctopusPaymentHandler : PaymentHander {
     
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
+        let isInstalled = UIApplication.shared.canOpenURL(URL(string: "octopus://payment")!)
+        if !isInstalled {
+            delegate.onFinished(intent: intent, result: nil, error: .unsupportedError)
+            return
+        }
         delegate.onProcessing()
         PaymentService.payOrder(intent: intent) {
             result, error in

@@ -10,6 +10,10 @@ import Foundation
 class WechatPaymentHandler : PaymentHander {
     
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
+        if !WXApi.isWXAppInstalled() {
+            delegate.onFinished(intent: intent, result: nil, error: .unsupportedError)
+            return
+        }
         delegate.onProcessing()
         
         PaymentService.payOrder(intent: intent) {
