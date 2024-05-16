@@ -62,6 +62,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
@@ -105,6 +106,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: profile, options: [])
@@ -150,6 +152,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
@@ -200,6 +203,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         
         do {
@@ -249,6 +253,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         let session = URLSession.shared
         let task = session.dataTask(with: request) { (data, response, error) in
@@ -295,6 +300,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         let dataParams = [
             "card": ["3ds": _3dsConfig].merge(cardInfo)
@@ -349,6 +355,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: ["token": token], options: [])
@@ -402,6 +409,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: [
@@ -459,6 +467,7 @@ class PaymentService {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue(credential, forHTTPHeaderField: "Credential")
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: [
