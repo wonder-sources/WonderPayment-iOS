@@ -8,14 +8,14 @@
 import Foundation
 
 public class LineItem {
-    public var purchasableType: PurchasableType = .charge
+    public var purchasableType: String
     public var purchaseId: Int?
     public var quantity: Int
     public var price: Double
     public var total: Double
     
     public init(
-        purchasableType: PurchasableType,
+        purchasableType: String,
         purchaseId: Int?,
         quantity: Int,
         price: Double,
@@ -39,16 +39,16 @@ public class LineItem {
     }
 }
 
-public enum PurchasableType: String {
-    case charge = "Charge"
-}
+//public enum PurchasableType: String {
+//    case charge = "Charge"
+//}
 
 extension LineItem: JSONEncodable, JSONDecodable {
     
     func toJson() -> Dictionary<String, Any?> {
         return [
-            "purchasable_type": purchasableType.rawValue,
-            "purchase_id": purchaseId,
+            "purchasableType": purchasableType,
+            "purchaseId": purchaseId,
             "price": price,
             "quantity": quantity,
             "total": total
@@ -56,10 +56,9 @@ extension LineItem: JSONEncodable, JSONDecodable {
     }
     
     static func from(json: NSDictionary?) -> Self {
-        let purchasableType = json?["purchasable_type"] as? String ?? ""
         return LineItem(
-            purchasableType: PurchasableType(rawValue: purchasableType) ?? .charge,
-            purchaseId: json?["purchase_id"] as? Int,
+            purchasableType: json?["purchasableType"] as? String ?? "",
+            purchaseId: json?["purchaseId"] as? Int,
             quantity: json?["quantity"] as? Int ?? 0,
             price: json?["price"] as? Double ?? 0,
             total: json?["total"] as? Double ?? 0

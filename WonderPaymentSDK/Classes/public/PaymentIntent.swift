@@ -44,7 +44,7 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
             orderNumber: json?["orderNumber"] as? String ?? "",
             paymentMethod: paymentMethod,
             transactionType: TransactionType(rawValue: json?["transactionType"] as? String ?? "") ?? .sale,
-            lineItems: LineItem.from(jsonArray: json?["line_items"] as? NSArray)
+            lineItems: LineItem.from(jsonArray: json?["lineItems"] as? NSArray)
         ) as! Self
     }
     
