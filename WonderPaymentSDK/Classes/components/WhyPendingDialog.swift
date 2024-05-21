@@ -30,12 +30,12 @@ class WhyPendingDialog : TGRelativeLayout {
         let closeButton = QMUIButton()
         closeButton.setImage("close".svg, for: .normal)
         closeButton.tg_right.equal(12)
-        closeButton.tg_width.equal(18)
-        closeButton.tg_height.equal(18)
+        closeButton.tg_width.equal(24)
+        closeButton.tg_height.equal(24)
         closeButton.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
         contentView.addSubview(closeButton)
         
-        let titleLabel = Label("pendingPayment".i18n, size: 18)
+        let titleLabel = Label("pendingPayment".i18n, size: 18, fontStyle: .medium)
         titleLabel.tg_top.equal(8)
         titleLabel.tg_width.equal(.fill)
         titleLabel.tg_left.equal(20)
@@ -43,13 +43,13 @@ class WhyPendingDialog : TGRelativeLayout {
         titleLabel.textAlignment = .center
         contentView.addSubview(titleLabel)
         
-        let conent = "pendingPaymentDesc".i18n
-        let conentLabel = Label(conent)
-        conentLabel.tg_top.equal(24)
-        conentLabel.tg_width.equal(.fill)
-        conentLabel.tg_left.equal(20)
-        conentLabel.tg_right.equal(20)
-        contentView.addSubview(conentLabel)
+        let content = "pendingPaymentDesc".i18n
+        let contentLabel = Label(content)
+        contentLabel.tg_top.equal(24)
+        contentLabel.tg_width.equal(.fill)
+        contentLabel.tg_left.equal(20)
+        contentLabel.tg_right.equal(20)
+        contentView.addSubview(contentLabel)
         
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismiss)))
     }

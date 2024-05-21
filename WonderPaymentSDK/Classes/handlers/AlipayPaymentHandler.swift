@@ -13,6 +13,22 @@ class AlipayPaymentHandler : PaymentHander {
     
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         delegate.onProcessing()
+        
+        var payment_inst = "ALIPAYCN"
+        if intent.paymentMethod?.type == .alipayHK {
+            payment_inst = "ALIPAYHK"
+        }
+        
+        intent.paymentMethod?.arguments = [
+            "alipay": [
+                "amount": "\(intent.amount)",
+                "in_app": [
+                    "app_env": "ios",
+                    "payment_inst": payment_inst,
+                ]
+            ]
+        ]
+        
         PaymentService.payOrder(intent: intent) {
             result, error in
             if let transaction = result?.transaction

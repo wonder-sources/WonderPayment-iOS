@@ -16,6 +16,14 @@ class WechatPaymentHandler : PaymentHander {
         }
         delegate.onProcessing()
         
+        let appId = WonderPayment.paymentConfig.wechat?.appId
+        intent.paymentMethod?.arguments = [
+            "wechatpay": [
+                "amount": "\(intent.amount)",
+                "in_app": ["app_id": appId]
+            ]
+        ]
+        
         PaymentService.payOrder(intent: intent) {
             result, error in
             if let transaction = result?.transaction

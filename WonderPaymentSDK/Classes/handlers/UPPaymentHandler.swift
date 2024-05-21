@@ -12,6 +12,13 @@ class UPPaymentHandler : PaymentHander {
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         delegate.onProcessing()
         
+        intent.paymentMethod?.arguments = [
+            "unionpay_wallet": [
+                "amount": "\(intent.amount)",
+                "in_app":[:],
+            ]
+        ]
+        
         PaymentService.payOrder(intent: intent) {
             result, error in
             if let transaction = result?.transaction

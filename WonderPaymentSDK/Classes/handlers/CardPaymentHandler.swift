@@ -11,6 +11,27 @@ class CardPaymentHandler : PaymentHander {
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         delegate.onProcessing()
         
+        let cardArgs = intent.paymentMethod?.arguments
+        var modeArgs: NSDictionary?
+        if (intent.transactionType == .preAuth) {
+            modeArgs = ["consume_mode": "pre_authorize"]
+        }
+        if let token = cardArgs?["token"] as? String {
+            intent.paymentMethod?.arguments = [
+                "payment_token": [
+                    "amount": "\(intent.amount)",
+                    "token": token
+                ].merge(modeArgs)
+            ]
+        } else {
+            intent.paymentMethod?.arguments = [
+                "credit_card": [
+                    "amount": "\(intent.amount)",
+                    "3ds": PaymentService._3dsConfig
+                ].merge(cardArgs).merge(modeArgs)
+            ]
+        }
+        
         PaymentService.payOrder(intent: intent) { result, error in
             
             func checkIfValid(transaction: Transaction, callback: @escaping (Bool) -> Void) {
