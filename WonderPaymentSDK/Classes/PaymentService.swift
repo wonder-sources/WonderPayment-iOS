@@ -512,6 +512,14 @@ class PaymentService {
         completion: @escaping (PayResult?, ErrorMessage?) -> Void
     ) {
         getPayResult(uuid: uuid, orderNum: orderNum) { result, error in
+            //忽略网络异常
+            if error == .networkError {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                    loopForResult(uuid: uuid, orderNum: orderNum, completion: completion)
+                })
+                return
+            }
+            
             if let transaction = result?.transaction {
                 if transaction.isPending  {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {

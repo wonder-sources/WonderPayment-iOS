@@ -1,7 +1,11 @@
 
-struct ErrorMessage {
+struct ErrorMessage : Equatable {
     let code: String
     let message: String
+    
+    static func == (lhs: ErrorMessage, rhs: ErrorMessage) -> Bool{
+        return lhs.code == rhs.code && lhs.message == rhs.message
+    }
     
     static var networkError: ErrorMessage {
         return ErrorMessage(code: "EO100002", message: "networkError".i18n)
