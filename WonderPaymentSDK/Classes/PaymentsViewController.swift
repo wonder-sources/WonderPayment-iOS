@@ -129,7 +129,7 @@ class PaymentsViewController: UIViewController {
                     supportApplePay = true
                 } else if (item == PaymentMethodType.creditCard.rawValue) {
                     if WonderPayment.paymentConfig.customerId.isEmpty {
-                        supportCard = self?.sessionMode == .once
+                        supportCard = self?.sessionMode == .once && self?.previewMode != true
                     } else {
                         supportCard = true
                     }

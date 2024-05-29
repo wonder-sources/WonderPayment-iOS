@@ -21,6 +21,8 @@ extension PaymentMethod {
             return "wechatPay".i18n
         case .unionPay:
             return "unionPay".i18n
+        case .octopus:
+            return "octopus".i18n
         default:
             return ""
         }
@@ -38,6 +40,8 @@ extension PaymentMethod {
             return "WechatPay"
         case .unionPay:
             return "UnionPay"
+        case .octopus:
+            return "Octopus"
         default:
             return ""
         }
