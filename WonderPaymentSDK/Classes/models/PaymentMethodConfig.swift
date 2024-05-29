@@ -1,44 +1,42 @@
 
 struct PaymentMethodConfig: JSONDecodable {
     
-    var supportPaymentMethods: [String]
-    var supportCards: [String]
-    var supportApplePayCards: [String]
+    var supportPaymentMethods: Set<String>
+    var supportCards: Set<String>
+    var supportApplePayCards: Set<String>
     
     static func from(json: NSDictionary?) -> PaymentMethodConfig {
         //let supportPaymentMethod = json?["support_payment_method"] as? [String]
-        var supportPaymentMethods: [String] = []
-        var supportCards: [String] = []
-        var supportApplePayCards: [String] = []
+        var supportPaymentMethods: Set<String> = []
+        var supportCards: Set<String> = []
+        var supportApplePayCards: Set<String> = []
         
         let dynamicJson = DynamicJson(value: json)
         let arr = dynamicJson["payment_process_rule"].array
         arr.forEach { item in
-            let entryTypes = item["payment_entry_types"]
-            if entryTypes.value is NSNull {
-                let methods = item["payment_methods"].array.map({$0.string})
-                supportPaymentMethods.append(contentsOf: methods.compactMap({$0}))
-            } else {
-                let list = entryTypes.array.map({$0.string})
-                for type in list {
-                    let methods = item["payment_methods"].array.map({$0.string}).compactMap({$0})
-                    if type == "in_app" {
-                        supportPaymentMethods.append(contentsOf: methods)
-                    } else if type == "apple_pay" {
-                        supportApplePayCards.append(contentsOf: methods)
-                    } else if type == "manual" {
-                        supportCards.append(contentsOf: methods)
-                    }
-                }
+            let entryTypes = item["payment_entry_types"].array.map({$0.string})
+            if entryTypes.contains("cit") && entryTypes.contains("mit") {
+                let methods = item["payment_methods"].array.compactMap({$0.string})
+                supportCards.formUnion(methods)
+            }
+            
+            if entryTypes.contains("in_app")  {
+                let methods = item["payment_methods"].array.compactMap({$0.string})
+                supportPaymentMethods.formUnion(methods)
+            }
+            
+            if entryTypes.contains("apple_pay")  {
+                let methods = item["payment_methods"].array.compactMap({$0.string})
+                supportApplePayCards.formUnion(methods)
             }
         }
         
         if !supportCards.isEmpty {
-            supportPaymentMethods.append(PaymentMethodType.creditCard.rawValue)
+            supportPaymentMethods.insert(PaymentMethodType.creditCard.rawValue)
         }
         
         if !supportApplePayCards.isEmpty {
-            supportPaymentMethods.append(PaymentMethodType.applePay.rawValue)
+            supportPaymentMethods.insert(PaymentMethodType.applePay.rawValue)
         }
         
         return PaymentMethodConfig(

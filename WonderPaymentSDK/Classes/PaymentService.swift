@@ -242,6 +242,10 @@ class PaymentService {
     /// 查询卡片列表
     static func queryCardList(completion: @escaping ([CreditCardInfo]?, ErrorMessage?) -> Void) {
         let customerId = WonderPayment.paymentConfig.customerId
+        if customerId.isEmpty {
+            UI.call { completion(nil, .none) }
+            return
+        }
         let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)/payment_tokens"
         guard let url = URL(string: urlString) else {
             UI.call { completion(nil, .unknownError) }

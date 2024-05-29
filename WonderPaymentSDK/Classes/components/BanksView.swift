@@ -14,13 +14,24 @@ class BanksView : TGLinearLayout {
     private func initView() {
         self.tg_width.equal(.wrap)
         self.tg_height.equal(.wrap)
-        addSubview(createCardIcon("Visa"))
-        addSubview(createCardIcon("MasterCard", height: 23))
-        addSubview(createCardIcon("AmericanExpress", width: 33, height: 21))
-        addSubview(createCardIcon("ChinaUnion"))
-        addSubview(createCardIcon("JCB"))
-        addSubview(createCardIcon("Discover"))
-        addSubview(createCardIcon("DinersClub"))
+        let items = ["visa", "mastercard", "amex", "cup", "jcb", "discover", "diners"]
+        setItems(items)
+        
+        Cache.addListener(for: "paymentMethodConfig") { 
+            [weak self] paymentMethodConfig in
+            if let config = paymentMethodConfig as? PaymentMethodConfig {
+                let supportItems = items.filter({ config.supportCards.contains($0)})
+                self?.setItems(supportItems)
+            }
+        }
+    }
+    
+    private func setItems(_ items: [String]) {
+        tg_removeAllSubviews()
+        items.forEach { item in
+            let icon = CardMap.getIcon(item)
+            addSubview(createCardIcon(icon))
+        }
     }
     
     private func createCardIcon(_ icon: String, width: Int = 26, height: Int = 24) -> UIView {

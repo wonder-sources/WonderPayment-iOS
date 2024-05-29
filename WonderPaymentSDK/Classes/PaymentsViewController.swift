@@ -116,6 +116,7 @@ class PaymentsViewController: UIViewController {
         let isPreAuth = intent?.transactionType == .preAuth
         PaymentService.queryPaymentMethods() {
             [weak self] config, err in
+            Cache.set(config, for: "paymentMethodConfig")
             let supportList = config?.supportPaymentMethods ?? []
             var supportApplePay = false
             var supportCard = false
@@ -127,7 +128,11 @@ class PaymentsViewController: UIViewController {
                 if (item == PaymentMethodType.applePay.rawValue) {
                     supportApplePay = true
                 } else if (item == PaymentMethodType.creditCard.rawValue) {
-                    supportCard = true
+                    if WonderPayment.paymentConfig.customerId.isEmpty {
+                        supportCard = self?.sessionMode == .once
+                    } else {
+                        supportCard = true
+                    }
                 } else if (item == PaymentMethodType.unionPay.rawValue && !isPreAuth) {
                     supportUnionPay = true
                 } else if (item == PaymentMethodType.alipay.rawValue && !isPreAuth) {
@@ -215,45 +220,12 @@ class PaymentsViewController: UIViewController {
     @objc func addCardConfirmed(_ sender: UIButton) {
         if sessionMode == .twice || previewMode {
             let form = mView.bankCardView.form
-            let expDate = form.expDate
-            let arr = expDate.split(separator: "/")
-            let expMonth = arr.first
-            let expYear = arr.last
-            let args: [String : Any?] = [
-                "exp_date": expDate.replace("/", with: ""),
-                "exp_year": expYear,
-                "exp_month": expMonth,
-                "number": form.number,
-                "cvv": form.cvv,
-                "holder_name": "\(form.firstName) \(form.lastName)",
-                "billing_address": [
-                    "first_name": form.firstName,
-                    "last_name": form.lastName,
-                    "phone_number": form.phone,
-                ],
-            ]
+            let args = form.toArguments()
             addCard(args)
         } else {
+            //"card_reader_mode": "manual"
             let form = mView.bankCardView.form
-            let expDate = form.expDate
-            let arr = expDate.split(separator: "/")
-            let expMonth = arr.first
-            let expYear = arr.last
-            let args: [String : Any?] = [
-                "exp_date": expDate.replace("/", with: ""),
-                "exp_year": expYear,
-                "exp_month": expMonth,
-                "number": form.number,
-                "cvv": form.cvv,
-                "holder_name": "\(form.firstName) \(form.lastName)",
-                "card_reader_mode": "manual",
-                "billing_address": [
-                    "first_name": form.firstName,
-                    "last_name": form.lastName,
-                    "phone_number": form.phone,
-                ],
-                //"is_auto_save": form.save,
-            ]
+            let args = form.toArguments()
             if form.save {
                 bindCard(args) {
                     [weak self] cardInfo in
@@ -369,6 +341,10 @@ class PaymentsViewController: UIViewController {
                 self?.checkPaymentTokenIsValid(card, retryCount: count, callback: callback)
             }
         }
+    }
+    
+    deinit {
+        Cache.dispose()
     }
 }
 

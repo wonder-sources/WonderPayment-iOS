@@ -78,28 +78,33 @@ class BankCardView : TGLinearLayout {
         phoneNumberField.validator = validatePhone
         formView.addSubview(phoneNumberField)
         
-        let hLayout2 = TGLinearLayout(.horz)
-        hLayout2.isHidden = addMode
-        hLayout2.tg_width.equal(.fill)
-        hLayout2.tg_height.equal(.wrap)
-        hLayout2.tg_top.equal(16)
-        formView.addSubview(hLayout2)
-        
-        let checkBox = CheckBox()
-        checkBox.onChange = {
-            [weak self] selected in
-            self?.form.save = selected
+        if WonderPayment.paymentConfig.customerId.isEmpty {
+            form.save = false
+        } else {
+            let hLayout2 = TGLinearLayout(.horz)
+            hLayout2.isHidden = addMode
+            hLayout2.tg_width.equal(.fill)
+            hLayout2.tg_height.equal(.wrap)
+            hLayout2.tg_top.equal(16)
+            formView.addSubview(hLayout2)
+            
+            let checkBox = CheckBox()
+            checkBox.onChange = {
+                [weak self] selected in
+                self?.form.save = selected
+            }
+            checkBox.isSelected = true
+            checkBox.tg_width.equal(.wrap)
+            checkBox.tg_height.equal(.wrap)
+            hLayout2.addSubview(checkBox)
+            
+            let saveLabel = Label("saveCardInfo".i18n, style: .secondary)
+            saveLabel.tg_width.equal(.fill)
+            saveLabel.tg_height.equal(.wrap)
+            saveLabel.tg_left.equal(4)
+            hLayout2.addSubview(saveLabel)
         }
-        checkBox.isSelected = true
-        checkBox.tg_width.equal(.wrap)
-        checkBox.tg_height.equal(.wrap)
-        hLayout2.addSubview(checkBox)
         
-        let saveLabel = Label("saveCardInfo".i18n, style: .secondary)
-        saveLabel.tg_width.equal(.fill)
-        saveLabel.tg_height.equal(.wrap)
-        saveLabel.tg_left.equal(4)
-        hLayout2.addSubview(saveLabel)
         return formView
     }
     
