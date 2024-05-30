@@ -158,13 +158,13 @@ class MethodPreviewView: TGLinearLayout {
             divider.tg_height.equal(1)
             cardInfoLayout.addSubview(divider)
             
-            let issuerLabel = Label("issuer".i18n, style: .secondary, fontStyle: .bold)
-            issuerLabel.tg_top.equal(16)
-            cardInfoLayout.addSubview(issuerLabel)
+//            let issuerLabel = Label("issuer".i18n, style: .secondary, fontStyle: .bold)
+//            issuerLabel.tg_top.equal(16)
+//            cardInfoLayout.addSubview(issuerLabel)
             
-            let issuerValueLabel = Label(issuerName, color: .black, fontStyle: .bold)
-            issuerValueLabel.tg_top.equal(8)
-            cardInfoLayout.addSubview(issuerValueLabel)
+//            let issuerValueLabel = Label(issuerName, color: .black, fontStyle: .bold)
+//            issuerValueLabel.tg_top.equal(8)
+//            cardInfoLayout.addSubview(issuerValueLabel)
             
 //            let countryLabel = Label("Country", style: .secondary, fontStyle: .bold)
 //            countryLabel.tg_top.equal(16)
