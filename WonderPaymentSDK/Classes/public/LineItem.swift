@@ -16,7 +16,7 @@ public class LineItem {
     
     public init(
         purchasableType: String,
-        purchaseId: Int?,
+        purchaseId: Int? = nil,
         quantity: Int,
         price: Double,
         total: Double

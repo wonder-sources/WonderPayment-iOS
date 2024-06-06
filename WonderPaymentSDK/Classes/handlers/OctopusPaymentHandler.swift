@@ -62,7 +62,16 @@ class OctopusPaymentHandler : PaymentHander {
             
             delegate.onProcessing()
             
-            intent.amount = self.roundFirstDecimalPlaceUp(intent.amount)
+            let newAmount = self.roundFirstDecimalPlaceUp(intent.amount)
+            let v1 = Decimal(string: "\(newAmount)") ?? 0
+            let v2 = Decimal(string: "\(intent.amount)") ?? 0
+            let stringValue = NSDecimalNumber(decimal: v1 - v2).stringValue
+            let rounding = Double(stringValue) ?? 0
+            var lineItems = intent.lineItems ?? []
+            lineItems.append(LineItem(purchasableType: "Rounding", quantity: 1, price: rounding, total: rounding))
+            intent.lineItems = lineItems
+            intent.amount = newAmount
+            
             intent.paymentMethod?.arguments = [
                 "octopus": [
                     "amount": "\(intent.amount)",

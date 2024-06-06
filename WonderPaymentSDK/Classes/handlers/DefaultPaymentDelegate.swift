@@ -28,8 +28,15 @@ class DefaultPaymentDelegate : PaymentDelegate {
         if let error = error {
             paymentResult = PaymentResult(status: .failed, code: error.code, message: error.message)
         }
-        if let transaction = result?.transaction, transaction.success {
-            paymentResult = PaymentResult(status: .completed)
+        if let transaction = result?.transaction {
+            if transaction.success {
+                paymentResult = PaymentResult(status: .completed)
+            } else {
+                let paymentData = DynamicJson(value: transaction.paymentData)
+                let code = paymentData["resp_code"].string
+                let message = paymentData["resp_msg"].string
+                paymentResult = PaymentResult(status: .failed, code: code, message: message)
+            }
         }
         callback(paymentResult)
     }

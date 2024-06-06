@@ -378,10 +378,19 @@ extension PaymentsViewController: PaymentDelegate {
             mView.errorView.errorMessage = error
             paymentResult = PaymentResult(status: .failed, code: error.code, message: error.message)
         }
-        if let transaction = result?.transaction, transaction.success {
-            paymentStatus = .success
-            mView.successfulView.setData(result!, intent: intent)
-            paymentResult = PaymentResult(status: .completed)
+        if let transaction = result?.transaction {
+            if transaction.success {
+                paymentStatus = .success
+                mView.successfulView.setData(result!, intent: intent)
+                paymentResult = PaymentResult(status: .completed)
+            } else {
+                let paymentData = DynamicJson(value: transaction.paymentData)
+                let code = paymentData["resp_code"].string
+                let message = paymentData["resp_msg"].string
+                paymentStatus = .error
+                mView.errorView.errorMessage = ErrorMessage(code: code ?? "", message: message ?? "")
+                paymentResult = PaymentResult(status: .failed, code: code, message: message)
+            }
         }
         if !WonderPayment.uiConfig.showResult {
             paymentCallback?(paymentResult!)
