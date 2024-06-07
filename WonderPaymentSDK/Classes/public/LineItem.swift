@@ -47,8 +47,8 @@ extension LineItem: JSONEncodable, JSONDecodable {
     
     func toJson() -> Dictionary<String, Any?> {
         return [
-            "purchasableType": purchasableType,
-            "purchaseId": purchaseId,
+            "purchasable_type": purchasableType,
+            "purchase_id": purchaseId,
             "price": price,
             "quantity": quantity,
             "total": total
@@ -57,8 +57,8 @@ extension LineItem: JSONEncodable, JSONDecodable {
     
     static func from(json: NSDictionary?) -> Self {
         return LineItem(
-            purchasableType: json?["purchasableType"] as? String ?? "",
-            purchaseId: json?["purchaseId"] as? Int,
+            purchasableType: json?["purchasable_type"] as? String ?? "",
+            purchaseId: json?["purchase_id"] as? Int,
             quantity: json?["quantity"] as? Int ?? 0,
             price: json?["price"] as? Double ?? 0,
             total: json?["total"] as? Double ?? 0
