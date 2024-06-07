@@ -40,8 +40,7 @@ class MethodPreviewView: TGLinearLayout {
         addSubview(scrollView)
         
         let screenHeight = UIScreen.main.bounds.height
-        let safeAreaInsets = QMUIHelper.safeAreaInsetsForDeviceWithNotch
-        let contentHeight = screenHeight - safeAreaInsets.top - safeAreaInsets.bottom - 44
+        let contentHeight = screenHeight - safeInsets.top - safeInsets.bottom - 44
         
         let contentView = TGLinearLayout(.vert)
         contentView.tg_width.equal(.fill)

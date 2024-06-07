@@ -34,7 +34,7 @@ class AmountAdjustmentDialog : TGRelativeLayout {
         contentView.backgroundColor = WonderPayment.uiConfig.background
         contentView.tg_width.equal(.fill)
         let screenSize = UIScreen.main.bounds
-        let minSize = screenSize.height - 44 - QMUIHelper.safeAreaInsetsForDeviceWithNotch.top
+        let minSize = screenSize.height - 44 - safeInsets.top
         contentView.tg_height.equal(.wrap).min(minSize)
         contentView.tg_bottom.equal((-100)%)
         contentView.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
@@ -90,7 +90,7 @@ class AmountAdjustmentDialog : TGRelativeLayout {
         backButton.tg_top.equal(12)
         backButton.tg_left.equal(24)
         backButton.tg_right.equal(24)
-        backButton.tg_bottom.equal(24 + QMUIHelper.safeAreaInsetsForDeviceWithNotch.bottom)
+        backButton.tg_bottom.equal(24 + safeInsets.bottom)
         contentView.addSubview(backButton)
         backButton.addTarget(self, action: #selector(back), for: .touchUpInside)
         

@@ -9,6 +9,13 @@ class UI {
     }
 }
 
+var safeInsets: UIEdgeInsets {
+    if let window = UIApplication.shared.windows.first {
+        return window.safeAreaInsets
+    }
+    return .zero
+}
+
 var resBundle: Bundle? {
     let bundle = Bundle(for: PaymentsViewController.self)
     if let resUrl = bundle.url(forResource: "WonderPaymentSDK_Resources", withExtension: "bundle"),

@@ -23,7 +23,7 @@ class TitleBar : TGLinearLayout {
     private func initView(){
         self.tg_width.equal(.fill)
         self.tg_height.equal(.wrap)
-        self.tg_padding = UIEdgeInsets.only(top: QMUIHelper.safeAreaInsetsForDeviceWithNotch.top)
+        self.tg_padding = UIEdgeInsets.only(top: safeInsets.top)
         
         container.tg_height.equal(44)
         container.tg_width.equal(.fill)

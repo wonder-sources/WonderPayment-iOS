@@ -138,7 +138,7 @@ class PaymentsView : TGLinearLayout {
         selectConfirmButton.isEnabled = false
         selectConfirmButton.tg_horzMargin(16)
         selectConfirmButton.tg_top.equal(16)
-        selectConfirmButton.tg_bottom.equal(QMUIHelper.safeAreaInsetsForDeviceWithNotch.bottom + 16)
+        selectConfirmButton.tg_bottom.equal(safeInsets.bottom + 16)
         selectConfirmButton.addTarget(self, action: #selector(onConfirm(_:)), for: .touchUpInside)
         confirmLayout.addSubview(selectConfirmButton)
     }
