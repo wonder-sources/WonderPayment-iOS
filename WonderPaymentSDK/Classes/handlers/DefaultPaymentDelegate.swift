@@ -16,14 +16,15 @@ class DefaultPaymentDelegate : PaymentDelegate {
     }
     
     func onProcessing() {
-        
+        Loading.show(style: .fullScreen)
     }
     
     func onInterrupt(intent: PaymentIntent) {
-    
+        Loading.dismiss()
     }
     
     func onFinished(intent: PaymentIntent, result: PayResult?, error: ErrorMessage?) {
+        Loading.dismiss()
         var paymentResult = PaymentResult(status: .canceled)
         if let error = error {
             paymentResult = PaymentResult(status: .failed, code: error.code, message: error.message)
