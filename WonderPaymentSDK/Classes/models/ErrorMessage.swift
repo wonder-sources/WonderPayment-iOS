@@ -1,5 +1,5 @@
 
-struct ErrorMessage : Equatable {
+struct ErrorMessage : Error,Equatable {
     let code: String
     let message: String
     

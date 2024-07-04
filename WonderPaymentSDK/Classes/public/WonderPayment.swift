@@ -173,6 +173,16 @@ public class WonderPayment : NSObject {
             callback(result == true)
         }
     }
+    
+    public static func getPaymentResult(sessionId: String, callback: @escaping PaymentResultCallback) {
+        PaymentService.getPayResult(sessionId: sessionId) { status, error in
+            if status == .completed {
+                callback(PaymentResult(status: .completed))
+            } else {
+                callback(PaymentResult(status: .pending))
+            }
+        }
+    }
 }
 
 class WechatPayDelegate: NSObject, WXApiDelegate {

@@ -110,6 +110,20 @@ class PaymentsViewController: UIViewController {
                 pay(intent: paymentIntent, delegate: self)
             }
         }
+        
+//        Task {
+//            await getBannerData()
+//        }
+    }
+    
+    func getBannerData() async {
+        let result = await AdService.getBannerData()
+        switch (result) {
+        case let .success(response):
+            print(response)
+        case let .failure(error):
+            print(error.localizedDescription)
+        }
     }
     
     private func loadData() {

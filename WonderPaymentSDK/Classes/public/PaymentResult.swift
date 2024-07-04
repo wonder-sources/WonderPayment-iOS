@@ -1,5 +1,5 @@
 public enum PaymentResultStatus : String {
-    case completed, canceled, failed
+    case completed, canceled, failed, pending
 }
 
 public class PaymentResult: JSONEncodable {
