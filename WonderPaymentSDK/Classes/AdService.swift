@@ -11,11 +11,14 @@ class AdService {
         }
     }
     
-    static func getBannerData() async -> Result<String, Error> {
+    static func getBannerData(
+        completion: @escaping (String?, ErrorMessage?) -> Void
+    ) {
         let appId = WonderPayment.paymentConfig.appId
         let urlString = "https://\(domain)/api/registry/advertise?os=iOS&app_slug=\(appId)&app_id=\(appId)"
         guard let url = URL(string: urlString) else {
-            return .failure(ErrorMessage.unknownError)
+            UI.call { completion(nil, .unknownError) }
+            return
         }
         
         var request = URLRequest(url: url)
@@ -25,11 +28,28 @@ class AdService {
         request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "x-i18n-lang")
         request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
         
-        guard let (data, response) = try? await URLSession.shared.data(for: request) else {
-            return .failure(ErrorMessage.networkError)
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    let dataJson = DynamicJson(value: resp.data)
+                    UI.call { completion(dataJson.string, nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
         }
         
-        let dataString = String(data: data, encoding: .utf8)!
-        return .success(dataString)
+        task.resume()
     }
 }

@@ -111,18 +111,13 @@ class PaymentsViewController: UIViewController {
             }
         }
         
-//        Task {
-//            await getBannerData()
-//        }
+//        getBannerData()
     }
     
-    func getBannerData() async {
-        let result = await AdService.getBannerData()
-        switch (result) {
-        case let .success(response):
-            print(response)
-        case let .failure(error):
-            print(error.localizedDescription)
+    func getBannerData()  {
+        AdService.getBannerData() {
+            data, error in
+            print(data ?? "Empty")
         }
     }
     

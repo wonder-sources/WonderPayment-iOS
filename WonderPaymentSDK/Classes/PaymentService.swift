@@ -588,7 +588,7 @@ class PaymentService {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
                 let resp = PaymentResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
-                    var result = PayResult.from(json: resp.data as? NSDictionary)
+                    let result = PayResult.from(json: resp.data as? NSDictionary)
                     let transactions = result.order.transactions?.filter({ sessionData.transactions.contains($0.uuid) })
                     if transactions?.contains(where: {$0.success}) ?? false {
                         UI.call { completion(.completed, nil) }
