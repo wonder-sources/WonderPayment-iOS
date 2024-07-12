@@ -115,6 +115,10 @@ The reason why you're seeing this status is because there might be a pending pay
         "thisIsPreAuth": "ⓘ This is a pre-authorized charge",
         "amountAdjustment": "Payment Amount Adjustment",
         "amountAdjustmentDesc": "Due to Octopus Payment’s rule, all payment amount needs to be adjusted to 1 decimal value. Hence, if you wish to proceed with Octopus payment, this original payment of %@ will be rounded up to %@",
+        "enableNoPassword": "Enable No-password Payment with %@",
+        "chooseAutoDebit": "No need to go through multi-step process with password required for %@ payment, choose to enable %@ Auto Debit today to pay with ease.",
+        "enablePasswordLess": "Enable Password-less %@",
+        "directlyPay": "Directly Pay %@",
     ]
     
     static let zh_CN = [
@@ -211,6 +215,10 @@ The reason why you're seeing this status is because there might be a pending pay
         "thisIsPreAuth": "ⓘ 这是预授权的费用",
         "amountAdjustment": "支付金额调整",
         "amountAdjustmentDesc": "由于八达通付款规则，所有付款金额需要调整为仅保留一位小数。因此，如果您想继续使用八达通付款，则原本支付的 %@ 将被调整为 %@",
+        "enableNoPassword": "启用%@免密支付",
+        "chooseAutoDebit": "无需经过多步骤且需密码的%@流程，今天就选择启用%@自动扣款，轻松付款。",
+        "enablePasswordLess": "启用%@免密支付",
+        "directlyPay": "直接支付 %@",
     ]
     
     static let zh_HK = [
@@ -307,5 +315,9 @@ The reason why you're seeing this status is because there might be a pending pay
         "thisIsPreAuth": "ⓘ 這是預授權的費用",
         "amountAdjustment": "支付金額調整",
         "amountAdjustmentDesc": "由於八達通付款規則，所有付款金額需要調整為僅保留一位小數。因此，如果您想繼續使用八達通付款，則原本支付的 %@ 將被調整為 %@",
+        "enableNoPassword": "啟用%@免密支付",
+        "chooseAutoDebit": "無需經過多步驟且需密碼的%@流程，今天就選擇啟用%@自動扣款，輕鬆付款。",
+        "enablePasswordLess": "啟用%@免密支付",
+        "directlyPay": "直接支付 %@",
     ]
 }

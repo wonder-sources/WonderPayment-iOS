@@ -165,6 +165,7 @@ class PaymentsViewController: UIViewController {
             self?.mView.methodView.alipayHKButton.isHidden = !supportAlipay
             self?.mView.methodView.wechatPayButton.isHidden = !(supportWechat && wechatPayConfigured)
             self?.mView.methodView.octopusButton.isHidden = !supportOctopus
+            self?.mView.placeholderLayout.isHidden = true
         }
     }
     

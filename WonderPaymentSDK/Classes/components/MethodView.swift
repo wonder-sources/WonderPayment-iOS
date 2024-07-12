@@ -6,7 +6,7 @@ protocol MethodItemView {
     var method: PaymentMethod? { get set }
 }
 
-protocol MethodViewDelegate {
+protocol MethodViewDelegate: AnyObject {
     /// 选择改变
     func onSelectedChange(selected: PaymentMethod?)
     /// 选择确认
@@ -38,7 +38,7 @@ class MethodView : TGLinearLayout {
         }
     }
     
-    var delegate: MethodViewDelegate?
+    weak var delegate: MethodViewDelegate?
 
     init(displayStyle: DisplayStyle = .oneClick, previewMode: Bool = false) {
         self.displayStyle = displayStyle

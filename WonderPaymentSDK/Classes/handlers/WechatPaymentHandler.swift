@@ -10,6 +10,19 @@ import Foundation
 class WechatPaymentHandler : PaymentHander {
     
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
+//        let amountText = "\(CurrencySymbols.get(intent.currency))\(formatAmount(intent.amount))"
+//        let dialog = AutoDebitDialog(type: .wechatPay, amount: amountText)
+//        dialog.show() { result in
+//            if (result == 1) {
+//                
+//            } else if (result == 2) {
+//                
+//            } else {
+//                delegate.onCanceled()
+//            }
+//            
+//        }
+        
         if !WXApi.isWXAppInstalled() {
             delegate.onFinished(intent: intent, result: nil, error: .unsupportedError)
             return

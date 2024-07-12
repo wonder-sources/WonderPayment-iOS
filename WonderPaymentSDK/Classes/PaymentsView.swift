@@ -14,6 +14,7 @@ class PaymentsView : TGLinearLayout {
     lazy var methodView = MethodView(displayStyle: displayStyle, previewMode: previewMode)
     lazy var banner = Banner()
     lazy var paymentMethodLayout = TGLinearLayout(.vert)
+    lazy var placeholderLayout = TGLinearLayout(.vert)
     lazy var pendingView = PendingView()
     lazy var errorView = ErrorView()
     lazy var successfulView = SuccessfulView()
@@ -114,6 +115,18 @@ class PaymentsView : TGLinearLayout {
         paymentMethodHeader.tg_width.equal(.fill)
         paymentMethodHeader.tg_height.equal(.wrap)
         paymentMethodLayout.addSubview(paymentMethodHeader)
+        
+        placeholderLayout.tg_width.equal(.fill)
+        placeholderLayout.tg_height.equal(.wrap)
+        paymentMethodLayout.addSubview(placeholderLayout)
+        
+        for i in 0...3 {
+            let placeholderView = PlaceholderView()
+            placeholderView.tg_height.equal(i == 0 ? 114 : 58)
+            placeholderView.tg_width.equal(.fill)
+            placeholderLayout.tg_vspace = 16
+            placeholderLayout.addSubview(placeholderView)
+        }
         
         bankCardView.isHidden = true
         methodView.delegate = self
