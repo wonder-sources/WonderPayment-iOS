@@ -81,14 +81,14 @@ func getMethodNameAndIcon(_ method: PaymentMethod) -> (String, String?) {
     case .alipayHK:
         return ("alipayHK".i18n, "AlipayHK")
     case .applePay:
-        return ("Apple Pay", "ApplePay2")
+        return ("applePay".i18n, "ApplePay2")
     case .creditCard:
         let issuer = method.arguments?["issuer"] as? String
         let name = CardMap.getName(issuer ?? "")
         let icon = CardMap.getIcon(issuer ?? "")
         return (name, icon)
     case .fps:
-        return ("FPS", "FPS")
+        return ("fps".i18n, "FPS")
     case .octopus:
         return ("octopus".i18n, "Octopus")
     case .unionPay:

@@ -12,7 +12,7 @@ class AdService {
     }
     
     static func getBannerData(
-        completion: @escaping (String?, ErrorMessage?) -> Void
+        completion: @escaping ([AdItem]?, ErrorMessage?) -> Void
     ) {
         let appId = WonderPayment.paymentConfig.appId
         let urlString = "https://\(domain)/api/registry/advertise?os=iOS&app_slug=\(appId)&app_id=\(appId)"
@@ -41,13 +41,31 @@ class AdService {
                 let resp = PaymentResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let dataJson = DynamicJson(value: resp.data)
-                    UI.call { completion(dataJson.string, nil) }
+                    let items = AdItem.from(jsonArray: dataJson.array.compactMap({$0.value}) as? NSArray)
+                    UI.call { completion(items, nil) }
                 } else {
                     UI.call { completion(nil, resp.error) }
                 }
             } catch {
                 UI.call { completion(nil, .dataFormatError) }
             }
+        }
+        
+        task.resume()
+    }
+    
+    static func downloadImage(from urlString: String, completion: @escaping (UIImage?) -> Void) {
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil) }
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+            guard let data = data, let image = UIImage(data: data) else {
+                UI.call { completion(nil) }
+                return
+            }
+            UI.call { completion(image) }
         }
         
         task.resume()

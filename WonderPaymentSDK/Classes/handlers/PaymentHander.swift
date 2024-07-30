@@ -29,6 +29,8 @@ func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         hander = AlipayPaymentHandler()
     case .octopus:
         hander = OctopusPaymentHandler()
+    case .fps:
+        hander = FPSPaymentHandler()
     default:()
     }
     hander?.pay(intent: intent, delegate: delegate)

@@ -110,15 +110,6 @@ class PaymentsViewController: UIViewController {
                 pay(intent: paymentIntent, delegate: self)
             }
         }
-        
-//        getBannerData()
-    }
-    
-    func getBannerData()  {
-        AdService.getBannerData() {
-            data, error in
-            print(data ?? "Empty")
-        }
     }
     
     private func loadData() {
@@ -133,6 +124,7 @@ class PaymentsViewController: UIViewController {
             var supportAlipay = false
             var supportWechat = false
             var supportOctopus = false
+            var supportFps = false
             for item in supportList {
                 if (item == PaymentMethodType.applePay.rawValue) {
                     supportApplePay = true
@@ -148,8 +140,10 @@ class PaymentsViewController: UIViewController {
                     supportAlipay = true
                 } else if (item == PaymentMethodType.wechat.rawValue && !isPreAuth) {
                     supportWechat = true
-                }else if (item == PaymentMethodType.octopus.rawValue && !isPreAuth) {
+                } else if (item == PaymentMethodType.octopus.rawValue && !isPreAuth) {
                     supportOctopus = true
+                } else if (item == PaymentMethodType.fps.rawValue && !isPreAuth) {
+                    supportFps = true
                 }
             }
             
@@ -165,7 +159,19 @@ class PaymentsViewController: UIViewController {
             self?.mView.methodView.alipayHKButton.isHidden = !supportAlipay
             self?.mView.methodView.wechatPayButton.isHidden = !(supportWechat && wechatPayConfigured)
             self?.mView.methodView.octopusButton.isHidden = !supportOctopus
+            self?.mView.methodView.fpsButton.isHidden = !supportFps
             self?.mView.placeholderLayout.isHidden = true
+        }
+        
+//        getBannerData()
+    }
+    
+    private func getBannerData()  {
+        AdService.getBannerData() {
+            [weak self] data, error in
+            if let data = data {
+                self?.mView.banner.setData(data)
+            }
         }
     }
     
@@ -240,7 +246,7 @@ class PaymentsViewController: UIViewController {
                 bindCard(args) {
                     [weak self] cardInfo in
                     guard let cardInfo = cardInfo else {
-                       return
+                        return
                     }
                     self?.cardPay(["token": cardInfo.token])
                 }
@@ -262,7 +268,7 @@ class PaymentsViewController: UIViewController {
         bindCard(args) {
             [weak self] cardInfo in
             guard let cardInfo = cardInfo else {
-               return
+                return
             }
             Tips.show(image: "verified".svg, title: "cardVerified".i18n, subTitle: "canStartPaying".i18n) {
                 [weak self] _ in

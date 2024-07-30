@@ -222,13 +222,15 @@ class MethodPreviewView: TGLinearLayout {
             methodLayout.tg_height.equal(46)
             self.addSubview(methodLayout)
             
-            let methodLabel = Label(paymentMethod.name, color: .black, size: 26, fontStyle: .bold)
+            let nameAndIcon = getMethodNameAndIcon(paymentMethod)
+            
+            let methodLabel = Label(nameAndIcon.0, color: .black, size: 26, fontStyle: .bold)
             methodLabel.tg_centerY.equal(0)
             methodLayout.addSubview(methodLabel)
             
-            var image = paymentMethod.icon.svg
+            var image = nameAndIcon.1?.svg
             if paymentMethod.type == .applePay {
-                image = image?.qmui_image(withTintColor: .black)
+                image = "ApplePay".svg?.qmui_image(withTintColor: .black)
             }
             let iconView = UIImageView(image: image)
             iconView.tg_left.equal(100%)
@@ -244,12 +246,12 @@ class MethodPreviewView: TGLinearLayout {
             divider.tg_height.equal(1)
             self.addSubview(divider)
             
-            let label1 = Label(String(format: "payingWith".i18n, paymentMethod.name),color: .black, size: 16, fontStyle: .bold)
+            let label1 = Label(String(format: "payingWith".i18n, nameAndIcon.0),color: .black, size: 16, fontStyle: .bold)
             label1.tg_width.equal(.fill)
             label1.tg_height.equal(.wrap)
             self.addSubview(label1)
             
-            let label2 = Label(String(format: "canPayUsing".i18n, paymentMethod.name),style: .secondary, size: 16, fontStyle: .bold)
+            let label2 = Label(String(format: "canPayUsing".i18n, nameAndIcon.0),style: .secondary, size: 16, fontStyle: .bold)
             label2.tg_top.equal(8)
             label2.tg_width.equal(.fill)
             label2.tg_height.equal(.wrap)

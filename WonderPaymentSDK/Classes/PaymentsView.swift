@@ -79,8 +79,6 @@ class PaymentsView : TGLinearLayout {
             contentLayout.addSubview(amountView)
         }
         
-        banner.tg_width.equal(.fill)
-        banner.tg_height.equal(.wrap)
         contentLayout.addSubview(banner)
         
         pendingView.tg_top.equal(16)

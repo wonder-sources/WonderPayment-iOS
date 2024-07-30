@@ -24,6 +24,7 @@ class MethodView : TGLinearLayout {
     lazy var alipayButton = MethodButton(image: "Alipay", title: "alipay".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var alipayHKButton = MethodButton(image: "AlipayHK", title: "alipayHK".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var octopusButton = MethodButton(image: "Octopus", title: "octopus".i18n, displayStyle: displayStyle, previewMode: previewMode)
+    lazy var fpsButton = MethodButton(image: "FPS", title: "fps".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var addCardButton = createAddCardButton()
     lazy var cardView = createCardView()
     lazy var itemsLayout = TGLinearLayout(.vert)
@@ -62,6 +63,7 @@ class MethodView : TGLinearLayout {
         alipayButton.method = PaymentMethod(type: .alipay)
         alipayHKButton.method = PaymentMethod(type: .alipayHK)
         octopusButton.method = PaymentMethod(type: .octopus)
+        fpsButton.method = PaymentMethod(type: .fps)
         
         applePayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         unionPayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
@@ -69,6 +71,7 @@ class MethodView : TGLinearLayout {
         alipayButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         alipayHKButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         octopusButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
+        fpsButton.addTarget(self, action: #selector(onMethodItemClick(_:)), for: .touchUpInside)
         
         addSubview(applePayButton)
         addSubview(unionPayButton)
@@ -76,6 +79,7 @@ class MethodView : TGLinearLayout {
         addSubview(alipayButton)
         addSubview(alipayHKButton)
         addSubview(octopusButton)
+        addSubview(fpsButton)
         
         
         if displayStyle == .confirm || previewMode {
@@ -91,6 +95,7 @@ class MethodView : TGLinearLayout {
         alipayHKButton.isHidden = true
         cardView.isHidden = true
         octopusButton.isHidden = true
+        fpsButton.isHidden = true
     }
     
     func setCardItems(_ items: [CreditCardInfo]) {
