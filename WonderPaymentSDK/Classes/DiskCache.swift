@@ -36,7 +36,7 @@ class DiskCache {
     
     func setImage(_ image: UIImage, forKey key: String) {
         let fileURL = cacheDirectory.appendingPathComponent(key)
-        if let data = image.jpegData(compressionQuality: 0.8) {
+        if let data = image.pngData() {
             try? data.write(to: fileURL, options: .atomic)
         }
     }
