@@ -9,6 +9,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author                  = "Wonder Developer"
   s.source                  = { :git => "https://github.com/wonder-platform/WonderPayment-iOS.git", :tag => s.version.to_s}
+  s.swift_versions = ['4.2', '5.0', '5.1']
   s.resource_bundles = {
       'WonderPaymentSDK_Resources' => [
       'WonderPaymentSDK/Assets/anim/**.*',
