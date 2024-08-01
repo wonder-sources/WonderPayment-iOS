@@ -96,8 +96,8 @@ class MethodPreviewView: TGLinearLayout {
         
         private func initView() {
             let dynamicJson = DynamicJson(value: paymentMethod.arguments)
-            let issuer = dynamicJson["issuer"].string ?? ""
-            let issuerName = CardMap.getName(issuer)
+            let brand = dynamicJson["brand"].string ?? ""
+            let brandName = CardMap.getName(brand)
             let number = dynamicJson["number"].string ?? ""
             let suffix = number.count > 4 ? String(number.suffix(4)) : number
             let holderName = dynamicJson["holder_name"].string ?? ""
@@ -125,15 +125,15 @@ class MethodPreviewView: TGLinearLayout {
             leftLayout.tg_height.equal(.wrap)
             cardNumberLayout.addSubview(leftLayout)
             
-            let cardLabel = Label(issuerName, color: .black,size: 18, fontStyle: .bold)
+            let cardLabel = Label(brandName, color: .black,size: 18, fontStyle: .bold)
             leftLayout.addSubview(cardLabel)
             
             let cardNumberLabel = Label("**** \(suffix)", color: .black,size: 18, fontStyle: .bold)
             cardNumberLabel.tg_top.equal(8)
             leftLayout.addSubview(cardNumberLabel)
             
-            let issuerIcon = CardMap.getIcon(issuer)
-            if let url = resBundle?.url(forResource: issuerIcon, withExtension: "svg"),
+            let brandIcon = CardMap.getIcon(brand)
+            if let url = resBundle?.url(forResource: brandIcon, withExtension: "svg"),
                let svgImage = SVGKImage.init(contentsOf: url)
             {
                 let cardIconView = SVGKFastImageView(svgkImage: svgImage)!

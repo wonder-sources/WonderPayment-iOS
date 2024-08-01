@@ -120,8 +120,8 @@ class MethodView : TGLinearLayout {
 
             for index in 0..<items.count {
                 let item = items[index]
-                let icon = CardMap.getIcon(item.issuer ?? "")
-                let cardNumber = formatCardNumber(issuer: item.issuer ?? "", number: item.number ?? "")
+                let icon = CardMap.getIcon(item.brand ?? "")
+                let cardNumber = formatCardNumber(brand: item.brand ?? "", number: item.number ?? "")
 //                let isSelected = item.default ?? false
                 let itemView = CardItemView(icon: icon, cardNumber: cardNumber,isSelected: isSelected, displayStyle: displayStyle, previewMode: previewMode)
                 itemView.method = PaymentMethod(type: .creditCard, arguments: item.toPaymentArguments())

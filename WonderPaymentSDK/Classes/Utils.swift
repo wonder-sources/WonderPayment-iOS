@@ -34,8 +34,8 @@ func formatAmount(_ amount: Double) -> String {
     return formatter.string(from: NSNumber(value: amount)) ?? "0.00"
 }
 
-func formatCardNumber(issuer: String, number: String) -> String {
-    let name = CardMap.getName(issuer)
+func formatCardNumber(brand: String, number: String) -> String {
+    let name = CardMap.getName(brand)
     var formatted = "\(name) **"
     if number.count > 4 {
         formatted = "\(formatted)\(number.suffix(4))"
@@ -83,9 +83,9 @@ func getMethodNameAndIcon(_ method: PaymentMethod) -> (String, String?) {
     case .applePay:
         return ("applePay".i18n, "ApplePay2")
     case .creditCard:
-        let issuer = method.arguments?["issuer"] as? String
-        let name = CardMap.getName(issuer ?? "")
-        let icon = CardMap.getIcon(issuer ?? "")
+        let brand = method.arguments?["brand"] as? String
+        let name = CardMap.getName(brand ?? "")
+        let icon = CardMap.getIcon(brand ?? "")
         return (name, icon)
     case .fps:
         return ("fps".i18n, "FPS")
