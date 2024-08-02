@@ -24,7 +24,7 @@ class FPSPaymentHandler : PaymentHander {
             if let transaction = result?.transaction
             {
                 let json = DynamicJson.from(transaction.acquirerResponseBody)
-                guard let paymentString = json["fps"]["in_app"]["payinfo"].string else {
+                guard let payload = json["fps"]["in_app"]["payinfo"].string else {
                     delegate.onFinished(intent: intent, result: result, error: .dataFormatError)
                     return
                 }
@@ -39,8 +39,9 @@ class FPSPaymentHandler : PaymentHander {
                     
                     let item = NSExtensionItem()
                     let scheme = WonderPayment.paymentConfig.fromScheme
+                    let paymentString = "https://fps.wonder.today/fps?payload=\(payload.base64)"
                     let itemProvider = NSItemProvider(
-                        item: ["url": paymentString, "callback": "\(scheme)://fps"] as NSSecureCoding,
+                        item: ["URL": paymentString, "callback": "\(scheme)://fps"] as NSSecureCoding,
                         typeIdentifier: "hk.com.hkicl"
                     )
                     item.attachments = [itemProvider]
