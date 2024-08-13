@@ -94,6 +94,8 @@ func getMethodNameAndIcon(_ method: PaymentMethod) -> (String, String?) {
     case .unionPay:
         return ("unionPay".i18n, "UnionPay")
     case .wechat:
-        return  ("wechatPay".i18n, "WechatPay")
+        return ("wechatPay".i18n, "WechatPay")
+    case .payme:
+        return ("payme".i18n, "PayMe")
     }
 }

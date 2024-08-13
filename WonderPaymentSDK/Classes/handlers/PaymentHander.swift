@@ -31,6 +31,8 @@ func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         hander = OctopusPaymentHandler()
     case .fps:
         hander = FPSPaymentHandler()
+    case .payme:
+        hander = PayMePaymentHandler()
     default:()
     }
     hander?.pay(intent: intent, delegate: delegate)

@@ -32,6 +32,7 @@ public class WonderPayment : NSObject {
     static var applePayCallback: AppyPayCallback?
     static var octopusCallback: DataCallback?
     static var fpsCallback: DataCallback?
+    static var paymeCallback: DataCallback?
     static var wechatPayDelegate = WechatPayDelegate()
     static var applePayDelegate = ApplePayDelegate()
     
@@ -115,6 +116,9 @@ public class WonderPayment : NSObject {
         } else if (url.host == "fps") {
             fpsCallback?([:])
             fpsCallback = nil
+        } else if (url.host == "payme") {
+            paymeCallback?([:])
+            paymeCallback = nil
         }
         UPPaymentControl.default().handlePaymentResult(url) { code, data in
             //code : success, fail, cancel

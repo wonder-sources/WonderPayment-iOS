@@ -6,7 +6,8 @@ public enum PaymentMethodType: String {
          alipayHK = "alipay_hk",
          alipay = "alipay",
          fps = "fps",
-         octopus = "octopus"
+         octopus = "octopus",
+         payme = "payme"
 }
 
 public class PaymentMethod : JSONDecodable, JSONEncodable {

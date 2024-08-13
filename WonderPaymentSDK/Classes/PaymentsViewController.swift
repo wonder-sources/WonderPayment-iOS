@@ -125,6 +125,7 @@ class PaymentsViewController: UIViewController {
             var supportWechat = false
             var supportOctopus = false
             var supportFps = false
+            var supportPayMe = false
             for item in supportList {
                 if (item == PaymentMethodType.applePay.rawValue) {
                     supportApplePay = true
@@ -144,6 +145,8 @@ class PaymentsViewController: UIViewController {
                     supportOctopus = true
                 } else if (item == PaymentMethodType.fps.rawValue && !isPreAuth) {
                     supportFps = true
+                } else if (item == PaymentMethodType.payme.rawValue && !isPreAuth) {
+                    supportPayMe = true
                 }
             }
             
@@ -160,6 +163,7 @@ class PaymentsViewController: UIViewController {
             self?.mView.methodView.wechatPayButton.isHidden = !(supportWechat && wechatPayConfigured)
             self?.mView.methodView.octopusButton.isHidden = !supportOctopus
             self?.mView.methodView.fpsButton.isHidden = !supportFps
+            self?.mView.methodView.paymeButton.isHidden = !supportPayMe
             self?.mView.placeholderLayout.isHidden = true
         }
         
