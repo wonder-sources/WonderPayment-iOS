@@ -36,7 +36,7 @@ class PayMePaymentHandler : PaymentHander {
                 }
           
                 
-                guard let url = URL(string: "\(paymentUrl)?appSuccessCallback=\(callbackUrl)") else {
+                guard let url = URL(string: paymentUrl) else {
                     delegate.onFinished(intent: intent, result: result, error: .dataFormatError)
                     return
                 }
