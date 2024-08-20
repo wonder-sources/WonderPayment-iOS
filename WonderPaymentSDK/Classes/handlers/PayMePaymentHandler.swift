@@ -14,10 +14,14 @@ class PayMePaymentHandler : PaymentHander {
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         delegate.onProcessing()
         
+        let scheme = WonderPayment.paymentConfig.fromScheme
+        let callbackUrl = "\(scheme)://payme"
         intent.paymentMethod?.arguments = [
             "payme": [
                 "amount": "\(intent.amount)",
-                "in_app": [:]
+                "in_app": [
+                    "return_url": callbackUrl
+                ]
             ]
         ]
         
@@ -31,8 +35,8 @@ class PayMePaymentHandler : PaymentHander {
                     return
                 }
           
-                let scheme = WonderPayment.paymentConfig.fromScheme
-                guard let url = URL(string: "\(paymentUrl)?appSuccessCallback=\(scheme)://payme") else {
+                
+                guard let url = URL(string: "\(paymentUrl)?appSuccessCallback=\(callbackUrl)") else {
                     delegate.onFinished(intent: intent, result: result, error: .dataFormatError)
                     return
                 }
