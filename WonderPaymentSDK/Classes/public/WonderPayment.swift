@@ -48,6 +48,7 @@ public class WonderPayment : NSObject {
         }
         _ = CustomFonts.loadFonts
         registerApp()
+        FlutterPatch.patch()
     }
     
     /// UI支付
