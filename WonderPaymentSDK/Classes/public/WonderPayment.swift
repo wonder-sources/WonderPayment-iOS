@@ -10,9 +10,9 @@ import UIKit
 import PassKit
 
 class NavigationController: UINavigationController {
-//    override var childViewControllerForStatusBarStyle: UIViewController? {
-//        return visibleViewController
-//    }
+    //    override var childViewControllerForStatusBarStyle: UIViewController? {
+    //        return visibleViewController
+    //    }
 }
 
 public typealias PaymentResultCallback = (PaymentResult) -> Void
@@ -49,6 +49,11 @@ public class WonderPayment : NSObject {
         _ = CustomFonts.loadFonts
         registerApp()
         FlutterPatch.patch()
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+    
+    @objc private static func appWillEnterForeground() {
+        print("App will enter foreground - SDK detected")
     }
     
     /// UI支付

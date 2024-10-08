@@ -167,7 +167,7 @@ class PaymentsViewController: UIViewController {
             self?.mView.placeholderLayout.isHidden = true
         }
         
-//        getBannerData()
+        getBannerData()
     }
     
     private func getBannerData()  {

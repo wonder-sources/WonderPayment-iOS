@@ -53,17 +53,41 @@ class Banner: TGFrameLayout {
             subview.removeFromSuperview()
         }
         
-        for i in 0 ..< data.count {
-            let view = createItemView(data[i])
+        
+        var totalItems = data.count
+        if totalItems > 1 {
+            // 在数据的基础上增加两个虚拟项
+            totalItems += 2
+        }
+        
+        for i in 0 ..< totalItems {
+            let view: UIView
+            let item: AdItem
+            
+            // 第一张显示最后一个数据，最后一张显示第一个数据
+            if i == 0 {
+                item = data.last!
+            } else if i == totalItems - 1 {
+                item = data.first!
+            } else {
+                item = data[i - 1]
+            }
+            
+            view = createItemView(item)
+            
             let x = (width + itemPadding) * CGFloat(i)
             view.frame = CGRect(x: x, y: 0, width: width, height: height)
             scrollView.addSubview(view)
         }
         
-        let contentWidth = (width + itemPadding) * CGFloat(data.count)
+        let contentWidth = (width + itemPadding) * CGFloat(totalItems)
         scrollView.contentSize = CGSize(width: contentWidth, height: height)
         scrollView.delegate = self
         placeholderView.isHidden = true
+        
+        let firstIndex = data.count > 1 ? 1: 0
+        let firstOffset = CGPoint(x: (width + itemPadding) * CGFloat(firstIndex), y: 0)
+        scrollView.setContentOffset(firstOffset, animated: false)
         
         if data.count > 1 {
             startTimer()
@@ -216,21 +240,38 @@ extension Banner: UIScrollViewDelegate {
         startTimer()
     }
     
-    @objc private func scrollToNextPage() {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let pageWidth = width + itemPadding
-        let page = Int(scrollView.contentOffset.x / pageWidth) + 1
+        let page = Int(scrollView.contentOffset.x / pageWidth)
         
-        let nextPage: Int
-        if page == data.count {
-            nextPage = 1
-        } else {
-            nextPage = page + 1
+        // 如果滚动到虚拟的最后一页，跳转到真实的第一页
+        if page == data.count + 1 {
+            scrollView.setContentOffset(CGPoint(x: pageWidth, y: 0), animated: false)
         }
+        
+        // 如果滚动到虚拟的第一页，跳转到真实的最后一页
+        if page == 0 {
+            scrollView.setContentOffset(CGPoint(x: pageWidth * CGFloat(data.count), y: 0), animated: false)
+        }
+    }
+    
+    @objc private func scrollToNextPage() {
+        guard data.count > 1 else { return }
+        let pageWidth = width + itemPadding
+        let currentPage = Int(scrollView.contentOffset.x / pageWidth)
+        var nextPage = currentPage + 1
+        
+        // 如果到达虚拟的最后一页，自动跳到第一页
+        if nextPage == data.count + 1 {
+            scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+            nextPage = 1
+        }
+        
         scrollTo(page: nextPage)
     }
     
     func scrollTo(page: Int) {
-        let x = (width + itemPadding) * CGFloat(page - 1)
+        let x = (width + itemPadding) * CGFloat(page)
         scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: true)
     }
 }
