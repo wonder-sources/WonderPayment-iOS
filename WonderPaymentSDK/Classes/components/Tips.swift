@@ -25,19 +25,24 @@ class Tips {
         subTitle: String? = nil,
         completion: ((Bool) -> Void)? = nil
     ) {
-        dismiss()
-        let tipsView = TipsView(image: image, title: title, subTitle: subTitle, style: style)
-        tipsController = QMUIModalPresentationViewController()
-        tipsController?.contentViewMargins = UIEdgeInsets.zero
-        tipsController?.contentView = tipsView
-        tipsController?.isModal = true
-        tipsController?.showWith(animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            dismiss(completion: completion)
+        dismiss() { _ in
+            let tipsView = TipsView(image: image, title: title, subTitle: subTitle, style: style)
+            tipsController = QMUIModalPresentationViewController()
+            tipsController?.contentViewMargins = UIEdgeInsets.zero
+            tipsController?.contentView = tipsView
+            tipsController?.isModal = true
+            tipsController?.showWith(animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                dismiss(completion: completion)
+            }
         }
     }
     
     static func dismiss(completion: ((Bool) -> Void)? = nil) {
+        if tipsController == nil {
+            completion?(true)
+            return
+        }
         tipsController?.hideWith(animated: true) { finished in
             tipsController = nil
             completion?(finished)

@@ -48,7 +48,6 @@ public class WonderPayment : NSObject {
         }
         _ = CustomFonts.loadFonts
         registerApp()
-        FlutterPatch.patch()
         NotificationCenter.default.addObserver(self, selector: #selector(appWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
     

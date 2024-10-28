@@ -121,6 +121,7 @@ class BrowserViewController: UIViewController {
             if json["action"].string == "isSuccessful" {
                 self.dismiss(animated: true)
                 finishedCallback?(json["content"].string == "true")
+                finishedCallback = nil
             }
         }
     }
@@ -136,5 +137,6 @@ class BrowserViewController: UIViewController {
     @objc func close() {
         self.dismiss(animated: true)
         finishedCallback?(nil)
+        finishedCallback = nil
     }
 }
