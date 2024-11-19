@@ -380,7 +380,7 @@ extension PaymentsViewController: PaymentDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.amSymbol = "AM"
         dateFormatter.pmSymbol = "PM"
-        dateFormatter.dateFormat = "MMM d, yyyy\nh:mm:ss a"
+        dateFormatter.dateFormat = "MMM d, yyyy\nHH:mm:ss a"
         let dateTime = dateFormatter.string(from: date)
         mView.pendingView.initAtItem.value = dateTime
     }
