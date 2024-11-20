@@ -27,9 +27,17 @@ class PendingView : TGLinearLayout {
         addSubview(titleLabel)
         
         let whyButton = QMUIButton()
-        whyButton.setTitle("whySeeingThis".i18n, for: .normal)
+        let text = "whySeeingThis".i18n
+        whyButton.setTitle(text, for: .normal)
         whyButton.setTitleColor(WonderPayment.uiConfig.linkColor, for: .normal)
         whyButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 16)
+        let attributedString = NSMutableAttributedString(string: text)
+        attributedString.addAttributes([
+            .underlineStyle: NSUnderlineStyle.single.rawValue,
+            .foregroundColor: WonderPayment.uiConfig.linkColor,
+            .font: UIFont(name: "AppleSDGothicNeo-Bold", size: 16) ?? .systemFont(ofSize: 16),
+        ],range: NSRange(location: 0, length: text.count))
+        whyButton.titleLabel?.attributedText = attributedString
         whyButton.tg_top.equal(16)
         whyButton.tg_width.equal(.wrap)
         whyButton.tg_height.equal(.wrap)
