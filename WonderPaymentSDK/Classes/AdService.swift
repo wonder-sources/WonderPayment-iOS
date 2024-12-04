@@ -15,7 +15,7 @@ class AdService {
         completion: @escaping ([AdItem]?, ErrorMessage?) -> Void
     ) {
         let appId = WonderPayment.paymentConfig.appId
-        let urlString = "https://\(domain)/api/registry/advertise?os=iOS&app_slug=\(appId)&app_id=\(appId)"
+        let urlString = "https://\(domain)/api/registry/advertise?os=iOS&app_slug=Payment&app_id=\(appId)"
         guard let url = URL(string: urlString) else {
             UI.call { completion(nil, .unknownError) }
             return
