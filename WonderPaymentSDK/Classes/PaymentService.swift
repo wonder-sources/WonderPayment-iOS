@@ -36,6 +36,7 @@ class PaymentService {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         dateFormatter.dateFormat = "yyyyMMddHHmmss"
+        dateFormatter.locale = Foundation.Locale(identifier: "en_US_POSIX")
         return dateFormatter.string(from: Date())
     }
     
