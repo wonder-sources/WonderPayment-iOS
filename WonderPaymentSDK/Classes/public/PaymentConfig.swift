@@ -2,6 +2,7 @@
 public class PaymentConfig : JSONDecodable, JSONEncodable {
     public var appId: String
     public var customerId: String
+    public var originalBusinessId: String
     public var fromScheme: String
     public var environment: PaymentEnvironment
     public var locale: Locale
@@ -10,8 +11,8 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
     
     public init(
         appId: String = "",
-        appSecret: String = "",
         customerId: String = "",
+        originalBusinessId: String = "",
         fromScheme: String = "",
         environment: PaymentEnvironment = .production,
         locale: Locale = .zh_HK,
@@ -20,6 +21,7 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
     ) {
         self.appId = appId
         self.customerId = customerId
+        self.originalBusinessId = originalBusinessId
         self.fromScheme = fromScheme
         self.environment = environment
         self.locale = locale
@@ -31,6 +33,7 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
         let config = PaymentConfig()
         config.appId = json?["appId"] as? String ?? ""
         config.customerId = json?["customerId"] as? String ?? ""
+        config.originalBusinessId = json?["originalBusinessId"] as? String ?? ""
         config.fromScheme = json?["fromScheme"] as? String ?? ""
         config.environment = PaymentEnvironment(rawValue: json?["environment"] as? String ?? "") ?? .production
         config.locale = Locale(rawValue: json?["locale"] as? String ?? "") ?? .zh_HK
@@ -43,6 +46,7 @@ public class PaymentConfig : JSONDecodable, JSONEncodable {
         return [
             "appId": appId,
             "customerId": customerId,
+            "originalBusinessId": originalBusinessId,
             "fromScheme": fromScheme,
             "environment": environment.rawValue,
             "locale": locale.rawValue,
