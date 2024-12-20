@@ -17,6 +17,9 @@ public class UIConfig : JSONDecodable, JSONEncodable {
     public var displayStyle: DisplayStyle
     /// 是否在SDK内展示支付结果
     public var showResult: Bool
+    /// 支付失败时是否允许重试
+    public var allowPaymentRetries: Bool
+    
     
     
     public init(
@@ -35,7 +38,8 @@ public class UIConfig : JSONDecodable, JSONEncodable {
         successColor: UIColor = UIColor(hexString: "#FF4CD964"),
         borderRadius: CGFloat = 12,
         displayStyle: DisplayStyle = .oneClick,
-        showResult: Bool = true
+        showResult: Bool = true,
+        allowPaymentRetries: Bool = true
     ) {
         self.background = background
         self.secondaryBackground = secondaryBackground
@@ -53,6 +57,7 @@ public class UIConfig : JSONDecodable, JSONEncodable {
         self.borderRadius = borderRadius
         self.displayStyle = displayStyle
         self.showResult = showResult
+        self.allowPaymentRetries = allowPaymentRetries
     }
     
     public static func from(json: NSDictionary?) -> Self {
@@ -78,6 +83,9 @@ public class UIConfig : JSONDecodable, JSONEncodable {
         }
         if let showResultValue = json?["showResult"] as? Bool {
             config.showResult = showResultValue
+        }
+        if let allowPaymentRetriesValue = json?["allowPaymentRetries"] as? Bool {
+            config.allowPaymentRetries = allowPaymentRetriesValue
         }
         return config as! Self
     }
@@ -106,6 +114,7 @@ public class UIConfig : JSONDecodable, JSONEncodable {
             "borderRadius": borderRadius,
             "displayStyle": displayStyle.rawValue,
             "showResult": showResult,
+            "allowPaymentRetries": allowPaymentRetries,
         ]
     }
 }

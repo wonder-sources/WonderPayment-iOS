@@ -52,7 +52,7 @@ public class WonderPayment : NSObject {
     }
     
     @objc private static func appWillEnterForeground() {
-        print("App will enter foreground - SDK detected")
+        //print("App will enter foreground - SDK detected")
     }
     
     /// UI支付
