@@ -122,7 +122,11 @@ public class WonderPayment : NSObject {
             fpsCallback?([:])
             fpsCallback = nil
         } else if (url.host == "payme") {
-            paymeCallback?([:])
+            var code = 0
+            if url.path == "/fail" {
+                code = -1
+            }
+            paymeCallback?(["code": code])
             paymeCallback = nil
         }
         UPPaymentControl.default().handlePaymentResult(url) { code, data in

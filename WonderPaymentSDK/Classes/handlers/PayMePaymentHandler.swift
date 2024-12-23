@@ -16,12 +16,16 @@ class PayMePaymentHandler : PaymentHander {
         
         let scheme = WonderPayment.paymentConfig.fromScheme
         let callbackUrl = "\(scheme)://payme"
+        let successUrl = "\(scheme)://payme/success"
+        let failUrl = "\(scheme)://payme/fail"
         intent.paymentMethod?.arguments = [
             "payme": [
                 "amount": "\(intent.amount)",
                 "in_app": [
                     "return_url": callbackUrl
-                ]
+                ],
+                "success_url": successUrl,
+                "fail_url": failUrl,
             ]
         ]
         
@@ -45,13 +49,19 @@ class PayMePaymentHandler : PaymentHander {
                 
                 UIApplication.shared.open(url, options: [:], completionHandler: { (success) in
                     if success {
-                        WonderPayment.paymeCallback = { _ in
-                            let orderNum = intent.orderNumber
-                            delegate.onProcessing()
-                            PaymentService.loopForResult(uuid: transaction.uuid, orderNum: orderNum) {
-                                result, error in
-                                delegate.onFinished(intent: intent, result: result, error: error)
+                        WonderPayment.paymeCallback = { data in
+                            let code = data["code"] as? Int
+                            if code == 0 {
+                                let orderNum = intent.orderNumber
+                                delegate.onProcessing()
+                                PaymentService.loopForResult(uuid: transaction.uuid, orderNum: orderNum) {
+                                    result, error in
+                                    delegate.onFinished(intent: intent, result: result, error: error)
+                                }
+                            } else {
+                                delegate.onFinished(intent: intent, result: nil, error: ErrorMessage.unknownError)
                             }
+                            
                         }
                     } else {
                         delegate.onFinished(intent: intent, result: result, error: .unknownError)
