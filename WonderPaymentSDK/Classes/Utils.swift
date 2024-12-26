@@ -1,6 +1,8 @@
 import QMUIKit
 import TangramKit
 
+typealias VoidCallback = () -> Void
+
 class UI {
     static func call(_ call: @escaping () -> Void ) {
         DispatchQueue.main.async {

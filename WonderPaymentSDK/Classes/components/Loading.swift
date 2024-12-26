@@ -10,7 +10,7 @@ class Loading {
     
     static var loadingController: QMUIModalPresentationViewController?
     
-    static func show(style: LoadingStyle = .small) {
+    static func show(style: LoadingStyle = .small, title: String? = nil) {
         
         func waitDismiss(completion: @escaping () -> Void) {
             if loadingController == nil {
@@ -27,7 +27,7 @@ class Loading {
             if style == .small {
                 loadingView = SmallLoadingView()
             } else {
-                loadingView = FullScreenLoadingView()
+                loadingView = FullScreenLoadingView(title: title)
             }
             loadingController = QMUIModalPresentationViewController()
             loadingController?.contentViewMargins = UIEdgeInsets.zero
@@ -52,9 +52,11 @@ class Loading {
 class FullScreenLoadingView : TGRelativeLayout {
         
     var loadingAnimationView: AnimationView!
+    var title: String?
     
-    convenience init() {
+    convenience init(title: String? = nil) {
         self.init(frame: .zero)
+        self.title = title
         self.initView()
     }
     
@@ -78,7 +80,7 @@ class FullScreenLoadingView : TGRelativeLayout {
         loadingAnimationView.tg_centerX.equal(0)
         contentLayout.addSubview(loadingAnimationView)
         
-        let titleLabel = Label("processing".i18n, size: 24)
+        let titleLabel = Label(title ?? "processing".i18n, size: 24)
         titleLabel.tg_top.equal(24)
         titleLabel.tg_width.equal(.fill)
         titleLabel.tg_height.equal(.wrap)

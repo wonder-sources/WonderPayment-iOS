@@ -412,14 +412,14 @@ extension PaymentsViewController: PaymentDelegate {
                 paymentResult = PaymentResult(status: .failed, code: code, message: message)
             }
         }
-        if !WonderPayment.uiConfig.showResult || !WonderPayment.uiConfig.allowPaymentRetries {
+        if !WonderPayment.uiConfig.showResult || (paymentResult?.status != .completed && !WonderPayment.uiConfig.paymentRetriesEnabled) {
             paymentCallback?(paymentResult!)
             self.dismiss()
         }
     }
     
     func onCanceled() {
-        if !WonderPayment.uiConfig.allowPaymentRetries {
+        if !WonderPayment.uiConfig.paymentRetriesEnabled {
             paymentCallback?(PaymentResult(status: .canceled))
             self.dismiss()
         }

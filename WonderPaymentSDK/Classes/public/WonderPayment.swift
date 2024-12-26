@@ -48,6 +48,7 @@ public class WonderPayment : NSObject {
         }
         _ = CustomFonts.loadFonts
         registerApp()
+        ConfigUtil.getConfigData(useCache: false) { _, _ in }
         NotificationCenter.default.addObserver(self, selector: #selector(appWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
     
@@ -60,14 +61,29 @@ public class WonderPayment : NSObject {
         intent: PaymentIntent,
         callback: @escaping PaymentResultCallback
     ) {
-        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
-        let paymentsViewController = PaymentsViewController()
-        paymentsViewController.sessionMode = .once
-        paymentsViewController.displayStyle = uiConfig.displayStyle
-        paymentsViewController.intent = intent
-        paymentsViewController.paymentCallback = callback
-        paymentsViewController.modalPresentationStyle = .fullScreen
-        rootViewController?.present(paymentsViewController, animated: true)
+        Loading.show(style: .fullScreen, title: "loading".i18n)
+        ConfigUtil.getConfigData { data, error in
+            Loading.dismiss(animated: false)
+        
+            guard let data = data else {
+                ErrorPage.show(error: error ?? ErrorMessage.unknownError) {
+                    present(intent: intent, callback: callback)
+                }
+                return
+            }
+            let json = DynamicJson(value: data)
+            let paymentRetriesEnabled = json["settings"]["payment_retries_enabled"].bool ?? true
+            WonderPayment.uiConfig.paymentRetriesEnabled = paymentRetriesEnabled
+            
+            let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+            let paymentsViewController = PaymentsViewController()
+            paymentsViewController.sessionMode = .once
+            paymentsViewController.displayStyle = uiConfig.displayStyle
+            paymentsViewController.intent = intent
+            paymentsViewController.paymentCallback = callback
+            paymentsViewController.modalPresentationStyle = .fullScreen
+            rootViewController?.present(paymentsViewController, animated: true)
+        }
     }
     
     /// 无UI支付

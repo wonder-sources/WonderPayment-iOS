@@ -1,20 +1,20 @@
 //
 //  DiskCache.swift
-//  Pods
+//  WonderPaymentSDK
 //
-//  Created by X on 2024/12/26.
+//  Created by X on 2024/7/19.
 //
 
 import Foundation
 
-class DiskCache {
-    static let shared = DiskCache()
+class ImageCache {
+    static let shared = ImageCache()
     
     private let cacheDirectory: URL
     
     private init() {
         let paths = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
-        cacheDirectory = paths[0].appendingPathComponent("DataCache")
+        cacheDirectory = paths[0].appendingPathComponent("ImageCache")
         
         // Ensure cache directory exists
         if !FileManager.default.fileExists(atPath: cacheDirectory.path) {
@@ -26,18 +26,19 @@ class DiskCache {
         }
     }
     
-    func getFileContent(_ fileName: String) -> String? {
-        let fileURL = cacheDirectory.appendingPathComponent(fileName)
-        guard let fileData = try? Data(contentsOf: fileURL) else {
+    func getImage(forKey key: String) -> UIImage? {
+        let fileURL = cacheDirectory.appendingPathComponent(key)
+        guard let imageData = try? Data(contentsOf: fileURL) else {
             return nil
         }
-        return String(data: fileData, encoding: .utf8)
+        return UIImage(data: imageData)
     }
     
-    func writeFile(_ fileName: String, content: String) {
-        let fileURL = cacheDirectory.appendingPathComponent(fileName)
-        let data = content.data(using: .utf8)
-        try? data?.write(to: fileURL, options: .atomic)
+    func setImage(_ image: UIImage, forKey key: String) {
+        let fileURL = cacheDirectory.appendingPathComponent(key)
+        if let data = image.pngData() {
+            try? data.write(to: fileURL, options: .atomic)
+        }
     }
 }
 

@@ -645,4 +645,53 @@ class PaymentService {
         
         task.resume()
     }
+    
+    /// 获取商户配置
+    static func getSDKConfig(
+        completion: @escaping (NSDictionary?, ErrorMessage?) -> Void
+    ){
+        
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/payment_sdk_configure"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(credential, forHTTPHeaderField: "Credential")
+        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "X-I18n-Lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
+        request.setValue(WonderPayment.paymentConfig.originalBusinessId, forHTTPHeaderField: "X-Original-Business-Id")
+        request.setValue(generateUUID(), forHTTPHeaderField: "X-Request-Id")
+        request.setValue(deviceId, forHTTPHeaderField: "X-User-Device-Id")
+        request.setValue(deviceModel, forHTTPHeaderField: "X-User-Device-Model")
+        
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    let data = resp.data as? NSDictionary
+                    UI.call { completion(data, nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        
+        task.resume()
+    }
 }

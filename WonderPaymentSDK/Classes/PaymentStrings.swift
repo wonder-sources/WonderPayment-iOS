@@ -121,6 +121,10 @@ The reason why you're seeing this status is because there might be a pending pay
         "chooseAutoDebit": "No need to go through multi-step process with password required for %@ payment, choose to enable %@ Auto Debit today to pay with ease.",
         "enablePasswordLess": "Enable Password-less %@",
         "directlyPay": "Directly Pay %@",
+        "loading": "Loading...",
+        "unableProcess": "Unable to Process",
+        "tryAgain": "Try Again",
+        "exit": "Exit",
     ]
     
     static let zh_CN = [
@@ -223,6 +227,10 @@ The reason why you're seeing this status is because there might be a pending pay
         "chooseAutoDebit": "无需经过多步骤且需密码的%@流程，今天就选择启用%@自动扣款，轻松付款。",
         "enablePasswordLess": "启用%@免密支付",
         "directlyPay": "直接支付 %@",
+        "loading": "加载中…",
+        "unableProcess": "无法处理当前请求",
+        "tryAgain": "重试",
+        "exit": "退出",
     ]
     
     static let zh_HK = [
@@ -325,5 +333,9 @@ The reason why you're seeing this status is because there might be a pending pay
         "chooseAutoDebit": "無需經過多步驟且需密碼的%@流程，今天就選擇啟用%@自動扣款，輕鬆付款。",
         "enablePasswordLess": "啟用%@免密支付",
         "directlyPay": "直接支付 %@",
+        "loading": "加載中…",
+        "unableProcess": "無法處理當前請求",
+        "tryAgain": "重試",
+        "exit": "退出",
     ]
 }

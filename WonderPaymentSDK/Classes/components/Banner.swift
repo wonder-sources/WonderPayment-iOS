@@ -149,7 +149,7 @@ class Banner: TGFrameLayout {
         for item in data {
             let key = item.displayUrl.md5
             if item.displayType == .image {
-                if DiskCache.shared.getImage(forKey: item.displayUrl.md5) != nil {
+                if ImageCache.shared.getImage(forKey: item.displayUrl.md5) != nil {
                     dictionary[key] = true
                 } else {
                     getImageFromNetwork(item.displayUrl) { image in
@@ -163,14 +163,14 @@ class Banner: TGFrameLayout {
     }
     
     func getImageFromCache(_ imageUrl: String) -> UIImage? {
-        let image = DiskCache.shared.getImage(forKey: imageUrl.md5)
+        let image = ImageCache.shared.getImage(forKey: imageUrl.md5)
         return image
     }
     
     func getImageFromNetwork(_ imageUrl: String, completion: @escaping (UIImage?) -> Void) {
         AdService.downloadImage(from: imageUrl) { image in
             if let image = image {
-                DiskCache.shared.setImage(image, forKey: imageUrl.md5)
+                ImageCache.shared.setImage(image, forKey: imageUrl.md5)
                 completion(image)
             } else {
                 completion(nil)
