@@ -19,6 +19,13 @@ public class PaymentMethod : JSONDecodable, JSONEncodable {
         self.arguments = arguments
     }
     
+    public func copy() -> PaymentMethod {
+        return PaymentMethod(
+            type: self.type,
+            arguments: self.arguments
+        )
+    }
+    
     public static func from(json: NSDictionary?) -> Self {
         return PaymentMethod(
             type: PaymentMethodType(rawValue: json?["type"] as? String ?? "") ?? .creditCard,

@@ -30,7 +30,7 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
             amount: self.amount,
             currency: self.currency,
             orderNumber: self.orderNumber,
-            paymentMethod: self.paymentMethod,
+            paymentMethod: self.paymentMethod?.copy(),
             transactionType: self.transactionType,
             lineItems: self.lineItems?.map({$0.copy()}),
             extra: self.extra?.copy()
