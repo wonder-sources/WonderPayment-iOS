@@ -1,5 +1,5 @@
 
-class AdService {
+class GatewayService {
     static var domain: String {
         switch(WonderPayment.paymentConfig.environment) {
         case .staging:
@@ -70,6 +70,39 @@ class AdService {
                 return
             }
             UI.call { completion(image) }
+        }
+        
+        task.resume()
+    }
+    
+    static func reportEvent(_ data: NSDictionary) {
+        let urlString = "https://\(domain)/api/helper/monitoring/event/report"
+        guard let url = URL(string: urlString) else {
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "X-I18n-Lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
+        request.setValue(WonderPayment.paymentConfig.originalBusinessId, forHTTPHeaderField: "X-Original-Business-Id")
+        request.setValue(generateUUID(), forHTTPHeaderField: "X-Request-Id")
+        request.setValue(deviceId, forHTTPHeaderField: "X-User-Device-Id")
+        request.setValue(deviceModel, forHTTPHeaderField: "X-User-Device-Model")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: data, options: [])
+        } catch {
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                return
+            }
+//            prettyPrint(jsonData: data)
         }
         
         task.resume()

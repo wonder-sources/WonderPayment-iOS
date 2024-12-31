@@ -32,6 +32,7 @@ class DefaultPaymentDelegate : PaymentDelegate {
         if let transaction = result?.transaction {
             if transaction.success {
                 paymentResult = PaymentResult(status: .completed)
+                TransactionMonitor.monitorTransaction(transaction)
             } else {
                 let paymentData = DynamicJson(value: transaction.paymentData)
                 let code = paymentData["resp_code"].string

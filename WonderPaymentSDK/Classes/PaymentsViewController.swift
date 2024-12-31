@@ -171,7 +171,7 @@ class PaymentsViewController: UIViewController {
     }
     
     private func getBannerData()  {
-        AdService.getBannerData() {
+        GatewayService.getBannerData() {
             [weak self] data, error in
             if let data = data {
                 self?.mView.banner.setData(data)
@@ -403,6 +403,7 @@ extension PaymentsViewController: PaymentDelegate {
                 paymentStatus = .success
                 mView.successfulView.setData(result!, intent: intent)
                 paymentResult = PaymentResult(status: .completed)
+                TransactionMonitor.monitorTransaction(transaction)
             } else {
                 let paymentData = DynamicJson(value: transaction.paymentData)
                 let code = paymentData["resp_code"].string

@@ -168,7 +168,7 @@ class Banner: TGFrameLayout {
     }
     
     func getImageFromNetwork(_ imageUrl: String, completion: @escaping (UIImage?) -> Void) {
-        AdService.downloadImage(from: imageUrl) { image in
+        GatewayService.downloadImage(from: imageUrl) { image in
             if let image = image {
                 ImageCache.shared.setImage(image, forKey: imageUrl.md5)
                 completion(image)
