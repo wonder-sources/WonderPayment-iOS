@@ -14,7 +14,7 @@ class ErrorPage {
     
     private static var modalViewController: QMUIModalPresentationViewController?
     
-    static func show(error: ErrorMessage, onRetry: VoidCallback? = nil) {
+    static func show(error: ErrorMessage, onRetry: VoidCallback? = nil, onExit: VoidCallback? = nil) {
         
         func waitDismiss(completion: @escaping VoidCallback) {
             if modalViewController == nil {
@@ -28,8 +28,10 @@ class ErrorPage {
         
         let callbackAction = CallbackAction { method, _ in
             dismiss()
-            if (method == "retry") {
+            if method == "retry" {
                 onRetry?()
+            } else if method == "exit" {
+                onExit?()
             }
             return nil
         }

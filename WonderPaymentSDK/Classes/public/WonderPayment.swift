@@ -66,9 +66,15 @@ public class WonderPayment : NSObject {
             Loading.dismiss(animated: false)
         
             guard let data = data else {
-                ErrorPage.show(error: error ?? ErrorMessage.unknownError) {
-                    present(intent: intent, callback: callback)
-                }
+                ErrorPage.show(
+                    error: error ?? ErrorMessage.unknownError,
+                    onRetry: {
+                        present(intent: intent, callback: callback)
+                    },
+                    onExit: {
+                        callback(PaymentResult(status: .canceled))
+                    }
+                )
                 return
             }
             let json = DynamicJson(value: data)
