@@ -113,68 +113,96 @@ class PaymentsViewController: UIViewController {
     }
     
     private func loadData() {
-        let isPreAuth = intent?.transactionType == .preAuth
+        getBannerData()
+        getPaymentMethodsData()
+    }
+    
+    private func getPaymentMethodsData() {
         PaymentService.queryPaymentMethods() {
             [weak self] config, err in
-            Cache.set(config, for: "paymentMethodConfig")
-            let supportList = config?.supportPaymentMethods ?? []
-            var supportApplePay = false
-            var supportCard = false
-            var supportUnionPay = false
-            var supportAlipay = false
-            var supportWechat = false
-            var supportOctopus = false
-            var supportFps = false
-            var supportPayMe = false
-            for item in supportList {
-                if (item == PaymentMethodType.applePay.rawValue) {
-                    supportApplePay = true
-                } else if (item == PaymentMethodType.creditCard.rawValue) {
-                    if WonderPayment.paymentConfig.customerId.isEmpty {
-                        supportCard = self?.sessionMode == .once && self?.previewMode != true
-                    } else {
-                        supportCard = true
-                    }
-                } else if (item == PaymentMethodType.unionPay.rawValue && !isPreAuth) {
-                    supportUnionPay = true
-                } else if (item == PaymentMethodType.alipay.rawValue && !isPreAuth) {
-                    supportAlipay = true
-                } else if (item == PaymentMethodType.wechat.rawValue && !isPreAuth) {
-                    supportWechat = true
-                } else if (item == PaymentMethodType.octopus.rawValue && !isPreAuth) {
-                    supportOctopus = true
-                } else if (item == PaymentMethodType.fps.rawValue && !isPreAuth) {
-                    supportFps = true
-                } else if (item == PaymentMethodType.payme.rawValue && !isPreAuth) {
-                    supportPayMe = true
+            if let config = config {
+                Cache.set(config, for: "paymentMethodConfig")
+                self?.setPaymentMethods(config)
+            }
+            if let error = err {
+                ErrorPage.show(error: error, onRetry: {
+                    self?.getPaymentMethodsData()
+                }, onExit: {
+                    self?.dismiss()
+                    self?.paymentCallback?(PaymentResult(status: .canceled))
+                })
+            }
+        }
+    }
+    
+    private func setPaymentMethods(_ config: PaymentMethodConfig) {
+        let isPreAuth = intent?.transactionType == .preAuth
+        let supportList = config.supportPaymentMethods
+        var supportApplePay = false
+        var supportCard = false
+        var supportUnionPay = false
+        var supportAlipay = false
+        var supportWechat = false
+        var supportOctopus = false
+        var supportFps = false
+        var supportPayMe = false
+        for item in supportList {
+            if (item == PaymentMethodType.applePay.rawValue) {
+                supportApplePay = true
+            } else if (item == PaymentMethodType.creditCard.rawValue) {
+                if WonderPayment.paymentConfig.customerId.isEmpty {
+                    supportCard = sessionMode == .once && previewMode != true
+                } else {
+                    supportCard = true
                 }
+            } else if (item == PaymentMethodType.unionPay.rawValue && !isPreAuth) {
+                supportUnionPay = true
+            } else if (item == PaymentMethodType.alipay.rawValue && !isPreAuth) {
+                supportAlipay = true
+            } else if (item == PaymentMethodType.wechat.rawValue && !isPreAuth) {
+                supportWechat = true
+            } else if (item == PaymentMethodType.octopus.rawValue && !isPreAuth) {
+                supportOctopus = true
+            } else if (item == PaymentMethodType.fps.rawValue && !isPreAuth) {
+                supportFps = true
+            } else if (item == PaymentMethodType.payme.rawValue && !isPreAuth) {
+                supportPayMe = true
             }
-            
-            if supportCard {
-                self?.queryCardList()
-                self?.mView.methodView.cardView.isHidden = false
-            }
-            let applePayConfigured = WonderPayment.paymentConfig.applePay != nil
-            let wechatPayConfigured = WonderPayment.paymentConfig.wechat != nil
-            self?.mView.methodView.applePayButton.isHidden = !supportApplePay || !applePayConfigured
-            self?.mView.methodView.unionPayButton.isHidden = !supportUnionPay
-            self?.mView.methodView.alipayButton.isHidden = !supportAlipay
-            self?.mView.methodView.alipayHKButton.isHidden = !supportAlipay
-            self?.mView.methodView.wechatPayButton.isHidden = !(supportWechat && wechatPayConfigured)
-            self?.mView.methodView.octopusButton.isHidden = !supportOctopus
-            self?.mView.methodView.fpsButton.isHidden = !supportFps
-            self?.mView.methodView.paymeButton.isHidden = !supportPayMe
-            self?.mView.placeholderLayout.isHidden = true
         }
         
-        getBannerData()
+        if supportCard {
+            queryCardList()
+            mView.methodView.cardView.isHidden = false
+        }
+        let applePayConfigured = WonderPayment.paymentConfig.applePay != nil
+        let wechatPayConfigured = WonderPayment.paymentConfig.wechat != nil
+        mView.methodView.applePayButton.isHidden = !supportApplePay || !applePayConfigured
+        mView.methodView.unionPayButton.isHidden = !supportUnionPay
+        mView.methodView.alipayButton.isHidden = !supportAlipay
+        mView.methodView.alipayHKButton.isHidden = !supportAlipay
+        mView.methodView.wechatPayButton.isHidden = !(supportWechat && wechatPayConfigured)
+        mView.methodView.octopusButton.isHidden = !supportOctopus
+        mView.methodView.fpsButton.isHidden = !supportFps
+        mView.methodView.paymeButton.isHidden = !supportPayMe
+        mView.placeholderLayout.isHidden = true
     }
     
     private func getBannerData()  {
+        if let bannerData = DiskCache.shared.getFileContent("banner.data") {
+            let dataJson = DynamicJson.from(bannerData)
+            let items = AdItem.from(jsonArray: dataJson.array.compactMap({$0.value}) as? NSArray)
+            self.mView.banner.setData(items)
+        }
+         
         GatewayService.getBannerData() {
             [weak self] data, error in
             if let data = data {
                 self?.mView.banner.setData(data)
+                let jsonArr = data.map { $0.toJson() }
+                if let jsonData = try? JSONSerialization.data(withJSONObject: jsonArr, options: []),
+                    let bannerData = String(data: jsonData, encoding: .utf8) {
+                    DiskCache.shared.writeFile("banner.data", content: bannerData)
+                }
             }
         }
     }
@@ -296,63 +324,70 @@ class PaymentsViewController: UIViewController {
                 return
             }
             
-            self?.checkIfValid(cardInfo) { valid in
+            self?.checkIfValid(cardInfo) { valid,error in
                 if !valid {
                     completion?(nil)
-                    let code = ErrorMessage._3dsVerificationError.code
-                    let message = ErrorMessage._3dsVerificationError.message
-                    Tips.show(style: .error, title: code, subTitle: message)
+                    Tips.show(style: .error, title: error?.code, subTitle: error?.message)
                     return
                 }
-                
                 completion?(cardInfo)
             }
         }
     }
     
-    private func checkIfValid(_ card: CreditCardInfo, callback: @escaping (Bool) -> Void) {
+    private func checkIfValid(_ card: CreditCardInfo, callback: @escaping (Bool, ErrorMessage?) -> Void) {
         if card.state == "success" {
-            callback(true)
-        } else {
-            let browserController = BrowserViewController()
-            browserController.modalPresentationStyle = .fullScreen
-            browserController.url = card.verifyUrl
-            browserController.finishedCallback = {
-                [weak self] result in
-                guard let succeed = result as? Bool, succeed else {
-                    callback(false)
-                    return
+            callback(true, nil)
+        } else if card.state == "pending" {
+            if let _3dsUrl = card.verifyUrl {
+                let browserController = BrowserViewController()
+                browserController.modalPresentationStyle = .fullScreen
+                browserController.url = _3dsUrl
+                browserController.finishedCallback = {
+                    [weak self] result in
+                    guard let succeed = result as? Bool, succeed else {
+                        callback(false, ErrorMessage._3dsVerificationError)
+                        return
+                    }
+                    Loading.show()
+                    self?.checkPaymentTokenIsValid(card) { valid, error in
+                        Loading.dismiss()
+                        callback(valid, error)
+                    }
                 }
+                self.present(browserController, animated: true)
+            } else {
                 Loading.show()
-                self?.checkPaymentTokenIsValid(card) { valid in
+                self.checkPaymentTokenIsValid(card) { valid, error in
                     Loading.dismiss()
-                    callback(valid)
+                    callback(valid, error)
                 }
             }
-            self.present(browserController, animated: true)
+        } else {
+            callback(false, ErrorMessage.bindCardError)
         }
     }
     
     private func checkPaymentTokenIsValid(
         _ card: CreditCardInfo,
         retryCount: Int = 60 ,
-        callback: @escaping (Bool) -> Void
+        callback: @escaping (Bool, ErrorMessage?) -> Void
     ) {
         guard let uuid = card.verifyUuid, let token = card.token else {
-            callback(false)
+            callback(false, ErrorMessage.argumentsError)
             return
         }
         if retryCount < 1 {
-            callback(false)
+            callback(false, ErrorMessage.bindCardError)
             return
         }
         PaymentService.checkPaymentTokenState(uuid: uuid, token: token) {
             [weak self] state, err in
             if state == "success" {
-                callback(true)
+                callback(true, nil)
                 return
             } else if state == "failed" {
-                callback(false)
+                callback(false, ErrorMessage.bindCardError)
                 return
             }
             
