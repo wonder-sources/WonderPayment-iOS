@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "WonderPaymentSDK"
-  s.version                 = "0.7.2"
+  s.version                 = "0.7.3"
   s.summary                 = "Wonder Payment SDK for iOS devices"
   s.description             = "beta testing"
 

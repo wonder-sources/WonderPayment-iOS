@@ -25,12 +25,20 @@ class CardPaymentHandler : PaymentHander {
                 ].merge(modeArgs)
             ]
         } else {
-            copiedIntent.paymentMethod?.arguments = [
-                "credit_card": [
-                    "amount": "\(intent.amount)",
-                    "3ds": PaymentService._3dsConfig
-                ].merge(cardArgs).merge(modeArgs)
-            ]
+            do {
+                let cardData = [
+                    "credit_card": [
+                        "amount": "\(intent.amount)",
+                        "3ds": PaymentService._3dsConfig
+                    ].merge(cardArgs).merge(modeArgs)
+                ]
+                let encryptData = try EncryptionUtil.encrypt(content: cardData)
+                copiedIntent.paymentMethod?.arguments = encryptData as NSDictionary
+            } catch {
+                let err = ErrorMessage(code: "E100004", message: error.localizedDescription)
+                delegate.onFinished(intent: intent, result: nil, error: err)
+                return
+            }
         }
         
         PaymentService.payOrder(intent: copiedIntent) { result, error in
