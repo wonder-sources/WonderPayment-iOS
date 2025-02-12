@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "WonderPaymentSDK"
-  s.version                 = "0.7.3"
+  s.version                 = "0.7.4"
   s.summary                 = "Wonder Payment SDK for iOS devices"
   s.description             = "beta testing"
 
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.dependency "lottie-ios", "~> 3.4.0"
   s.dependency "IQKeyboardManagerSwift", "6.3.0"
   s.dependency "TangramKit"
-  s.dependency "CUPPaymentControl"
+  s.dependency "UPPay"
 
   s.static_framework = true
 end
