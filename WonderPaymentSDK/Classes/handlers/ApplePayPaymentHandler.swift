@@ -10,13 +10,38 @@ import PassKit
 
 class ApplePayPaymentHandler: PaymentHander {
     
+    func mapNetwork(string: String) -> PKPaymentNetwork? {
+        var network: PKPaymentNetwork?
+        switch(string) {
+        case "diners":
+            network = .discover
+        case "jcb":
+            network = .JCB
+        case "cup":
+            network = .chinaUnionPay
+        case "discover":
+            network = .discover
+        case "mastercard":
+            network = .masterCard
+        case "amex":
+            network = .amex
+        case "visa":
+            network = .visa
+        default: ()
+        }
+        return network
+    }
+    
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
-        let networks: [PKPaymentNetwork] = [.visa, .masterCard, .amex, .discover, .JCB, .chinaUnionPay]
+        var supportNetworks = [PKPaymentNetwork]()
+        if let supportCards = intent.paymentMethod?.arguments?["supportCards"] as? Set<String> {
+            supportNetworks = supportCards.compactMap(mapNetwork)
+        }
         let request = PKPaymentRequest()
         let merchantIdentifier = WonderPayment.paymentConfig.applePay?.merchantIdentifier ?? ""
         let merchantName = WonderPayment.paymentConfig.applePay?.merchantName ?? ""
         request.merchantIdentifier = merchantIdentifier
-        request.supportedNetworks = networks
+        request.supportedNetworks = supportNetworks
         request.merchantCapabilities = [.capability3DS, .capabilityEMV]
         request.countryCode = WonderPayment.paymentConfig.applePay?.countryCode ?? ""
         request.currencyCode = intent.currency

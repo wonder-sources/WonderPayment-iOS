@@ -176,10 +176,12 @@ class PaymentsViewController: UIViewController {
         }
         let applePayConfigured = WonderPayment.paymentConfig.applePay != nil
         let wechatPayConfigured = WonderPayment.paymentConfig.wechat != nil
-        mView.methodView.applePayButton.isHidden = !supportApplePay || !applePayConfigured
+        let supportApplePayCards = config.supportApplePayCards
+        mView.methodView.applePayButton.isHidden = !(supportApplePay && applePayConfigured && !supportApplePayCards.isEmpty)
+        mView.methodView.applePayButton.method?.arguments = ["supportCards": supportApplePayCards]
         mView.methodView.unionPayButton.isHidden = !supportUnionPay
-        mView.methodView.alipayButton.isHidden = !supportAlipay
-        mView.methodView.alipayHKButton.isHidden = !supportAlipay
+        mView.methodView.alipayButton.isHidden = !(supportAlipay && isAlipayInstalled)
+        mView.methodView.alipayHKButton.isHidden = !(supportAlipay && isAlipayHKInstalled)
         mView.methodView.wechatPayButton.isHidden = !(supportWechat && wechatPayConfigured)
         mView.methodView.octopusButton.isHidden = !supportOctopus
         mView.methodView.fpsButton.isHidden = !supportFps

@@ -11,6 +11,18 @@ class GatewayService {
         }
     }
     
+    static func setGlobalHeaders(forRequest request: inout URLRequest) {
+        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "X-I18n-Lang")
+        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
+        request.setValue(WonderPayment.paymentConfig.originalBusinessId, forHTTPHeaderField: "X-Original-Business-Id")
+        request.setValue(generateUUID(), forHTTPHeaderField: "X-Request-Id")
+        request.setValue(deviceId, forHTTPHeaderField: "X-User-Device-Id")
+        request.setValue(deviceModel, forHTTPHeaderField: "X-User-Device-Model")
+        request.setValue(WonderPayment.sdkVersion, forHTTPHeaderField: "X-Sdk-Version")
+    }
+    
     static func getBannerData(
         completion: @escaping ([AdItem]?, ErrorMessage?) -> Void
     ) {
@@ -23,14 +35,7 @@ class GatewayService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "X-I18n-Lang")
-        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
-        request.setValue(WonderPayment.paymentConfig.originalBusinessId, forHTTPHeaderField: "X-Original-Business-Id")
-        request.setValue(generateUUID(), forHTTPHeaderField: "X-Request-Id")
-        request.setValue(deviceId, forHTTPHeaderField: "X-User-Device-Id")
-        request.setValue(deviceModel, forHTTPHeaderField: "X-User-Device-Model")
+        setGlobalHeaders(forRequest: &request)
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
@@ -83,14 +88,7 @@ class GatewayService {
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue("22", forHTTPHeaderField: "X-Platform-From")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(WonderPayment.paymentConfig.locale.rawValue, forHTTPHeaderField: "X-I18n-Lang")
-        request.setValue(WonderPayment.paymentConfig.customerId, forHTTPHeaderField: "X-P-Customer-Uuid")
-        request.setValue(WonderPayment.paymentConfig.originalBusinessId, forHTTPHeaderField: "X-Original-Business-Id")
-        request.setValue(generateUUID(), forHTTPHeaderField: "X-Request-Id")
-        request.setValue(deviceId, forHTTPHeaderField: "X-User-Device-Id")
-        request.setValue(deviceModel, forHTTPHeaderField: "X-User-Device-Model")
+        setGlobalHeaders(forRequest: &request)
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: data, options: [])

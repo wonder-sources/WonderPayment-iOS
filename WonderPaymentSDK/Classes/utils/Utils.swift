@@ -121,3 +121,15 @@ func generateUUID() -> String {
     return UUID().uuidString.lowercased()
 }
 
+var isAlipayInstalled: Bool {
+    return isAppInstalled(urlScheme: "alipays")
+}
+
+var isAlipayHKInstalled: Bool {
+    return isAppInstalled(urlScheme: "alipayhk")
+}
+
+func isAppInstalled(urlScheme: String) -> Bool {
+    guard let url = URL(string: "\(urlScheme)://") else { return false }
+    return UIApplication.shared.canOpenURL(url)
+}
