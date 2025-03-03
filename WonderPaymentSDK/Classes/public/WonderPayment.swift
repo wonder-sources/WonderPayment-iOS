@@ -36,7 +36,7 @@ public class WonderPayment : NSObject {
     static var wechatPayDelegate = WechatPayDelegate()
     static var applePayDelegate = ApplePayDelegate()
     
-    public static let sdkVersion = "0.7.6"
+    public static let sdkVersion = "0.7.7"
     
     public static func initSDK(
         paymentConfig: PaymentConfig? = nil,

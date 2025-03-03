@@ -34,7 +34,7 @@ class ApplePayPaymentHandler: PaymentHander {
     
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         var supportNetworks = [PKPaymentNetwork]()
-        if let supportCards = intent.paymentMethod?.arguments?["supportCards"] as? Set<String> {
+        if let supportCards = intent.paymentMethod?.arguments?["supportCards"] as? Array<String> {
             supportNetworks = supportCards.compactMap(mapNetwork)
         }
         let request = PKPaymentRequest()
