@@ -36,7 +36,7 @@ public class WonderPayment : NSObject {
     static var wechatPayDelegate = WechatPayDelegate()
     static var applePayDelegate = ApplePayDelegate()
     
-    public static let sdkVersion = "0.7.7"
+    public static let sdkVersion = "0.7.8"
     
     public static func initSDK(
         paymentConfig: PaymentConfig? = nil,
@@ -197,7 +197,25 @@ public class WonderPayment : NSObject {
                 let cardInfo = CreditCardInfo.from(json: args as? NSDictionary)
                 paymentMethod.arguments = cardInfo.toPaymentArguments()
             }
-            callback(paymentMethod)
+            
+            PaymentService.queryPaymentMethods { config, error in
+                guard let config = config else {
+                    callback(nil)
+                    return
+                }
+                let isSupport = config.supportPaymentMethods.contains(where: {$0 == type.rawValue})
+                guard isSupport else {
+                    callback(nil)
+                    return
+                }
+                if type == .applePay {
+                    let supportCards = Array(config.supportApplePayCards)
+                    paymentMethod.arguments = [
+                        "supportCards": supportCards
+                    ]
+                }
+                callback(paymentMethod)
+            }
         }
     }
     
