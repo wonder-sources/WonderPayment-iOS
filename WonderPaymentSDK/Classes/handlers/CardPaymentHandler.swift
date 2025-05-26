@@ -11,29 +11,30 @@ class CardPaymentHandler : PaymentHander {
     func pay(intent: PaymentIntent, delegate: PaymentDelegate) {
         delegate.onProcessing()
         
+        var paymentArgs: [String:Any] = [:]
         let cardArgs = intent.paymentMethod?.arguments
         var modeArgs: NSDictionary?
-        if (intent.transactionType == .preAuth) {
-            modeArgs = ["consume_mode": "pre_authorize"]
+        if (intent.isOnlyPreAuth || intent.preAuthModeForSales) {
+            modeArgs = [
+                "consume_mode": "pre_authorize",
+            ]
+            paymentArgs["allow_over_completion"] = true
         }
         let copiedIntent = intent.copy()
         if let token = cardArgs?["token"] as? String {
-            copiedIntent.paymentMethod?.arguments = [
-                "payment_token": [
-                    "amount": "\(intent.amount)",
-                    "token": token
-                ].merge(modeArgs)
-            ]
+            paymentArgs["payment_token"] = [
+                "amount": "\(intent.amount)",
+                "token": token
+            ].merge(modeArgs)
+            copiedIntent.paymentMethod?.arguments = paymentArgs as NSDictionary
         } else {
             do {
-                let cardData = [
-                    "credit_card": [
-                        "amount": "\(intent.amount)",
-                        "3ds": PaymentService._3dsConfig
-                    ].merge(cardArgs).merge(modeArgs)
-                ]
-                let encryptData = try EncryptionUtil.encrypt(content: cardData)
-                copiedIntent.paymentMethod?.arguments = encryptData as NSDictionary
+                paymentArgs["credit_card"] = [
+                    "amount": "\(intent.amount)",
+                    "3ds": PaymentService._3dsConfig
+                ].merge(cardArgs).merge(modeArgs)
+                paymentArgs = try EncryptionUtil.encrypt(content: paymentArgs)
+                copiedIntent.paymentMethod?.arguments = paymentArgs as NSDictionary
             } catch {
                 let err = ErrorMessage(code: "E100004", message: error.localizedDescription)
                 delegate.onFinished(intent: intent, result: nil, error: err)

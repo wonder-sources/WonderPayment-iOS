@@ -1,5 +1,6 @@
 
-struct ErrorMessage : Error,Equatable {
+struct ErrorMessage : Error,Equatable,JSONEncodable {
+    
     let code: String
     let message: String
     
@@ -35,4 +36,10 @@ struct ErrorMessage : Error,Equatable {
         return ErrorMessage(code: "E200003", message: "bindCardFailed".i18n)
     }
     
+    func toJson() -> Dictionary<String, Any?> {
+        return [
+            "code": code,
+            "message": message
+        ]
+    }
 }

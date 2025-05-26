@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import TangramKit
-import QMUIKit
 
 class KeyValueItem : TGLinearLayout {
     

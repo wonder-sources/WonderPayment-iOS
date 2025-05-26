@@ -116,7 +116,8 @@ The reason why you're seeing this status is because there might be a pending pay
         "cardDeletedSuccess": "Card Deleted Successfully",
         "availablePaymentMethod": "Available Payment Method",
         "preAuthPaymentMethod": "Pre-authorise Payment Method",
-        "thisIsPreAuth": "ⓘ This is a pre-authorized charge",
+        "thisIsPreAuth": "This is a pre-authorized charge",
+        "thisIsPreAuthDesc": "A pre-authorized charge is a temporary hold of an amount requested by your service provider in order to secure your order. Please note that this is not the actual processing of the payment out of your credit card, and that your final charge may differ from the initial requested amount. Your service provider could hold the amount to up to 7-10 days before finally capturing the transaction, or releasing the hold amount.",
         "amountAdjustment": "Payment Amount Adjustment",
         "amountAdjustmentDesc": "Due to Octopus Payment’s rule, all payment amount needs to be adjusted to 1 decimal value. Hence, if you wish to proceed with Octopus payment, this original payment of %@ will be rounded up to %@",
         "enableNoPassword": "Enable No-password Payment with %@",
@@ -127,6 +128,8 @@ The reason why you're seeing this status is because there might be a pending pay
         "unableProcess": "Unable to Process",
         "tryAgain": "Try Again",
         "exit": "Exit",
+        "payWihtFPS": "Pay with FPS",
+        "pleaseTryAgain":"Please try Again",
     ]
     
     static let zh_CN = [
@@ -224,7 +227,8 @@ The reason why you're seeing this status is because there might be a pending pay
         "cardDeletedSuccess": "卡片删除成功",
         "availablePaymentMethod": "可用的支付方式",
         "preAuthPaymentMethod": "预授权支付方式",
-        "thisIsPreAuth": "ⓘ 这是预授权的费用",
+        "thisIsPreAuth": "这是预授权的费用",
+        "thisIsPreAuthDesc": "预授权扣款是由您的服务提供方发起的一项临时金额冻结，用于确保您的订单。请注意，这并不是实际从您的信用卡中扣款，最终的扣款金额可能会与最初冻结的金额有所不同。您的服务提供方可能会在最终扣款或释放冻结金额之前，保留该笔金额长达 7 至 10 天。",
         "amountAdjustment": "支付金额调整",
         "amountAdjustmentDesc": "由于八达通付款规则，所有付款金额需要调整为仅保留一位小数。因此，如果您想继续使用八达通付款，则原本支付的 %@ 将被调整为 %@",
         "enableNoPassword": "启用%@免密支付",
@@ -235,6 +239,8 @@ The reason why you're seeing this status is because there might be a pending pay
         "unableProcess": "无法处理当前请求",
         "tryAgain": "重试",
         "exit": "退出",
+        "payWihtFPS": "使用FPS付款",
+        "pleaseTryAgain":"请再试一次",
     ]
     
     static let zh_HK = [
@@ -332,7 +338,8 @@ The reason why you're seeing this status is because there might be a pending pay
         "cardDeletedSuccess": "卡片刪除成功",
         "availablePaymentMethod": "可用的支付方式",
         "preAuthPaymentMethod": "預授權支付方式",
-        "thisIsPreAuth": "ⓘ 這是預授權的費用",
+        "thisIsPreAuth": "這是預授權的費用",
+        "thisIsPreAuthDesc": "預授權扣款是您的服務提供商為確保您的訂單而暫時凍結的一筆金額。請注意，這並不代表實際從您的信用卡中扣款，而最終收取的金額亦可能與最初凍結的金額有所不同。您的服務提供商可能會在正式完成交易或釋放該筆凍結金額之前，保留該筆金額長達 7 至 10 日。",
         "amountAdjustment": "支付金額調整",
         "amountAdjustmentDesc": "由於八達通付款規則，所有付款金額需要調整為僅保留一位小數。因此，如果您想繼續使用八達通付款，則原本支付的 %@ 將被調整為 %@",
         "enableNoPassword": "啟用%@免密支付",
@@ -343,5 +350,7 @@ The reason why you're seeing this status is because there might be a pending pay
         "unableProcess": "無法處理當前請求",
         "tryAgain": "重試",
         "exit": "退出",
+        "payWihtFPS": "使用FPS付款",
+        "pleaseTryAgain":"請再試一次",
     ]
 }

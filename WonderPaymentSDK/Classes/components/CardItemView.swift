@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import TangramKit
 
 class CardItemView : TGLinearLayout, MethodItemView {
     
@@ -17,6 +16,10 @@ class CardItemView : TGLinearLayout, MethodItemView {
     var previewMode: Bool
     
     var radioButton: RadioButton?
+    
+    var canSelect: Bool {
+        return !previewMode
+    }
     
     override var isSelected: Bool {
         didSet {
@@ -61,15 +64,16 @@ class CardItemView : TGLinearLayout, MethodItemView {
         addSubview(cardNumberLabel)
         
         if previewMode {
-            let imageView = UIImageView(image: "arrow_right".svg)
+            let tintColor = WonderPayment.uiConfig.primaryButtonBackground
+            let imageView = UIImageView(image: "arrow_right".svg?.withTintColor(tintColor))
             imageView.tg_centerY.equal(0)
             addSubview(imageView)
         } else {
             radioButton = RadioButton(style: displayStyle == .confirm ? .radio : .check, cancellable: false)
             radioButton!.isSelected = isSelected
             radioButton!.isUserInteractionEnabled = false
-            radioButton!.tg_width.equal(26)
-            radioButton!.tg_height.equal(26)
+            radioButton!.tg_width.equal(24)
+            radioButton!.tg_height.equal(24)
             radioButton!.tg_centerY.equal(0)
             radioButton!.tg_left.equal(16)
             addSubview(radioButton!)

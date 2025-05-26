@@ -14,7 +14,7 @@ protocol MethodPreviewDelegate {
 class MethodPreviewController: UIViewController {
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        let isDark = WonderPayment.uiConfig.background.qmui_colorIsDark
+        let isDark = WonderPayment.uiConfig.background.isDark
         if #available(iOS 13.0, *) {
             return isDark ? .lightContent : .darkContent
         } else {

@@ -1,5 +1,3 @@
-import TangramKit
-
 class Banner: TGFrameLayout {
     
     lazy var placeholderView = PlaceholderView()

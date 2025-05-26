@@ -49,30 +49,35 @@ class ApplePayPaymentHandler: PaymentHander {
             PKPaymentSummaryItem(label: merchantName, amount: NSDecimalNumber(value: intent.amount))
         ]
         
+        let copiedIntent = intent.copy()
         if let controller = PKPaymentAuthorizationViewController(paymentRequest: request) {
             controller.delegate = WonderPayment.applePayDelegate
             UIViewController.current()?.present(controller, animated: true, completion: nil)
             WonderPayment.applePayCallback = {
                 token, completion in
-                if token == nil {
+                guard let token else {
                     delegate.onCanceled()
                     return
                 }
                 
-                var modeArgs: NSDictionary?
-                if (intent.transactionType == .preAuth) {
-                    modeArgs = ["consume_mode": "pre_authorize"]
-                }
-                intent.paymentMethod?.arguments = [
-                    "apple_pay": [
-                        "amount": "\(intent.amount)",
-                        "merchant_identifier": merchantIdentifier,
-                        "token_base64": token,
-                    ].merge(modeArgs)
+                let applePayArgs: NSMutableDictionary = [
+                    "amount": "\(intent.amount)",
+                    "merchant_identifier": merchantIdentifier,
+                    "token_base64": token,
                 ]
                 
+                let paymentArgs: NSMutableDictionary = [
+                    "apple_pay": applePayArgs
+                ]
+                
+                if (copiedIntent.isOnlyPreAuth || copiedIntent.preAuthModeForSales) {
+                    applePayArgs["consume_mode"] = "pre_authorize"
+                    paymentArgs["allow_over_completion"] = true
+                }
+                copiedIntent.paymentMethod?.arguments = paymentArgs
+                
                 // Token给到后端进行实际支付
-                PaymentService.payOrder(intent: intent) {
+                PaymentService.payOrder(intent: copiedIntent) {
                     result, error in
                     
                     if (error != nil) {

@@ -1,5 +1,3 @@
-import QMUIKit
-import TangramKit
 
 class PendingView : TGLinearLayout {
     
@@ -13,7 +11,7 @@ class PendingView : TGLinearLayout {
     
     private func initView() {
         self.tg_padding = UIEdgeInsets.all(16)
-        self.layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
+        self.layer.borderColor = WonderPayment.uiConfig.borderColor.cgColor
         self.layer.borderWidth = 1
         self.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         
@@ -26,7 +24,7 @@ class PendingView : TGLinearLayout {
         titleLabel.tg_top.equal(8)
         addSubview(titleLabel)
         
-        let whyButton = QMUIButton()
+        let whyButton = Button()
         let text = "whySeeingThis".i18n
         whyButton.setTitle(text, for: .normal)
         whyButton.setTitleColor(WonderPayment.uiConfig.linkColor, for: .normal)

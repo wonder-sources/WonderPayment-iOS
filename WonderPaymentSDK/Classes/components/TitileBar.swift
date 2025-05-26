@@ -5,15 +5,12 @@
 //  Created by X on 2024/3/2.
 //
 
-import TangramKit
-import QMUIKit
-
 class TitleBar : TGLinearLayout {
     
     lazy var container = TGLinearLayout(.horz)
-    lazy var leftView = UIButton()
+    lazy var leftView = Button()
     lazy var titleLabel = UILabel()
-    lazy var rightView = UIButton()
+    lazy var rightView = Button()
     
     convenience init(){
         self.init(frame: .zero, orientation: .vert)

@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import TangramKit
-import QMUIKit
 
 class Dialog {
     
@@ -17,9 +15,9 @@ class Dialog {
         message: String,
         button: String,
         buttonStyle: Button.ButtonStyle? = nil,
-        action: ((QMUIModalPresentationViewController)->Void)? = nil
+        action: ((CustomModalViewController)->Void)? = nil
     ) {
-        let controller = QMUIModalPresentationViewController()
+        let controller = CustomModalViewController()
         let dialogView = DialogView(icon: icon, title: title, message: message, button1: button, button1Style: buttonStyle, action1: {
             if action == nil {
                 controller.hideWith(animated: true)
@@ -27,7 +25,6 @@ class Dialog {
                 action?(controller)
             }
         })
-        controller.contentViewMargins = UIEdgeInsets.zero
         controller.contentView = dialogView
         controller.isModal = true
         controller.showWith(animated: true)
@@ -41,10 +38,10 @@ class Dialog {
         button2: String,
         button1Style: Button.ButtonStyle? = nil,
         button2Style: Button.ButtonStyle? = nil,
-        action1: ((QMUIModalPresentationViewController)->Void)? = nil,
-        action2: ((QMUIModalPresentationViewController)->Void)? = nil
+        action1: ((CustomModalViewController)->Void)? = nil,
+        action2: ((CustomModalViewController)->Void)? = nil
     ) {
-        let controller = QMUIModalPresentationViewController()
+        let controller = CustomModalViewController()
         let dialogView = DialogView(
             icon: icon,
             title: title,
@@ -68,7 +65,36 @@ class Dialog {
                 }
             }
         )
-        controller.contentViewMargins = UIEdgeInsets.zero
+        controller.contentView = dialogView
+        controller.isModal = true
+        controller.showWith(animated: true)
+    }
+    
+    static func error(
+        title: String,
+        message: String,
+        button: String,
+        action: ((CustomModalViewController)->Void)? = nil
+    ) {
+        let controller = CustomModalViewController()
+        let titleBuilder = {
+            let color = WonderPayment.uiConfig.errorColor
+            let label = Label(title, color: color, fontStyle: .medium)
+            label.textAlignment = .center
+            return label
+        }
+        let messageBuilder = {
+            let label = Label(message)
+            label.textAlignment = .center
+            return label
+        }
+        let dialogView = DialogView(icon: "error".svg, titleBuilder: titleBuilder, messageBuilder: messageBuilder, button1: button, action1: {
+            if action == nil {
+                controller.hideWith(animated: true)
+            } else {
+                action?(controller)
+            }
+        })
         controller.contentView = dialogView
         controller.isModal = true
         controller.showWith(animated: true)
@@ -86,10 +112,15 @@ class DialogView : UIView {
     var button1Style: Button.ButtonStyle?
     var button2Style: Button.ButtonStyle?
     
+    var titleBuilder: (() -> UIView)?
+    var messageBuilder: (() -> UIView)?
+    
     convenience init(
         icon: UIImage? = nil,
         title: String? = nil,
+        titleBuilder: (() -> UIView)? = nil,
         message: String? = nil,
+        messageBuilder: (() -> UIView)? = nil,
         button1: String? = nil,
         button2: String? = nil,
         button1Style: Button.ButtonStyle? = nil,
@@ -100,7 +131,9 @@ class DialogView : UIView {
         self.init(frame: .zero)
         self.icon = icon
         self.title = title
+        self.titleBuilder = titleBuilder
         self.message = message
+        self.messageBuilder = messageBuilder
         self.button1 = button1
         self.button2 = button2
         self.button1Style = button1Style
@@ -129,7 +162,12 @@ class DialogView : UIView {
             contentView.addSubview(iconView)
         }
         
-        if let title = title {
+        if let titleBuilder {
+            let titleView = titleBuilder()
+            titleView.tg_width.equal(.fill)
+            titleView.tg_height.equal(.wrap)
+            contentView.addSubview(titleView)
+        } else if let title  {
             let titleLabel = Label(title, fontStyle: .medium)
             titleLabel.tg_width.equal(.fill)
             titleLabel.tg_height.equal(.wrap)
@@ -137,7 +175,13 @@ class DialogView : UIView {
             contentView.addSubview(titleLabel)
         }
         
-        if let message = message {
+        if let messageBuilder {
+            let messageView = messageBuilder()
+            messageView.tg_width.equal(.fill)
+            messageView.tg_height.equal(.wrap)
+            messageView.tg_top.equal(10)
+            contentView.addSubview(messageView)
+        } else if let message {
             let messageLabel = Label(message,style: .secondary, size: 14)
             messageLabel.tg_width.equal(.fill)
             messageLabel.tg_height.equal(.wrap)

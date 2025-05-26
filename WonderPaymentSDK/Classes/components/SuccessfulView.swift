@@ -1,6 +1,3 @@
-
-import TangramKit
-
 class SuccessfulView : TGLinearLayout {
     
     lazy var amountLabel = Label("HK$0.00",size: 28, fontStyle: .bold)
@@ -21,12 +18,13 @@ class SuccessfulView : TGLinearLayout {
         layout1.tg_width.equal(.fill)
         layout1.tg_height.equal(.wrap)
         layout1.tg_padding = UIEdgeInsets.all(16)
-        layout1.layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
+        layout1.layer.borderColor = WonderPayment.uiConfig.borderColor.cgColor
         layout1.layer.borderWidth = 1
         layout1.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         addSubview(layout1)
         
-        let icon = UIImageView(image: "successful".svg)
+        let tintColor = WonderPayment.uiConfig.successColor
+        let icon = UIImageView(image: "successful".svg?.withTintColor(tintColor))
         icon.tg_centerX.equal(0)
         layout1.addSubview(icon)
         
@@ -42,7 +40,7 @@ class SuccessfulView : TGLinearLayout {
         
         detailsLayout.tg_width.equal(.fill)
         detailsLayout.tg_height.equal(.wrap)
-        detailsLayout.layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
+        detailsLayout.layer.borderColor = WonderPayment.uiConfig.borderColor.cgColor
         detailsLayout.layer.borderWidth = 1
         detailsLayout.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
         detailsLayout.clipsToBounds = true
@@ -51,7 +49,8 @@ class SuccessfulView : TGLinearLayout {
     }
     
     func setData(_ data: PayResult, intent: PaymentIntent) {
-        if (intent.transactionType == .preAuth) {
+        let transactionType: TransactionType = intent.isOnlyPreAuth ? .preAuth : .sale
+        if (transactionType == .preAuth) {
             titleLabel.text = "successfulPreAuth".i18n
         }
         
@@ -81,7 +80,7 @@ class SuccessfulView : TGLinearLayout {
         itemsLayout.tg_vspace = 16
         detailsLayout.addSubview(itemsLayout)
         
-        if intent.transactionType == .sale {
+        if transactionType == .sale {
             itemsLayout.addSubview(KeyValueItem(key: "paymentAmount".i18n, value: amountText))
         }
         
@@ -122,10 +121,10 @@ class SuccessfulView : TGLinearLayout {
             }
         }
         
-        if intent.transactionType == .sale {
+        if transactionType == .sale {
             itemsLayout.addSubview(KeyValueItem(key: "invoiceAmount".i18n, value: amountText))
         }
-        if intent.transactionType == .preAuth {
+        if transactionType == .preAuth {
             itemsLayout.addSubview(KeyValueItem(key: "preAuthAmount".i18n, value: amountText))
         }
     }

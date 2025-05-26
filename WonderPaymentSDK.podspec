@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                    = "WonderPaymentSDK"
-  s.version                 = "0.7.9"
+  s.version                 = "0.8.0"
   s.summary                 = "Wonder Payment SDK for iOS devices"
   s.description             = "beta testing"
 
@@ -24,10 +24,8 @@ Pod::Spec.new do |s|
   s.dependency 'AlipaySDK-iOS'
   s.dependency 'WechatOpenSDK-XCFramework'
   s.dependency 'SVGKit'
-  s.dependency "QMUIKit", "~> 4.8.0"
   s.dependency "lottie-ios", "~> 3.4.0"
   s.dependency "IQKeyboardManagerSwift", "6.3.0"
-  s.dependency "TangramKit"
   s.dependency "UPPay"
 
   s.static_framework = true
@@ -118,3 +116,4 @@ Pod::Spec.new do |s|
       }
     ]
 end
+

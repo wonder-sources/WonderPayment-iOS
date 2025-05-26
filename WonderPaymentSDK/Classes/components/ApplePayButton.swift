@@ -6,14 +6,16 @@
 //
 
 import Foundation
-import QMUIKit
-import TangramKit
 
-class ApplePayButton : QMUIButton, MethodItemView {
+class ApplePayButton : Button, MethodItemView {
     
     var displayStyle: DisplayStyle
     var previewMode: Bool
     var radioButton: RadioButton?
+    
+    var canSelect: Bool {
+        return displayStyle == .confirm && !previewMode
+    }
     
     override var isSelected: Bool {
         didSet {
@@ -67,12 +69,13 @@ class ApplePayButton : QMUIButton, MethodItemView {
             if displayStyle == .confirm {
                 radioButton = RadioButton(style: .radio)
                 radioButton!.tg_left.equal(100%)
-                radioButton!.tg_width.equal(.wrap)
-                radioButton!.tg_height.equal(.wrap)
+                radioButton!.tg_width.equal(24)
+                radioButton!.tg_height.equal(24)
                 radioButton!.tg_centerY.equal(0)
                 child.addSubview(radioButton!)
             } else if previewMode {
-                let imageView = UIImageView(image: "arrow_right".svg)
+                let tintColor = WonderPayment.uiConfig.primaryButtonBackground
+                let imageView = UIImageView(image: "arrow_right".svg?.withTintColor(tintColor))
                 imageView.tg_centerY.equal(0)
                 imageView.tg_left.equal(100%)
                 child.addSubview(imageView)
@@ -80,7 +83,7 @@ class ApplePayButton : QMUIButton, MethodItemView {
             
             
             layer.borderWidth = 1
-            layer.borderColor = WonderPayment.uiConfig.secondaryButtonColor.cgColor
+            layer.borderColor = WonderPayment.uiConfig.borderColor.cgColor
         } else {
             self.backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
             self.setImage("ApplePay".svg, for: .normal)

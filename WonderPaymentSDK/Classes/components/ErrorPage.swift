@@ -6,40 +6,28 @@
 //
 
 import Lottie
-import QMUIKit
-import TangramKit
 
 class ErrorPage {
 
     
-    private static var modalViewController: QMUIModalPresentationViewController?
+    private static var modalViewController: CustomModalViewController?
     
     static func show(error: ErrorMessage, onRetry: VoidCallback? = nil, onExit: VoidCallback? = nil) {
         
-        func waitDismiss(completion: @escaping VoidCallback) {
-            if modalViewController == nil {
-                completion()
-            } else {
-                dismiss(animated: false) { _ in
-                    completion()
-                }
-            }
-        }
-        
         let callbackAction = CallbackAction { method, _ in
-            dismiss()
-            if method == "retry" {
-                onRetry?()
-            } else if method == "exit" {
-                onExit?()
+            dismiss(animated: false).then { _ in
+                if method == "retry" {
+                    onRetry?()
+                } else if method == "exit" {
+                    onExit?()
+                }
             }
             return nil
         }
         
-        waitDismiss {
+        dismiss(animated: false).then { _ in
             let contentView = ContentView(error: error, callbackAction: callbackAction)
-            modalViewController = QMUIModalPresentationViewController()
-            modalViewController?.contentViewMargins = UIEdgeInsets.zero
+            modalViewController = CustomModalViewController()
             modalViewController?.contentView = contentView
             modalViewController?.isModal = true
             modalViewController?.showWith(animated: true)
@@ -54,6 +42,15 @@ class ErrorPage {
         modalViewController?.hideWith(animated: animated) { completed in
             modalViewController = nil
             completion?(completed)
+        }
+    }
+    
+    @discardableResult
+    static func dismiss(animated: Bool = true) -> Future<Bool> {
+        Future<Bool> { resolve, reject in
+            dismiss(animated: animated) { completed in
+                resolve(completed)
+            }
         }
     }
     
@@ -90,7 +87,7 @@ class ErrorPage {
             contentLayout.tg_centerY.equal(0)
             addSubview(contentLayout)
             
-            let icon = UIImageView(image: "error2".svg)
+            let icon = UIImageView(image: "error".svg)
             icon.tg_width.equal(56)
             icon.tg_height.equal(56)
             icon.tg_centerX.equal(0)

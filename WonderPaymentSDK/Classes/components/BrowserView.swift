@@ -7,7 +7,6 @@
 
 import Foundation
 import WebKit
-import TangramKit
 
 class BrowserView : TGLinearLayout {
     lazy var titleBar = initTitleBar()
@@ -27,7 +26,7 @@ class BrowserView : TGLinearLayout {
     private func initTitleBar() -> TitleBar{
         let titleBar = TitleBar()
         titleBar.rightView.setImage(
-            "close".svg?.qmui_image(withTintColor: WonderPayment.uiConfig.primaryTextColor),
+            "close".svg?.withTintColor(WonderPayment.uiConfig.primaryTextColor),
             for: .normal
         )
         
@@ -51,17 +50,19 @@ class BrowserView : TGLinearLayout {
         config.userContentController = contentController
         contentController.addUserScript(userScript)
         let webview = WKWebView(frame: .zero, configuration: config)
+        webview.navigationDelegate = self
         return webview
     }
     
     private func initView() {
         self.backgroundColor = WonderPayment.uiConfig.background
+        self.tg_insetsPaddingFromSafeArea = []
         self.tg_height.equal(.fill)
         self.tg_width.equal(.fill)
         addSubview(titleBar)
         
         let divider = UIView()
-        divider.backgroundColor = UIColor(hexString: "#FFE4E4E4")
+        divider.backgroundColor = WonderPayment.uiConfig.dividerColor
         divider.tg_width.equal(.fill)
         divider.tg_height.equal(1)
         addSubview(divider)
@@ -93,6 +94,25 @@ extension BrowserView : WKScriptMessageHandler {
     }
 }
 
+extension BrowserView: WKNavigationDelegate {
+    // 拦截请求并处理外部 URL Scheme
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction,
+                 decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let url = navigationAction.request.url {
+            // 检查 scheme 是否不是 http 或 https
+            if !["http", "https"].contains(url.scheme?.lowercased() ?? "") {
+                // 尝试打开外部应用
+                if UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                    decisionHandler(.cancel)
+                    return
+                }
+            }
+        }
+        decisionHandler(.allow)
+    }
+}
+
 class BrowserViewController: UIViewController {
     
     lazy var mView = BrowserView()
@@ -114,14 +134,15 @@ class BrowserViewController: UIViewController {
             mView.webview.addObserver(self, forKeyPath: "estimatedProgress", options: .new, context: nil)
         }
     }
-    
+        
     private func handleWebMessage(_ message: Any) {
         if let message = message as? String {
             let json = DynamicJson.from(message)
             if json["action"].string == "isSuccessful" {
-                self.dismiss(animated: true)
-                finishedCallback?(json["content"].string == "true")
-                finishedCallback = nil
+                self.dismiss(animated: true) {
+                    self.finishedCallback?(json["content"].string == "true")
+                    self.finishedCallback = nil
+                }
             }
         }
     }
@@ -135,8 +156,9 @@ class BrowserViewController: UIViewController {
     }
     
     @objc func close() {
-        self.dismiss(animated: true)
-        finishedCallback?(nil)
-        finishedCallback = nil
+        self.dismiss(animated: true) {
+            self.finishedCallback?(nil)
+            self.finishedCallback = nil
+        }
     }
 }

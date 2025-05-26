@@ -8,7 +8,7 @@
 import Foundation
 
 extension UIViewController {
-    class func current(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+    class func current(base: UIViewController? = keyWindow?.rootViewController) -> UIViewController? {
         if let nav = base as? UINavigationController {
             return current(base: nav.visibleViewController)
         }

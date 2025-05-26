@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import TangramKit
-import QMUIKit
 import SVGKit
 
 class MethodPreviewView: TGLinearLayout {
@@ -72,7 +70,7 @@ class MethodPreviewView: TGLinearLayout {
         titleBar.titleLabel.textColor = WonderPayment.uiConfig.primaryTextColor
         titleBar.titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
         titleBar.leftView.setImage(
-            "back".svg?.qmui_image(withTintColor: WonderPayment.uiConfig.primaryTextColor),
+            "back".svg?.withTintColor(WonderPayment.uiConfig.primaryTextColor),
             for: .normal
         )
         
@@ -125,10 +123,10 @@ class MethodPreviewView: TGLinearLayout {
             leftLayout.tg_height.equal(.wrap)
             cardNumberLayout.addSubview(leftLayout)
             
-            let cardLabel = Label(brandName, color: .black,size: 18, fontStyle: .bold)
+            let cardLabel = Label(brandName,size: 18, fontStyle: .bold)
             leftLayout.addSubview(cardLabel)
             
-            let cardNumberLabel = Label("**** \(suffix)", color: .black,size: 18, fontStyle: .bold)
+            let cardNumberLabel = Label("**** \(suffix)",size: 18, fontStyle: .bold)
             cardNumberLabel.tg_top.equal(8)
             leftLayout.addSubview(cardNumberLabel)
             
@@ -151,7 +149,7 @@ class MethodPreviewView: TGLinearLayout {
             }
             
             let divider = UIView()
-            divider.backgroundColor = UIColor(hexString: "#FFE4E4E4")
+            divider.backgroundColor = WonderPayment.uiConfig.dividerColor
             divider.tg_top.equal(16)
             divider.tg_width.equal(.fill)
             divider.tg_height.equal(1)
@@ -177,7 +175,7 @@ class MethodPreviewView: TGLinearLayout {
             expiryLabel.tg_top.equal(16)
             cardInfoLayout.addSubview(expiryLabel)
             
-            let expiryValueLabel = Label("**/**", color: .black, fontStyle: .bold)
+            let expiryValueLabel = Label("**/**", fontStyle: .bold)
             expiryValueLabel.tg_top.equal(8)
             cardInfoLayout.addSubview(expiryValueLabel)
             
@@ -185,7 +183,7 @@ class MethodPreviewView: TGLinearLayout {
             nameLabel.tg_top.equal(16)
             cardInfoLayout.addSubview(nameLabel)
             
-            let nameValueLabel = Label(holderName, color: .black, fontStyle: .bold)
+            let nameValueLabel = Label(holderName, fontStyle: .bold)
             nameValueLabel.tg_top.equal(8)
             cardInfoLayout.addSubview(nameValueLabel)
             
@@ -224,13 +222,13 @@ class MethodPreviewView: TGLinearLayout {
             
             let nameAndIcon = getMethodNameAndIcon(paymentMethod)
             
-            let methodLabel = Label(nameAndIcon.0, color: .black, size: 26, fontStyle: .bold)
+            let methodLabel = Label(nameAndIcon.0, size: 26, fontStyle: .bold)
             methodLabel.tg_centerY.equal(0)
             methodLayout.addSubview(methodLabel)
             
             var image = nameAndIcon.1?.svg
             if paymentMethod.type == .applePay {
-                image = "ApplePay".svg?.qmui_image(withTintColor: .black)
+                image = "ApplePay".svg?.withTintColor(.black)
             }
             let iconView = UIImageView(image: image)
             iconView.tg_left.equal(100%)
@@ -239,14 +237,14 @@ class MethodPreviewView: TGLinearLayout {
             
             
             let divider = UIView()
-            divider.backgroundColor = UIColor(hexString: "#FFE4E4E4")
+            divider.backgroundColor = WonderPayment.uiConfig.dividerColor
             divider.tg_top.equal(16)
             divider.tg_bottom.equal(16)
             divider.tg_width.equal(.fill)
             divider.tg_height.equal(1)
             self.addSubview(divider)
             
-            let label1 = Label(String(format: "payingWith".i18n, nameAndIcon.0),color: .black, size: 16, fontStyle: .bold)
+            let label1 = Label(String(format: "payingWith".i18n, nameAndIcon.0), size: 16, fontStyle: .bold)
             label1.tg_width.equal(.fill)
             label1.tg_height.equal(.wrap)
             self.addSubview(label1)

@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import QMUIKit
-import TangramKit
 
 
 class Tips {
@@ -16,7 +14,7 @@ class Tips {
         case normal, error
     }
     
-    static var tipsController: QMUIModalPresentationViewController?
+    static var tipsController: CustomModalViewController?
     
     static func show(
         style: TipsStyle = .normal,
@@ -27,8 +25,7 @@ class Tips {
     ) {
         dismiss() { _ in
             let tipsView = TipsView(image: image, title: title, subTitle: subTitle, style: style)
-            tipsController = QMUIModalPresentationViewController()
-            tipsController?.contentViewMargins = UIEdgeInsets.zero
+            tipsController = CustomModalViewController()
             tipsController?.contentView = tipsView
             tipsController?.isModal = true
             tipsController?.showWith(animated: true)
@@ -79,7 +76,7 @@ class TipsView : UIView {
         addSubview(contentView)
         
         let imageView = UIImageView()
-        imageView.image = image ?? (style == .error ? "error2".svg : nil)
+        imageView.image = image ?? (style == .error ? "error".svg : nil)
         imageView.tg_width.equal(.wrap)
         imageView.tg_height.equal(.wrap)
         imageView.tg_centerX.equal(0)

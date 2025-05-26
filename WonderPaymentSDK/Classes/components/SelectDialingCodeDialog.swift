@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import QMUIKit
-import TangramKit
 
 class SelectDialingCodeDialog : TGRelativeLayout {
     
@@ -33,7 +31,7 @@ class SelectDialingCodeDialog : TGRelativeLayout {
         self.tg_width.equal(.fill)
         self.backgroundColor = UIColor.black.withAlphaComponent(0.1)
         
-        let window = UIApplication.shared.keyWindow
+        let window = keyWindow
         let topPadding = window?.safeAreaInsets.top ?? 20
         let windowHeight = window?.frame.height ?? 0
         let contentViewHeight = windowHeight - topPadding
@@ -46,8 +44,9 @@ class SelectDialingCodeDialog : TGRelativeLayout {
         contentView.tg_padding = UIEdgeInsets.only(top: 8, left: 16, right: 20)
         addSubview(contentView)
         
-        let closeButton = QMUIButton()
-        closeButton.setImage("close".svg, for: .normal)
+        let closeButton = Button()
+        let tintColor = WonderPayment.uiConfig.primaryButtonBackground
+        closeButton.setImage("close".svg?.withTintColor(tintColor), for: .normal)
         closeButton.tg_right.equal(0)
         closeButton.tg_width.equal(24)
         closeButton.tg_height.equal(24)
@@ -127,7 +126,7 @@ class SelectDialingCodeDialog : TGRelativeLayout {
     }
     
     func show() {
-        let window = UIApplication.shared.keyWindow
+        let window = keyWindow
         window?.addSubview(self)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: {
             [weak self] in
@@ -189,7 +188,7 @@ extension SelectDialingCodeDialog: UITableViewDataSource, UITableViewDelegate {
     
 }
 
-extension SelectDialingCodeDialog : QMUITextFieldDelegate {
+extension SelectDialingCodeDialog : UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(false)
         return false
@@ -201,7 +200,8 @@ class DialingCodeCell : UITableViewCell {
     lazy var mImageView = UIImageView()
     lazy var nameLabel = Label("")
     lazy var codeLabel = Label("")
-    lazy var selectedIcon = UIImageView(image: "checked2".svg)
+    lazy var selectedIconColor = WonderPayment.uiConfig.primaryTextColor
+    lazy var selectedIcon = UIImageView(image: "checked2".svg?.withTintColor(selectedIconColor))
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

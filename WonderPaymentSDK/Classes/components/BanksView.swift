@@ -1,8 +1,6 @@
-import TangramKit
 import SVGKit
 
 class BanksView : TGLinearLayout {
-    
 
     convenience init(spacing: CGFloat = 2) {
         self.init(frame: .zero, orientation: .horz)
@@ -20,8 +18,11 @@ class BanksView : TGLinearLayout {
         Cache.addListener(for: "paymentMethodConfig") { 
             [weak self] paymentMethodConfig in
             if let config = paymentMethodConfig as? PaymentMethodConfig {
-                let supportItems = items.filter({ config.supportCards.contains($0)})
-                self?.setItems(supportItems)
+//                let intent: PaymentIntent? = Cache.get(for: "intent")
+//                let isOnlyPreAuth = intent?.isOnlyPreAuth ?? false
+//                let transactionType: TransactionType = isOnlyPreAuth ? .preAuth : .sale
+                let supportItems = config.getSupportCards(transactionType: .preAuth)
+                self?.setItems(Array(supportItems))
             }
         }
     }

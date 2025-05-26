@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import TangramKit
 
 class DialingCodeView : TGLinearLayout {
     
@@ -37,7 +36,8 @@ class DialingCodeView : TGLinearLayout {
         codeLabel.tg_centerY.equal(0)
         addSubview(codeLabel)
         
-        let imageView = UIImageView(image: "arrow_down".svg)
+        let tintColor = WonderPayment.uiConfig.primaryTextColor
+        let imageView = UIImageView(image: "arrow_down".svg?.withTintColor(tintColor))
         imageView.tg_width.equal(.wrap)
         imageView.tg_height.equal(.wrap)
         imageView.tg_centerY.equal(0)

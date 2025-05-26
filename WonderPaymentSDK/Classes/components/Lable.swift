@@ -5,11 +5,7 @@
 //  Created by X on 2024/3/6.
 //
 
-import QMUIKit
-
-
-
-class Label : QMUILabel {
+class Label : UILabel {
     
     enum LabelStyle {
         case primary, secondary

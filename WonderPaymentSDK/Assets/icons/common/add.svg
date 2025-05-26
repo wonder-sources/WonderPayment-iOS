@@ -1,7 +1,5 @@
 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Frame">
-<rect x="0.5" y="0.5" width="23" height="23" rx="11.5" fill="black"/>
-<rect x="0.5" y="0.5" width="23" height="23" rx="11.5" stroke="black"/>
 <g id="Group 427324793">
 <rect id="Rectangle 14244" x="6" y="11" width="12" height="2" rx="1" fill="url(#paint0_linear_4098_60396)"/>
 <rect id="Rectangle 14245" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="url(#paint1_linear_4098_60396)"/>

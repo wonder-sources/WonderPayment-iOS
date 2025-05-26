@@ -11,6 +11,13 @@ class GatewayService {
         }
     }
     
+    private static let sharedSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 60
+        return URLSession(configuration: config)
+    }()
+    
     static func setGlobalHeaders(forRequest request: inout URLRequest) {
         request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -37,7 +44,7 @@ class GatewayService {
         request.httpMethod = "GET"
         setGlobalHeaders(forRequest: &request)
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -47,7 +54,7 @@ class GatewayService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let dataJson = DynamicJson(value: resp.data)
                     let items = AdItem.from(jsonArray: dataJson.array.compactMap({$0.value}) as? NSArray)
@@ -69,7 +76,7 @@ class GatewayService {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
+        let task = sharedSession.dataTask(with: url) { (data, response, error) in
             guard let data = data, let image = UIImage(data: data) else {
                 UI.call { completion(nil) }
                 return
@@ -96,7 +103,7 @@ class GatewayService {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 return
             }

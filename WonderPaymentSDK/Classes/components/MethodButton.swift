@@ -6,10 +6,8 @@
 //
 
 import Foundation
-import QMUIKit
-import TangramKit
 
-class MethodButton : QMUIButton, MethodItemView {
+class MethodButton : Button, MethodItemView {
     var image: String
     var title: String
     var displayStyle: DisplayStyle
@@ -17,6 +15,10 @@ class MethodButton : QMUIButton, MethodItemView {
     var previewMode: Bool
     
     var radioButton: RadioButton?
+    
+    var canSelect: Bool {
+        return displayStyle == .confirm && !previewMode
+    }
     
     override var isSelected: Bool {
         didSet {
@@ -41,6 +43,7 @@ class MethodButton : QMUIButton, MethodItemView {
         backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
         layer.borderWidth = 1
         layer.cornerRadius = min(WonderPayment.uiConfig.borderRadius, 28)
+        layer.borderColor = WonderPayment.uiConfig.borderColor.cgColor
         tg_width.equal(.fill)
         tg_height.equal(56)
         
@@ -67,15 +70,16 @@ class MethodButton : QMUIButton, MethodItemView {
         child.addSubview(label)
         
         if previewMode {
-            let imageView = UIImageView(image: "arrow_right".svg)
+            let tintColor = WonderPayment.uiConfig.primaryButtonBackground
+            let imageView = UIImageView(image: "arrow_right".svg?.withTintColor(tintColor))
             imageView.tg_centerY.equal(0)
             imageView.tg_left.equal(100%)
             child.addSubview(imageView)
         } else if (displayStyle == .confirm) {
             radioButton = RadioButton(style: .radio)
             radioButton!.tg_left.equal(100%)
-            radioButton!.tg_width.equal(.wrap)
-            radioButton!.tg_height.equal(.wrap)
+            radioButton!.tg_width.equal(24)
+            radioButton!.tg_height.equal(24)
             radioButton!.tg_centerY.equal(0)
             child.addSubview(radioButton!)
         }

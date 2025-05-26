@@ -13,4 +13,8 @@ class ScrollView : UIScrollView {
         return true
     }
     
+    func scrollToTop(animated: Bool = true) {
+        setContentOffset(CGPoint(x: 0, y: 0), animated: animated)
+    }
+    
 }

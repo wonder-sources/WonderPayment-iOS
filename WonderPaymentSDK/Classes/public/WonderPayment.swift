@@ -19,6 +19,7 @@ public typealias PaymentResultCallback = (PaymentResult) -> Void
 public typealias SelectMethodCallback = (PaymentMethod) -> Void
 public typealias DefaultMethodCallback = (PaymentMethod?) -> Void
 public typealias DataCallback = ([String: Any?]) -> Void
+public typealias VoidCallback = () -> Void
 public typealias ApplePayCompletion = (PKPaymentAuthorizationResult) -> Void
 public typealias AppyPayCallback = (String?, ApplePayCompletion?) -> Void
 public typealias CompletionCallback = (Bool) -> Void
@@ -35,8 +36,9 @@ public class WonderPayment : NSObject {
     static var paymeCallback: DataCallback?
     static var wechatPayDelegate = WechatPayDelegate()
     static var applePayDelegate = ApplePayDelegate()
+    static var willEnterForegroundCallback: VoidCallback?
     
-    public static let sdkVersion = "0.7.9"
+    public static let sdkVersion = "0.8.0"
     
     public static func initSDK(
         paymentConfig: PaymentConfig? = nil,
@@ -55,7 +57,7 @@ public class WonderPayment : NSObject {
     }
     
     @objc private static func appWillEnterForeground() {
-        //print("App will enter foreground - SDK detected")
+        willEnterForegroundCallback?()
     }
     
     /// UI支付
@@ -63,34 +65,28 @@ public class WonderPayment : NSObject {
         intent: PaymentIntent,
         callback: @escaping PaymentResultCallback
     ) {
-        Loading.show(style: .fullScreen, title: "loading".i18n)
-        ConfigUtil.getConfigData { data, error in
-            Loading.dismiss(animated: false)
-        
-            guard let data = data else {
-                ErrorPage.show(
-                    error: error ?? ErrorMessage.unknownError,
-                    onRetry: {
-                        present(intent: intent, callback: callback)
-                    },
-                    onExit: {
-                        callback(PaymentResult(status: .canceled))
-                    }
-                )
-                return
-            }
-            let json = DynamicJson(value: data)
-            let paymentRetriesEnabled = json["settings"]["payment_retries_enabled"].bool ?? true
-            WonderPayment.uiConfig.paymentRetriesEnabled = paymentRetriesEnabled
-            
-            let rootViewController = UIApplication.shared.keyWindow?.rootViewController
+        Loading.show()
+        PaymentService.getOrderDetail(orderNum: intent.orderNumber).then { data in
+            Loading.dismiss().map { _ in data }
+        }.then { data in
+            let preAuthOnly = data["is_only_pre_auth"].bool ?? false
+            let paymentIntent = intent.copy()
+            paymentIntent.isOnlyPreAuth = preAuthOnly
             let paymentsViewController = PaymentsViewController()
             paymentsViewController.sessionMode = .once
             paymentsViewController.displayStyle = uiConfig.displayStyle
-            paymentsViewController.intent = intent
+            paymentsViewController.intent = paymentIntent
             paymentsViewController.paymentCallback = callback
             paymentsViewController.modalPresentationStyle = .fullScreen
-            rootViewController?.present(paymentsViewController, animated: true)
+            topViewController?.present(paymentsViewController, animated: true)
+        }.catch { err in
+            Loading.dismiss()
+            let error = err as? ErrorMessage ?? ErrorMessage.unknownError
+            ErrorPage.show(error: error, onRetry: {
+                present(intent: intent, callback: callback)
+            }, onExit: {
+                callback(PaymentResult(status: .canceled))
+            })
         }
     }
     
@@ -105,32 +101,30 @@ public class WonderPayment : NSObject {
     
     /// 选择支付方式
     public static func select(
-        transactionType: TransactionType,
         callback: @escaping SelectMethodCallback
     ) {
-        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
         let paymentsViewController = PaymentsViewController()
         paymentsViewController.sessionMode = .twice
         paymentsViewController.displayStyle = uiConfig.displayStyle
-        paymentsViewController.intent = PaymentIntent(amount: 0, currency: "", orderNumber: "", transactionType: transactionType)
         paymentsViewController.selectCallback = callback
         paymentsViewController.modalPresentationStyle = .fullScreen
-        rootViewController?.present(paymentsViewController, animated: true)
+        topViewController?.present(paymentsViewController, animated: true)
     }
     
     /// 查看管理支付方式
     public static func preview() {
-        let rootViewController = UIApplication.shared.keyWindow?.rootViewController
         let paymentsViewController = PaymentsViewController()
         paymentsViewController.previewMode = true
         let navController = NavigationController(rootViewController: paymentsViewController)
         navController.navigationBar.isHidden = true
         navController.modalPresentationStyle = .fullScreen
-        rootViewController?.present(navController, animated: true)
+        topViewController?.present(navController, animated: true)
     }
     
     /// 三方支付回调处理
     public static func handleOpenURL(url: URL) -> Bool {
+        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        let queryItems = components?.queryItems
         if url.host == "safepay" {
             AlipaySDK.defaultService().processOrder(withPaymentResult: url) { data in
                 let resultStatus = data?["resultStatus"]
@@ -139,11 +133,20 @@ public class WonderPayment : NSObject {
                 alipayCallback?(callbackData)
                 alipayCallback = nil
             }
+        } else if queryItems?.first(where: { $0.name == "auth_site" })?.value == "ALIPAY_HK" {
+            var callbackData: [String: Any?] = [:]
+            queryItems?.forEach({ item in
+                callbackData[item.name] = item.value
+            })
+            alipayCallback?(callbackData)
+            alipayCallback = nil
         } else if (url.host == "octopus") {
             octopusCallback?([:])
             octopusCallback = nil
         } else if (url.host == "fps") {
-            fpsCallback?([:])
+            let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+            let isSuccessfulValue = components?.queryItems?.first(where: { $0.name == "is_successful"})?.value
+            fpsCallback?(["is_successful": isSuccessfulValue])
             fpsCallback = nil
         } else if (url.host == "payme") {
             var code = 0
@@ -192,27 +195,44 @@ public class WonderPayment : NSObject {
                 return
             }
             let paymentMethod = PaymentMethod(type: type)
-            if type == .creditCard {
-                let args = data["customer"]["default_payment_token"].value
+            if type == .creditCard, let args = data["customer"]["default_payment_token"].value {
                 let cardInfo = CreditCardInfo.from(json: args as? NSDictionary)
                 paymentMethod.arguments = cardInfo.toPaymentArguments()
             }
             
-            PaymentService.queryPaymentMethods { config, error in
+            let getPaymentMethodConfig: (@escaping(PaymentMethodConfig?) -> Void) -> Void = { result in
+                if let config: PaymentMethodConfig = Cache.get(for: "paymentMethodConfig") {
+                    result(config)
+                } else {
+                    PaymentService.queryPaymentMethods { config, error in
+                        result(config)
+                    }
+                }
+            }
+            
+            getPaymentMethodConfig { config in
                 guard let config = config else {
                     callback(nil)
                     return
                 }
-                let isSupport = config.supportPaymentMethods.contains(where: {$0 == type.rawValue})
+                let intent: PaymentIntent? = Cache.get(for: "intent")
+                let isOnlyPreAuth = intent?.isOnlyPreAuth ?? false
+                let transactionType: TransactionType = isOnlyPreAuth ? .preAuth : .sale
+                let isSupport = config.isSupport(method: type.rawValue, transactionType: transactionType)
                 guard isSupport else {
                     callback(nil)
                     return
                 }
+                
+                let entryTypes = config.getEntryTypes(method: paymentMethod.type.rawValue)
+                paymentMethod.arguments.ensureAndAppend(contentsOf: [
+                    "entryTypes": entryTypes
+                ])
                 if type == .applePay {
-                    let supportCards = Array(config.supportApplePayCards)
-                    paymentMethod.arguments = [
+                    let supportCards = Array(config.getSupportApplePayCards(transactionType: transactionType))
+                    paymentMethod.arguments.ensureAndAppend(contentsOf: [
                         "supportCards": supportCards
-                    ]
+                    ])
                 }
                 callback(paymentMethod)
             }
@@ -233,12 +253,33 @@ public class WonderPayment : NSObject {
         }
     }
     
+    /// 获取支付结果
     public static func getPaymentResult(sessionId: String, callback: @escaping PaymentResultCallback) {
         PaymentService.getPayResult(sessionId: sessionId) { status, error in
             if status == .completed {
                 callback(PaymentResult(status: .completed))
             } else {
                 callback(PaymentResult(status: .pending))
+            }
+        }
+    }
+    
+    /// 添加卡片
+    public static func addCard(
+        _ args: NSDictionary,
+        showLoading: Bool = false,
+        showTips: Bool = false,
+        completion: ((NSDictionary?, NSDictionary?) -> Void)? = nil)
+    {
+        guard let cardArgs = args as? [String: Any] else {
+            completion?(nil, ErrorMessage.argumentsError.toJson() as NSDictionary)
+            return
+        }
+        CardUtil.bindCard(cardArgs, showLoading: showLoading, showTips: showTips) { card, error in
+            if let card {
+                completion?(card.toPaymentArguments(), nil)
+            } else {
+                completion?(nil, error?.toJson() as? NSDictionary)
             }
         }
     }

@@ -1,6 +1,4 @@
 import Lottie
-import QMUIKit
-import TangramKit
 
 class Loading {
     
@@ -8,32 +6,20 @@ class Loading {
         case small, fullScreen
     }
     
-    static var loadingController: QMUIModalPresentationViewController?
+    static var loadingController: CustomModalViewController?
     
-    static func show(style: LoadingStyle = .small, title: String? = nil) {
-        
-        func waitDismiss(completion: @escaping () -> Void) {
-            if loadingController == nil {
-                completion()
-            } else {
-                dismiss(animated: false) { _ in
-                    completion()
-                }
-            }
-        }
-        
-        waitDismiss {
+    static func show(animated: Bool = true, style: LoadingStyle = .small, title: String? = nil) {
+        dismiss(animated: false).then { _ in
             let loadingView : UIView
             if style == .small {
                 loadingView = SmallLoadingView()
             } else {
                 loadingView = FullScreenLoadingView(title: title)
             }
-            loadingController = QMUIModalPresentationViewController()
-            loadingController?.contentViewMargins = UIEdgeInsets.zero
+            loadingController = CustomModalViewController()
             loadingController?.contentView = loadingView
             loadingController?.isModal = true
-            loadingController?.showWith(animated: true)
+            loadingController?.showWith(animated: animated)
         }
     }
     
@@ -45,6 +31,15 @@ class Loading {
         loadingController?.hideWith(animated: animated) { completed in
             loadingController = nil
             completion?(completed)
+        }
+    }
+    
+    @discardableResult
+    static func dismiss(animated: Bool = true) -> Future<Bool> {
+        return Future<Bool> { resolve, reject in
+            dismiss(animated: animated) { completed in
+                resolve(completed)
+            }
         }
     }
 }

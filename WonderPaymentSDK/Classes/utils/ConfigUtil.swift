@@ -6,6 +6,21 @@
 //
 
 class ConfigUtil {
+    
+    static func getConfigData(useCache:Bool = true) -> Future<NSDictionary> {
+        return Future<NSDictionary> { resolve, reject in
+            getConfigData(useCache: useCache) { data, error in
+                if let data {
+                    resolve(data)
+                } else if let error {
+                    reject(error)
+                } else {
+                    reject(ErrorMessage.unknownError)
+                }
+            }
+        }
+    }
+    
     static func getConfigData(
         useCache:Bool = true,
         completion: @escaping (NSDictionary?, ErrorMessage?) -> Void

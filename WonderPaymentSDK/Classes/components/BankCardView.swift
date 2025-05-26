@@ -1,5 +1,3 @@
-import QMUIKit
-import TangramKit
 
 class BankCardView : TGLinearLayout {
     
@@ -94,8 +92,8 @@ class BankCardView : TGLinearLayout {
                 self?.form.save = selected
             }
             checkBox.isSelected = true
-            checkBox.tg_width.equal(.wrap)
-            checkBox.tg_height.equal(.wrap)
+            checkBox.tg_width.equal(24)
+            checkBox.tg_height.equal(24)
             hLayout2.addSubview(checkBox)
             
             let saveLabel = Label("saveCardInfo".i18n, style: .secondary)
@@ -122,7 +120,7 @@ class BankCardView : TGLinearLayout {
         topLayout.addSubview(backButton)
         
         let label = Label("cardPayment".i18n, size: 16, fontStyle: .medium)
-        label.textColor = WonderPayment.uiConfig.secondaryButtonColor
+        label.textColor = WonderPayment.uiConfig.primaryTextColor
         label.tg_width.equal(.wrap)
         label.tg_height.equal(.wrap)
         topLayout.addSubview(label)
@@ -136,7 +134,7 @@ class BankCardView : TGLinearLayout {
     }
     
     private func createBackButton() -> UIButton {
-        let button = QMUIButton()
+        let button = Button()
         button.setTitle("← \("back".i18n)", for: .normal)
         button.setTitleColor(WonderPayment.uiConfig.primaryTextColor, for: .normal)
         button.titleLabel?.font = UIFont(name: "Outfit-Medium", size: 16)
@@ -177,7 +175,10 @@ class BankCardView : TGLinearLayout {
         var formValid = true
         for tag in 1...6 {
             if let formTextFieldView = formView.viewWithTag(tag) as? FormTextFieldView {
-                formValid = formTextFieldView.isValid
+                guard formTextFieldView.isValid else {
+                    formValid = false
+                    break
+                }
             }
         }
         confirmButton.isEnabled = formValid

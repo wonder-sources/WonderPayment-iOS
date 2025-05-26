@@ -1,7 +1,3 @@
-import QMUIKit
-import TangramKit
-
-typealias VoidCallback = () -> Void
 
 class UI {
     static func call(_ call: @escaping () -> Void ) {
@@ -9,6 +5,25 @@ class UI {
             call()
         }
     }
+}
+
+var keyWindow: UIWindow? {
+    if #available(iOS 13.0, *) {
+        return UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+    } else {
+        return UIApplication.shared.keyWindow
+    }
+}
+
+var topViewController: UIViewController? {
+    let topVC = UIViewController.current()
+    if topVC == nil {
+        print("❌ Error: Cannot find top view controller.")
+    }
+    return topVC
 }
 
 var safeInsets: UIEdgeInsets {
@@ -57,23 +72,6 @@ func prettyPrint(arrayOrMap: Any) {
     if  let jsonData = try? JSONSerialization.data(withJSONObject: arrayOrMap, options: .prettyPrinted) {
         print(String(decoding: jsonData, as: UTF8.self))
     }
-}
-
-func alert(_ message: String) {
-    let dialogController = QMUIDialogViewController()
-    dialogController.title = "Debug"
-    let contentView = TGLinearLayout(.vert)
-    contentView.tg_width.equal(.fill)
-    contentView.tg_height.equal(.wrap)
-    contentView.tg_padding = UIEdgeInsets.all(16)
-    let msgLabel = UILabel()
-    msgLabel.text = message
-    msgLabel.tg_width.equal(.fill)
-    msgLabel.tg_height.equal(.wrap)
-    contentView.addSubview(msgLabel)
-    dialogController.contentView = contentView
-    dialogController.addCancelButton(withText: "Cancel")
-    dialogController.show()
 }
 
 func getMethodNameAndIcon(_ method: PaymentMethod) -> (String, String?) {

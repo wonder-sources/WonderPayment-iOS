@@ -1,7 +1,5 @@
-import QMUIKit
-import TangramKit
-
-protocol MethodItemView {
+protocol MethodItemView: AnyObject where Self: UIView {
+    var canSelect: Bool { get }
     var isSelected: Bool { get set }
     var method: PaymentMethod? { get set }
 }
@@ -28,12 +26,12 @@ class MethodView : TGLinearLayout {
     lazy var paymeButton = MethodButton(image: "PayMe", title: "payme".i18n, displayStyle: displayStyle, previewMode: previewMode)
     lazy var addCardButton = createAddCardButton()
     lazy var cardView = createCardView()
-    lazy var itemsLayout = TGLinearLayout(.vert)
+    lazy var cardItemsLayout = TGLinearLayout(.vert)
     lazy var cardConfirmButton = Button(title: "confirm".i18n, style: .primary)
     
     var lastSelected: MethodItemView?
     
-    var selectedMethod: PaymentMethod? {
+    private(set) var selectedMethod: PaymentMethod? {
         didSet{
             cardConfirmButton.isHidden = previewMode || displayStyle == .confirm || selectedMethod?.type != .creditCard
             delegate?.onSelectedChange(selected: selectedMethod)
@@ -104,7 +102,7 @@ class MethodView : TGLinearLayout {
     }
     
     func setCardItems(_ items: [CreditCardInfo]) {
-        for subview in itemsLayout.subviews {
+        for subview in cardItemsLayout.subviews {
             subview.removeFromSuperview()
         }
         if lastSelected?.method?.type == .creditCard {
@@ -115,13 +113,9 @@ class MethodView : TGLinearLayout {
         }
         if (!items.isEmpty) {
             let divider = UIView()
-            divider.backgroundColor = UIColor(hexString: "#FFE4E4E4")
+            divider.backgroundColor = WonderPayment.uiConfig.dividerColor
             divider.tg_width.equal(.fill)
             divider.tg_height.equal(1)
-            
-            if displayStyle == .oneClick {
-                itemsLayout.addSubview(divider)
-            }
 
             for index in 0..<items.count {
                 let item = items[index]
@@ -141,13 +135,39 @@ class MethodView : TGLinearLayout {
 //                    lastSelected?.isSelected = false
 //                    lastSelected = itemView
 //                }
-                itemsLayout.addSubview(itemView)
+                cardItemsLayout.addSubview(itemView)
             }
             
-            if displayStyle == .confirm || previewMode {
-                itemsLayout.addSubview(divider)
+            cardItemsLayout.addSubview(divider)
+        }
+    }
+    
+    func setSelectedMethod(_ method: PaymentMethod) {
+        lastSelected?.isSelected = false
+        let itemView = findMethodItemView(by: method)
+        itemView?.isSelected = true
+        selectedMethod = itemView?.method
+        lastSelected = itemView
+    }
+    
+    func findMethodItemView(by method: PaymentMethod) -> MethodItemView? {
+        if method.type == .creditCard {
+            let cardNumber = method.arguments?["number"] as? String
+            for subview in cardItemsLayout.subviews {
+                if let itemView = subview as? MethodItemView,
+                   let itemNumber = itemView.method?.arguments?["number"] as? String,
+                   itemNumber == cardNumber {
+                    return itemView
+                }
+            }
+        } else {
+            for subview in subviews {
+                if let itemView = subview as? MethodItemView, itemView.method?.type == method.type {
+                    return itemView
+                }
             }
         }
+        return nil
     }
     
     @objc private func onMethodItemClick(_ sender: Any) {
@@ -181,6 +201,7 @@ class MethodView : TGLinearLayout {
         creditCardView.backgroundColor = WonderPayment.uiConfig.secondaryButtonBackground
         creditCardView.layer.borderWidth = 1
         creditCardView.layer.cornerRadius = WonderPayment.uiConfig.borderRadius
+        creditCardView.layer.borderColor = WonderPayment.uiConfig.borderColor.cgColor
         creditCardView.tg_width.equal(.fill)
         creditCardView.tg_height.equal(.wrap).min(56)
         creditCardView.tg_padding = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
@@ -203,13 +224,9 @@ class MethodView : TGLinearLayout {
         createLayout.addSubview(banksView)
         createLayout.addSubview(addCardButton)
         
-        itemsLayout.tg_width.equal(.fill)
-        itemsLayout.tg_height.equal(.wrap)
-        if displayStyle == .confirm || previewMode {
-            creditCardView.insertSubview(itemsLayout, at: 0)
-        } else {
-            creditCardView.addSubview(itemsLayout)
-        }
+        cardItemsLayout.tg_width.equal(.fill)
+        cardItemsLayout.tg_height.equal(.wrap)
+        creditCardView.insertSubview(cardItemsLayout, at: 0)
         
         if displayStyle != .confirm {
             cardConfirmButton.isHidden = true
@@ -222,12 +239,16 @@ class MethodView : TGLinearLayout {
     }
     
     private func createAddCardButton() -> UIButton {
-        let button = QMUIButton()
-        button.setImage("add".svg, for: .normal)
-        button.tg_width.equal(.wrap)
-        button.tg_height.equal(.wrap)
+        let backgroundColor = WonderPayment.uiConfig.primaryButtonBackground
+        let tintColor = WonderPayment.uiConfig.primaryButtonColor
+        let button = Button()
+        button.setImage("add".svg?.withTintColor(tintColor), for: .normal)
+        button.tg_width.equal(24)
+        button.tg_height.equal(24)
         button.tg_centerY.equal(0)
         button.tg_left.equal(6)
+        button.layer.cornerRadius = 12
+        button.backgroundColor = backgroundColor
         return button
     }
 }

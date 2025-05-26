@@ -3,7 +3,10 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
     public var currency: String
     public var orderNumber: String
     public var paymentMethod: PaymentMethod?
-    public var transactionType: TransactionType = .sale
+    // 预授权优先(客户端配置)
+    public var preAuthModeForSales: Bool
+    // 仅使用预授权(网关配置)
+    var isOnlyPreAuth: Bool = false
     public var lineItems: [LineItem]?
     public var extra: Extra?
     
@@ -12,7 +15,7 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
         currency: String,
         orderNumber: String,
         paymentMethod: PaymentMethod? = nil,
-        transactionType: TransactionType = .sale,
+        preAuthModeForSales: Bool = false,
         lineItems: [LineItem]? = nil,
         extra: Extra? = nil
     ) {
@@ -20,21 +23,23 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
         self.currency = currency
         self.orderNumber = orderNumber
         self.paymentMethod = paymentMethod
-        self.transactionType = transactionType
+        self.preAuthModeForSales = preAuthModeForSales
         self.lineItems = lineItems
         self.extra = extra
     }
     
     public func copy() -> PaymentIntent {
-        return PaymentIntent(
+        let intent = PaymentIntent(
             amount: self.amount,
             currency: self.currency,
             orderNumber: self.orderNumber,
             paymentMethod: self.paymentMethod?.copy(),
-            transactionType: self.transactionType,
+            preAuthModeForSales: self.preAuthModeForSales,
             lineItems: self.lineItems?.map({$0.copy()}),
             extra: self.extra?.copy()
         )
+        intent.isOnlyPreAuth = self.isOnlyPreAuth
+        return intent
     }
     
     public static func from(json: NSDictionary?) -> Self {
@@ -47,7 +52,7 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
             currency: json?["currency"] as? String ?? "HKD",
             orderNumber: json?["orderNumber"] as? String ?? "",
             paymentMethod: paymentMethod,
-            transactionType: TransactionType(rawValue: json?["transactionType"] as? String ?? "") ?? .sale,
+            preAuthModeForSales: json?["preAuthModeForSales"] as? Bool ?? false,
             lineItems: LineItem.from(jsonArray: json?["lineItems"] as? NSArray),
             extra: Extra.from(json: json?["extra"] as? NSDictionary)
         ) as! Self
@@ -59,7 +64,7 @@ public class PaymentIntent : JSONDecodable, JSONEncodable {
             "currency": currency,
             "orderNumber": orderNumber,
             "paymentMethod": paymentMethod?.toJson(),
-            "transactionType": transactionType.rawValue,
+            "preAuthModeForSales": preAuthModeForSales,
             "lineItems": lineItems?.map({$0.toJson()}),
             "extra": extra?.toJson()
         ]

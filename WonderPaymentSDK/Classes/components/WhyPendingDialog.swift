@@ -1,6 +1,3 @@
-import QMUIKit
-import TangramKit
-
 class WhyPendingDialog : TGRelativeLayout {
     
     lazy var contentView = TGLinearLayout(.vert)
@@ -27,8 +24,9 @@ class WhyPendingDialog : TGRelativeLayout {
         contentView.addGestureRecognizer(UITapGestureRecognizer())
         addSubview(contentView)
         
-        let closeButton = QMUIButton()
-        closeButton.setImage("close".svg, for: .normal)
+        let closeButton = Button()
+        let tintColor = WonderPayment.uiConfig.primaryButtonBackground
+        closeButton.setImage("close".svg?.withTintColor(tintColor), for: .normal)
         closeButton.tg_right.equal(12)
         closeButton.tg_width.equal(24)
         closeButton.tg_height.equal(24)
@@ -70,7 +68,7 @@ class WhyPendingDialog : TGRelativeLayout {
     }
     
     func show() {
-        let window = UIApplication.shared.keyWindow
+        let window = keyWindow
         window?.addSubview(self)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: {
             [weak self] in

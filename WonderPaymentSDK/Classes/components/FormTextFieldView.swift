@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import TangramKit
-import QMUIKit
 
 class FormTextFieldView : TGLinearLayout {
     
@@ -65,7 +63,7 @@ class FormTextFieldView : TGLinearLayout {
         errorLabel.textAlignment = errorTextAlignment
         addSubview(errorLabel)
         
-        textField.delegate = self
+        textField.textFieldViewDelegate = self
     }
     
     var isValid: Bool {
@@ -73,7 +71,7 @@ class FormTextFieldView : TGLinearLayout {
     }
 }
 
-extension FormTextFieldView: QMUITextFieldDelegate {
+extension FormTextFieldView: TextFieldViewDelegate {
     func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
         error = validator?(textField.text)
     }

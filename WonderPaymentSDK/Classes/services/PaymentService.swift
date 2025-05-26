@@ -48,6 +48,13 @@ class PaymentService {
         return WonderPayment.paymentConfig.appId
     }
     
+    private static let sharedSession: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 60
+        return URLSession(configuration: config)
+    }()
+    
     static func setGlobalHeaders(forRequest request: inout URLRequest) {
         request.setValue("22", forHTTPHeaderField: "X-Platform-From")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -74,7 +81,7 @@ class PaymentService {
         request.httpMethod = "GET"
         setGlobalHeaders(forRequest: &request)
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -84,7 +91,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let data = DynamicJson(value: resp.data)
                     UI.call { completion(data, nil) }
@@ -121,7 +128,7 @@ class PaymentService {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -131,7 +138,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     UI.call { completion(true, nil) }
                 } else {
@@ -156,7 +163,7 @@ class PaymentService {
         request.httpMethod = "GET"
         setGlobalHeaders(forRequest: &request)
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -166,7 +173,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let config = PaymentMethodConfig.from(json: resp.data as? NSDictionary)
                     UI.call { completion(config, nil) }
@@ -178,6 +185,21 @@ class PaymentService {
             }
         }
         task.resume()
+    }
+    
+    ///查询支付方式
+    static func queryPaymentMethods() -> Future<PaymentMethodConfig> {
+        return Future<PaymentMethodConfig> { resolve, reject in
+            queryPaymentMethods() { data, error in
+                if let data {
+                    resolve(data)
+                } else if let error {
+                    reject(error)
+                } else {
+                    reject(ErrorMessage.unknownError)
+                }
+            }
+        }
     }
     
     /// 支付
@@ -203,6 +225,8 @@ class PaymentService {
         request.httpMethod = "POST"
         setGlobalHeaders(forRequest: &request)
         
+//        prettyPrint(arrayOrMap: paymentArgs)
+        
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: paymentArgs, options: [])
         } catch {
@@ -211,7 +235,7 @@ class PaymentService {
         }
         
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -221,7 +245,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     var result = PayResult.from(json: resp.data as? NSDictionary)
                     result.transaction = result.order.transactions?.first(where: {$0.uuid == uuid})
@@ -240,8 +264,24 @@ class PaymentService {
         task.resume()
     }
     
-    /// 查询卡片列表
-    static func queryCardList(completion: @escaping ([CreditCardInfo]?, ErrorMessage?) -> Void) {
+    
+    /// 查询PaymentTokens
+    static func queryPaymentTokens() -> Future<[DynamicJson]> {
+        return Future { resolve, reject in
+            queryPaymentTokens { tokens, error in
+                if let tokens {
+                    resolve(tokens)
+                } else if let error {
+                    reject(error)
+                } else {
+                    reject(ErrorMessage.unknownError)
+                }
+            }
+        }
+    }
+    
+    /// 查询PaymentTokens
+    static func queryPaymentTokens(completion: @escaping ([DynamicJson]?, ErrorMessage?) -> Void) {
         let customerId = WonderPayment.paymentConfig.customerId
         if customerId.isEmpty {
             UI.call { completion(nil, .none) }
@@ -256,8 +296,7 @@ class PaymentService {
         var request = URLRequest(url: url)
         setGlobalHeaders(forRequest: &request)
         
-        let session = URLSession.shared
-        let task = session.dataTask(with: request) { (data, response, error) in
+        let task = sharedSession.dataTask(with: request) { (data, response, error) in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -267,14 +306,10 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
-                    let list = DynamicJson(value: resp.data)["payment_tokens"].array
-                    let arr = list.filter({
-                        $0["token_type"].string == "CreditCard" && $0["state"].string == "success"
-                    }).map({$0.value})
-                    let cardList = CreditCardInfo.from(jsonArray: arr as NSArray)
-                    UI.call { completion(cardList , nil) }
+                    let tokens = DynamicJson(value: resp.data)["payment_tokens"].array
+                    UI.call { completion(tokens , nil) }
                 } else {
                     UI.call { completion(nil, resp.error) }
                 }
@@ -283,6 +318,21 @@ class PaymentService {
             }
         }
         task.resume()
+    }
+    
+    /// 查询卡片列表
+    static func queryCardList(completion: @escaping ([CreditCardInfo]?, ErrorMessage?) -> Void) {
+        queryPaymentTokens { tokens, error in
+            if let tokens {
+                let arr = tokens.filter({
+                    $0["token_type"].string == "CreditCard" && $0["state"].string == "success"
+                }).map({$0.value})
+                let cardList = CreditCardInfo.from(jsonArray: arr as NSArray)
+                completion(cardList, nil)
+            } else {
+                completion(nil, error)
+            }
+        }
     }
     
     /// 绑定卡片
@@ -299,9 +349,19 @@ class PaymentService {
         request.httpMethod = "POST"
         setGlobalHeaders(forRequest: &request)
         
-        let dataParams = [
+        var dataParams: [String: Any] = [
             "card": ["3ds": _3dsConfig].merge(cardInfo)
         ]
+        
+        do {
+            dataParams = try EncryptionUtil.encrypt(content: dataParams)
+        } catch {
+            let err = ErrorMessage(code: "E100004", message: error.localizedDescription)
+            UI.call { completion(nil, err) }
+            return
+        }
+        
+//        prettyPrint(arrayOrMap: dataParams)
         
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: dataParams, options: [])
@@ -310,8 +370,8 @@ class PaymentService {
             return
         }
         
-        let session = URLSession.shared
-        let task = session.dataTask(with: request) { (data, response, error) in
+
+        let task = sharedSession.dataTask(with: request) { (data, response, error) in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -320,7 +380,7 @@ class PaymentService {
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
 //                prettyPrint(arrayOrMap: json)
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let dataJson = resp.data as? NSDictionary
                     let card = CreditCardInfo.from(json: dataJson?["payment_token"] as? NSDictionary)
@@ -357,7 +417,7 @@ class PaymentService {
             return
         }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -367,7 +427,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let dataJson = resp.data as? NSDictionary
                     let success = dataJson?["success"] as? Bool
@@ -383,11 +443,88 @@ class PaymentService {
         task.resume()
     }
     
+    /// 删除PaymentToken
+    static func deletePaymentToken(token: String) -> Future<Bool> {
+        return Future<Bool> { resolve, reject in
+            deletePaymentToken(token: token) { data, error in
+                if let data {
+                    resolve(data)
+                } else if let error {
+                    reject(error)
+                } else {
+                    reject(ErrorMessage.unknownError)
+                }
+            }
+        }
+    }
+    
+    ///创建PaymentToken
+    static func createPaymentToken(args: NSDictionary, completion: @escaping (DynamicJson?, ErrorMessage?) -> Void) {
+        let customerId = WonderPayment.paymentConfig.customerId
+        
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)/payment_tokens"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        setGlobalHeaders(forRequest: &request)
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: args, options: [])
+        } catch {
+            UI.call { completion(nil, .dataFormatError) }
+            return
+        }
+        
+        let task = sharedSession.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+//            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = CommonResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    let dataJson = resp.data as? NSDictionary
+                    let token = dataJson?["payment_token"] as? NSDictionary
+                    UI.call { completion(DynamicJson(value: token), nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    ///创建PaymentToken
+    static func createPaymentToken(args: NSDictionary) -> Future<DynamicJson> {
+        return Future<DynamicJson> { resolve, reject in
+            createPaymentToken(args: args) { data, error in
+                if let data {
+                    resolve(data)
+                } else if let error {
+                    reject(error)
+                } else {
+                    reject(ErrorMessage.unknownError)
+                }
+            }
+        }
+    }
+    
     /// 检查PaymentToken是否已验证
-    static func checkPaymentTokenState(
+    static func checkPaymentToken(
         uuid: String,
         token: String,
-        completion: @escaping (String?, ErrorMessage?) -> Void
+        completion: @escaping (DynamicJson?, ErrorMessage?) -> Void
     ) {
         let customerId = WonderPayment.paymentConfig.customerId
         let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/customers/\(customerId)/payment_tokens/check"
@@ -413,7 +550,7 @@ class PaymentService {
         }
         
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -423,10 +560,10 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let dataJson = DynamicJson(value: resp.data)
-                    UI.call { completion(dataJson["payment_token"]["state"].string, nil) }
+                    UI.call { completion(dataJson["payment_token"], nil) }
                 } else {
                     UI.call { completion(nil, resp.error) }
                 }
@@ -464,7 +601,7 @@ class PaymentService {
         }
         
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -474,7 +611,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     var result = PayResult.from(json: resp.data as? NSDictionary)
                     result.transaction = result.order.transactions?.first(where: {$0.uuid == uuid})
@@ -549,7 +686,7 @@ class PaymentService {
         }
         
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -559,7 +696,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let result = PayResult.from(json: resp.data as? NSDictionary)
                     let transactions = result.order.transactions?.filter({ sessionData.transactions.contains($0.uuid) })
@@ -595,7 +732,7 @@ class PaymentService {
         setGlobalHeaders(forRequest: &request)
         
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = sharedSession.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 UI.call { completion(nil, .networkError) }
                 return
@@ -605,7 +742,7 @@ class PaymentService {
             
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
-                let resp = PaymentResponse.from(json: json as? NSDictionary)
+                let resp = CommonResponse.from(json: json as? NSDictionary)
                 if resp.succeed {
                     let data = resp.data as? NSDictionary
                     UI.call { completion(data, nil) }
@@ -618,5 +755,176 @@ class PaymentService {
         }
         
         task.resume()
+    }
+    
+    
+    /// 获取订单详情
+    static func getOrderDetail(orderNum: String) -> Future<DynamicJson> {
+        return Future { resolve, reject in
+            getOrderDetail(orderNum: orderNum) { data, error in
+                if let data {
+                    resolve(data)
+                } else if let error {
+                    reject(error)
+                } else {
+                    reject(ErrorMessage.unknownError)
+                }
+            }
+        }
+    }
+    
+    /// 获取订单详情
+    static func getOrderDetail(
+        orderNum: String,
+        completion: @escaping (DynamicJson?, ErrorMessage?) -> Void
+    ){
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/orders/check"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        setGlobalHeaders(forRequest: &request)
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: [
+                "order": ["number": orderNum]
+            ], options: [])
+        } catch {
+            UI.call { completion(nil, .dataFormatError) }
+            return
+        }
+        
+        
+        let task = sharedSession.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+//            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = CommonResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    let dataJson = DynamicJson(value: resp.data)
+                    let orderJson = dataJson["order"]
+                    UI.call { completion(orderJson, nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        
+        task.resume()
+    }
+    
+    
+    ///AlipayHK签约
+    static func alipayAuthApply(
+        merchantAgreementId: String,
+        authCode: String,
+        completion: @escaping (DynamicJson?, ErrorMessage?) -> Void)
+    {
+        let query = "merchantAgreementId=\(merchantAgreementId)&authCode=\(authCode)"
+        let urlString = "https://\(domain)/svc/payment/public/api/v1/openapi/alipay_auto_debit/auth_apply?\(query)"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        setGlobalHeaders(forRequest: &request)
+        
+        let task = sharedSession.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+//            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                let resp = CommonResponse.from(json: json as? NSDictionary)
+                if resp.succeed {
+                    let data = DynamicJson(value: resp.data)
+                    UI.call { completion(data, nil) }
+                } else {
+                    UI.call { completion(nil, resp.error) }
+                }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        task.resume()
+    }
+    
+    ///AlipayHK签约
+    static func alipayAuthApply(
+        merchantAgreementId: String,
+        authCode: String
+    ) -> Future<DynamicJson> {
+        return Future<DynamicJson> { resolve, reject in
+            alipayAuthApply(merchantAgreementId: merchantAgreementId, authCode: authCode) { data, error in
+                if let data {
+                    resolve(data)
+                } else if let error {
+                    reject(error)
+                } else {
+                    reject(ErrorMessage.unknownError)
+                }
+            }
+        }
+    }
+    
+    ///获取FPS应用列表
+    static func getFPSApps(completion: @escaping (DynamicJson?, ErrorMessage?) -> Void) {
+        let urlString = "https://fps.payapps.hkicl.com.hk/build/data.json"
+        guard let url = URL(string: urlString) else {
+            UI.call { completion(nil, .unknownError) }
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        
+        let task = sharedSession.dataTask(with: request) { data, response, error in
+            guard let data = data, error == nil else {
+                UI.call { completion(nil, .networkError) }
+                return
+            }
+            
+//            prettyPrint(jsonData: data)
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                UI.call { completion(DynamicJson(value: json), nil) }
+            } catch {
+                UI.call { completion(nil, .dataFormatError) }
+            }
+        }
+        task.resume()
+    }
+    
+    ///获取FPS应用列表
+    static func getFPSApps() -> Future<DynamicJson> {
+        return Future<DynamicJson> { resolve, reject in
+            getFPSApps() { data, error in
+                if let data {
+                    resolve(data)
+                } else if let error {
+                    reject(error)
+                } else {
+                    reject(ErrorMessage.unknownError)
+                }
+            }
+        }
     }
 }

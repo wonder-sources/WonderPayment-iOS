@@ -1,6 +1,4 @@
 import SVGKit
-import QMUIKit
-import TangramKit
 
 class PaymentsView : TGLinearLayout {
     var displayStyle: DisplayStyle
@@ -166,7 +164,7 @@ class PaymentsView : TGLinearLayout {
         titleBar.titleLabel.textColor = WonderPayment.uiConfig.primaryTextColor
         titleBar.titleLabel.font = UIFont.boldSystemFont(ofSize: 18)
         titleBar.rightView.setImage(
-            "close".svg?.qmui_image(withTintColor: WonderPayment.uiConfig.primaryTextColor),
+            "close".svg?.withTintColor(WonderPayment.uiConfig.primaryButtonBackground),
             for: .normal
         )
         
@@ -179,12 +177,15 @@ class PaymentsView : TGLinearLayout {
         amountView.tg_height.equal(.wrap)
         
         if transactionType == .preAuth {
-            let preAuthLabel = Label("thisIsPreAuth".i18n, size: 16, fontStyle: .medium)
-            preAuthLabel.textColor = WonderPayment.uiConfig.linkColor
-            preAuthLabel.tg_width.equal(.fill)
-            preAuthLabel.tg_height.equal(.wrap)
-            preAuthLabel.tg_bottom.equal(12)
-            amountView.addSubview(preAuthLabel)
+            let preAuthButton = Button()
+            preAuthButton.setTitle("ⓘ \("thisIsPreAuth".i18n)", for: .normal)
+            preAuthButton.setTitleColor(WonderPayment.uiConfig.linkColor, for: .normal)
+            preAuthButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+            preAuthButton.tg_width.equal(.wrap)
+            preAuthButton.tg_height.equal(.wrap)
+            preAuthButton.tg_bottom.equal(12)
+            preAuthButton.addTarget(self, action: #selector(showPreAuthDesc), for: .touchUpInside)
+            amountView.addSubview(preAuthButton)
         }
         
         let totalLabel = Label("totalAmount".i18n, size: 16, fontStyle: .medium)
@@ -220,16 +221,44 @@ class PaymentsView : TGLinearLayout {
         securedLayout.addSubview(securedLabel)
         
         let divider = UIView()
-        divider.backgroundColor = .black.withAlphaComponent(0.2)
+        divider.backgroundColor = WonderPayment.uiConfig.dividerColor
         divider.tg_top.equal(16)
         divider.tg_width.equal(.fill)
-        divider.tg_height.equal(QMUIHelper.pixelOne)
+        divider.tg_height.equal(1 )
         amountView.addSubview(divider)
         
         return amountView
     }
     
+    func setSelectedMethod(_ method: PaymentMethod) {
+        methodView.setSelectedMethod(method)
+        let targetView: UIView?
+        let canSelect: Bool
+        if method.type == .creditCard {
+            targetView = methodView.cardItemsLayout
+            canSelect = true
+        } else {
+            let itemView = methodView.findMethodItemView(by: method)
+            targetView = itemView
+            canSelect = itemView?.canSelect ?? false
+        }
+        if let targetView, canSelect {
+            // 1. 将 targetView 的 bounds 转换到 scrollView 的坐标系
+            var targetRect = targetView.convert(targetView.bounds, to: scrollView)
+            
+            // 2. 获取 scrollView 所在控制器的 safe area bottom inset
+            let safeBottomInset = scrollView.safeAreaInsets.bottom
+            
+            // 3. 人为扩大 targetRect 的高度以避免贴在底部
+            targetRect.size.height += safeBottomInset + 20
+            scrollView.scrollRectToVisible(targetRect, animated: true)
+        }
+    }
     
+    @objc private func showPreAuthDesc() {
+        let dialog = PreAuthDescDialog()
+        dialog.show()
+    }
 }
 
 extension PaymentsView: MethodViewDelegate {
